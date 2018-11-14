@@ -26,12 +26,12 @@
                 <div class = "face-con">
                     <p class = "info">证件正面照：</p>
                     <img-upload
-                                                                                                @base64       = "frontBase64"
-                                                                                                @deleteBase64 = "deleteFront"
-                                                                                              :modalTitle     = "frontModalTitle"
-                                                                                              :uploadId       = "frontUploadId"
-                                                                                              :beforeHasData  = "beforeHasDataUp"
-                                                                                              :indentImg      = 'indentImgUp'></img-upload>
+                      @base64       = "frontBase64"
+                      @deleteBase64 = "deleteFront"
+                      :modalTitle     = "frontModalTitle"
+                      :uploadId       = "frontUploadId"
+                      :beforeHasData  = "beforeHasDataUp"
+                      :indentImg      = 'indentImgUp'></img-upload>
                 </div>
                 <div class = "face-con">
                     <p class = "info">证件反面照：</p>
@@ -91,6 +91,10 @@ import {
 import {getOrgList} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
 const baseUrl = baseConfig.baseUrl.localOrgHost;
+import {
+  // getOrgDetail,
+  getUserDetail
+  } from '@/api/login.js';
 export default {
     name: 'CreatePerson',
     data() {
@@ -286,8 +290,17 @@ export default {
                                         closable: true
                                     });
                                 }else if(code == 0) {
-                                    for(let item in res.data.user_info) {
-                                        localStorage.setItem(item,res.data.user_info[item])
+                                    // for(let item in res.data.user_info) {
+                                    //     localStorage.setItem(item,res.data.user_info[item])
+                                    // }
+                                    if(res.data.user_info.verified) {
+                                        localStorage.setItem('user_verified',resData.user_info.verified)
+                                    }
+                                    if(res.data.user_info.name) {
+                                        localStorage.setItem('userPhone',resData.user_info.phone)
+                                    }
+                                    if(res.data.user_info.phone) {
+                                        localStorage.setItem('name',resData.user_info.name)
                                     }
                                     this.$emit('createPersonSuccess',res.data.user_info);
                                 }
@@ -396,45 +409,129 @@ export default {
         },
     },
     created() {
-        // console.log(`localStorage.getItem('create')=${localStorage.getItem('create')}`)
-        // if(localStorage.getItem('create') != null) {
-        //     this.createShow = localStorage.getItem('create')
-        // // }
-        // else {
-        //     this.createShow = false
+
+
+                    //getUserDetail
+                    getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                    .then (res => {
+                        console.log('getUserDetail_res:')
+                        console.log(res);
+                        if(res.status && res.status == 200) {
+                          // debugger
+                          if(res.data.success && res.data.code == 0) {
+                              if(res.data.data) {
+                                // debugger;
+                                let data = res.data.data;
+                                console.log(data)
+                                //姓名
+                                if(data.ident_name && data.ident_name.length > 0) {
+                                  this.userNamePlaceholder = data.ident_name;
+                                  this.userName = data.ident_name
+                                }
+                                else {
+                                  this.userNamePlaceholder = '请输入真实姓名'
+                                  this.userName            = ''
+                                }
+                                // 身份证号
+                                if(data.ident_num && data.ident_num.length > 0) {
+                                  this.IDPlaceholder = data.ident_num;
+                                  this.IDNumber = data.ident_num
+                                }
+                                else {
+                                  this.IDPlaceholder = '请输入身份证号码'
+                                  this.IDNumber            = ''
+                                }
+                                // 身份证正面
+                                if(data.ident_up && data.ident_up.length > 0) {
+                                  this.indentImgUp = data.ident_up;
+                                  this.frontBase64Data = data.ident_up
+                                  this.beforeHasDataUp = true
+                                  // debugger
+                                }
+                                else {
+                                  this.indentImgUp = '';
+                                  this.beforeHasDataUp = false;
+                                  this.frontBase64Data = ''
+                                }
+                                // 身份证反面
+                                if(data.ident_down && data.ident_down.length > 0) {
+                                  this.indentImg = data.ident_down;
+                                  this.beforeHasData = true
+                                  this.versoData = data.ident_down
+                                }
+                                else {
+                                  // debugger
+                                  this.beforeHasData = false
+                                  this.indentImg            = '';
+                                  this.versoData = ''
+                                }
+                                // for(let item in data) {
+                                // localStorage.setItem('user_detail_obj' , JSON.stringify(data))
+                                // }
+                                if(data.verified) {
+                                  localStorage.setItem('user_verified',data.verified)
+                                }
+                                // debugger
+                              }
+                          }else {
+                              this.$Message.error({
+                                  content : err && err.msg ? err.msg: '网络错误',
+                                  duration: 5,
+                                  closable: true
+                              });
+                          }
+                        }
+                        else {
+                          this.$Message.error({
+                              content : err.msg ? err.msg: '网络错误',
+                              duration: 5,
+                              closable: true
+                          });
+                        }
+                    })
+                    .catch(err => {
+                      console.log(err)
+                      this.$Message.error({
+                          content : err.msg ? err.msg: '网络错误',
+                          duration: 5,
+                          closable: true
+                      });
+                    });
+
+
+
+        // if(localStorage.getItem('ident_name') != null && localStorage.getItem('ident_name').length >  0) {
+        //     this.userNamePlaceholder = localStorage.getItem('ident_name');
+        //     this.userName            = localStorage.getItem('ident_name');
+        // }else {
+        //     this.userNamePlaceholder = '请输入真实姓名'
+        //     this.userName            = ''
         // }
-        if(localStorage.getItem('ident_name') != null && localStorage.getItem('ident_name').length >  0) {
-            this.userNamePlaceholder = localStorage.getItem('ident_name');
-            this.userName            = localStorage.getItem('ident_name');
-        }else {
-            this.userNamePlaceholder = '请输入真实姓名'
-            this.userName            = ''
-        }
 
-        if(localStorage.getItem('ident_num') != null && localStorage.getItem('ident_num').length >  0) {
-            this.IDPlaceholder = localStorage.getItem('ident_num');
-            this.IDNumber      = localStorage.getItem('ident_num');
-        }else {
-            this.IDPlaceholder = '请输入身份证号码';
-            this.IDNumber      = ''
-        }
+        // if(localStorage.getItem('ident_num') != null && localStorage.getItem('ident_num').length >  0) {
+        //     this.IDPlaceholder = localStorage.getItem('ident_num');
+        //     this.IDNumber      = localStorage.getItem('ident_num');
+        // }else {
+        //     this.IDPlaceholder = '请输入身份证号码';
+        //     this.IDNumber      = ''
+        // }
 
-        if(localStorage.getItem('ident_down') != null && localStorage.getItem('ident_down').length >  0) {
-            this.beforeHasData = true;
-            this.indentImg     = localStorage.getItem('ident_down');
+        // if(localStorage.getItem('ident_down') != null && localStorage.getItem('ident_down').length >  0) {
+        //     this.beforeHasData = true;
+        //     this.indentImg     = localStorage.getItem('ident_down');
 
-        }else {
-            this.beforeHasData = false;
-            this.indentImg     = ''
-        }
+        // }else {
+        //     this.beforeHasData = false;
+        //     this.indentImg     = ''
+        // }
 
-        if(localStorage.getItem('ident_up') != null && localStorage.getItem('ident_up').length >  0) {
-            this.beforeHasDataUp = true;
-            this.indentImgUp     = localStorage.getItem('ident_up')
-        }else {
-            this.beforeHasDataUp = false;
-            this.indentImgUp     = ''
-        }
+        // if(localStorage.getItem('ident_up') != null && localStorage.getItem('ident_up').length >  0) {
+        //     this.beforeHasDataUp = true;
+        //     this.indentImgUp     = localStorage.getItem('ident_up')
+        // }else {
+        //     this.beforeHasDataUp = false;
+        //     this.indentImgUp     = ''
+        // }
     },
     props : {
         createShow : {

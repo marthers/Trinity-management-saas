@@ -351,13 +351,21 @@ export default {
                     localStorage.setItem('Trinity-Token',resData.token)
                     localStorage.setItem('password',resData.password);
                     this.user_info = resData.user_info;
+                    // debugger
                     console.log(resData.user_info);
-                    for(let item in resData.user_info) {
-                      console.log(item);
-                      localStorage.setItem(item,resData.user_info[item])
+                    // debugger
+                    // for(let item in resData.user_info) {
+                    //   console.log(item);
+                    //   localStorage.setItem(item,resData.user_info[item])
+                    // }
+                    if(resData.user_info.verified) {
+                        localStorage.setItem('user_verified',resData.user_info.verified)
                     }
                     if(resData.user_info.phone) {
                         localStorage.setItem('userPhone',resData.user_info.phone)
+                    }
+                    if(resData.user_info.name) {
+                        localStorage.setItem('name',resData.user_info.name)
                     }
                     localStorage.setItem('fid_organization',resData.fid_organization);
                     localStorage.setItem('organization_level',resData.organization_level);
@@ -564,12 +572,18 @@ export default {
                         //         localStorage.removeItem('password');
                         //     }
                         // }
-                        for(let item in resData.user_info) {
-                          console.log(item);
-                          localStorage.setItem(item,resData.user_info[item])
+                        // for(let item in resData.user_info) {
+                        //   console.log(item);
+                        //   localStorage.setItem(item,resData.user_info[item])
+                        // }
+                        if(resData.user_info.verified) {
+                            localStorage.setItem('user_verified',resData.user_info.verified)
                         }
                         if(resData.user_info.phone) {
                             localStorage.setItem('userPhone',resData.user_info.phone)
+                        }
+                        if(resData.user_info.name) {
+                            localStorage.setItem('name',resData.user_info.name)
                         }
                         localStorage.setItem('fid_organization',resData.fid_organization);
                         if(resData.fid_organization != 0) {
@@ -1024,9 +1038,18 @@ export default {
                             //         localStorage.removeItem('password');
                             //     }
                             // }
-                            for(let item in resData.user_info) {
-                              console.log(item);
-                              localStorage.setItem(item,resData.user_info[item])
+                            // for(let item in resData.user_info) {
+                            //   console.log(item);
+                            //   localStorage.setItem(item,resData.user_info[item])
+                            // }
+                            if(resData.user_info.verified) {
+                                localStorage.setItem('user_verified',resData.user_info.verified)
+                            }
+                            if(resData.user_info.name) {
+                                localStorage.setItem('userPhone',resData.user_info.phone)
+                            }
+                            if(resData.user_info.name) {
+                                localStorage.setItem('name',resData.user_info.name)
                             }
                             if(resData.user_info.phone) {
                                 localStorage.setItem('userPhone',resData.user_info.phone)
@@ -1229,9 +1252,15 @@ export default {
                         //         localStorage.removeItem('password');
                         //     }
                         // }
-                        for(let item in resData.user_info) {
-                          console.log(item);
-                          localStorage.setItem(item,resData.user_info[item])
+                        // for(let item in resData.user_info) {
+                        //   console.log(item);
+                        //   localStorage.setItem(item,resData.user_info[item])
+                        // }
+                        if(resData.user_info.verified) {
+                            localStorage.setItem('user_verified',resData.user_info.verified)
+                        }
+                        if(resData.user_info.name) {
+                            localStorage.setItem('name',resData.user_info.name)
                         }
                         if(resData.user_info.phone) {
                             localStorage.setItem('userPhone',resData.user_info.phone)

@@ -16,7 +16,7 @@
     </div> -->
     <div>
         <label class = "upload-con" :for = "uploadId">
-            <div :class = "[ beforeHasData ? 'before-has-data' : imgLen < maxNum ? 'img-not-uploaded' : 'has-uploaded']" ref = "hasUploaded">
+            <div :class = "[ beforeHasData ? 'before-has-data' : imgLen < maxNum ? 'img-not-uploaded' : 'has-uploaded']" ref = "hasUploaded" id= "has-uploaded">
                 <input :id= "uploadId" type="file" class="upload-button" @change="addImg" ref="inputer" multiple accept="image/png,image/jpeg,image/jpg"/>
                 <div class = "two-button" v-if = "imgLen >= maxNum">
                     <Icon type="ios-eye-outline" class= "i" @click.stop.prevent = "visible = true"></Icon>
@@ -156,10 +156,31 @@
         // }
       },
     },
+    // watch : {
+    //   beforeHasData : val => {
+    //     console.log("oldVal,newVal:")
+    //     console.log(val)
+    //     let self = this
+    //     if(val) {
+    //         let bgUrl = 'url(' + 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com' + this.indentImg + ')';
+    //         let oDiv = document.getElementById('has-uploaded');
+    //         oDiv.style.backgroundImage =bgUrl
+    //     }
+    //   }
+    // }
     mounted() {
-        if(this.beforeHasData) {
-            this.$refs.hasUploaded.style.backgroundImage = 'url(' + 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com' + this.indentImg + ')'
-        }
+        // if(this.beforeHasData) {
+          // debugger
+        // if(this.indentImg && this.indentImg.length > 0) {
+          setTimeout(() => {
+            let bgUrl = 'url(' + 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com' + this.indentImg + ')';
+            this.$refs.hasUploaded.style.backgroundImage =bgUrl
+          },250)
+        // }
+        // }
+        // else {
+        //   debugger
+        // }
     }
   }
 </script>
