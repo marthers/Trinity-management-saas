@@ -713,6 +713,8 @@ export default {
         // console.log(this.$router);
         console.log(this.$route);
         // console.log(this)
+        console.log(this.$attrs);
+        console.log(this.$listeners)
     }
 }
 </script>

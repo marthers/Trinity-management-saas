@@ -8,7 +8,7 @@
      <vue-particles
                         color          = "#3BA5B2"
                       :particleOpacity = ".7"
-                      :particlesNumber = "40"
+                      :particlesNumber = "60"
                         shapeType      = "circle"
                       :particleSize    = "4"
                         linesColor     = "#48A8DA"
@@ -1628,7 +1628,7 @@ export default {
         }
         this.rememberedPasswordIsChanged = localStorage.getItem('rememberPassword') != null ? localStorage.getItem('rememberPassword') : false
     // }
-    console.log(`process.env.NODE_ENV=${process.env.NODE_ENV}`)
+    console.log(`process.env.NODE_ENV=${process.env.NODE_ENV}`);
   }
 }
 </script>
