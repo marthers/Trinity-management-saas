@@ -8,22 +8,26 @@
                 }}
             </div>
         </header>
-        <Input 
-            search 
-            enter-button 
+        <Input
+            search
+            enter-button
             v-model.trim = "searchContent"
-            placeholder="搜索您想选择的商户关键字" 
+            placeholder="搜索您想选择的商户关键字"
             @on-enter = "searchEnter"
             @on-search = "searchEnter"
             @on-keyup = "searchContent=searchContent.replace(/(^\s+)|(\s+$)/g,'')"
             class = "search"/>
-        <scroller 
+        <scroller
             :on-refresh="pulldown"
             height = "80%"
             :on-infinite="pullup"
             class="wrapper" ref="scrollWrapper">
-            <div class = "list-con">
-                <div :class = "[index%2 == 0 ? 'single' : 'double',selectedIndex == index ? 'selected' : 'not-selected' ,'item-con']" v-for = "(item,index) in orgList" :key = "index" @click.stop.prevent = "selectedIndex = index">
+            <div class = "list-con"
+                v-show = "orgList.length > 0">
+                <div :class = "[index%2 == 0 ? 'single' : 'double',selectedIndex == index ? 'selected' : 'not-selected' ,'item-con']"
+                      v-for = "(item,index) in orgList"
+                      :key = "index"
+                      @click.stop.prevent = "selectedIndex = index">
                     {{
                         item.organizationName
                     }}

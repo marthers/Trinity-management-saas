@@ -590,8 +590,9 @@ export default {
             .then(res => {
                 console.log(res)
                 if(res.status&& res.status == 200) {
+                  // debugger
                     console.log(res.data)
-                    localStorage.setItem('Trinity-Token',res.data.data.token)
+                    // localStorage.setItem('Trinity-Token',res.data.data.token)
                     getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail',
                     {
                         'Content-Type'    : 'application/json; charset=utf-8',
@@ -613,7 +614,7 @@ export default {
                             }
                         }else {
                             this.$Message.error({
-                                content : err.msg ? err.msg: '网络错误',
+                                content : err && err.msg ? err.msg: '网络错误',
                                 duration: 5,
                                 closable: true
                             });
@@ -758,7 +759,7 @@ export default {
     width: 100vw;
   .header{
     width           : 100vw;
-    height          : 60px;
+    height          : 6vh;
     background-color: #26303A;
     color           : #FFF;
     text-align      : center;
@@ -880,9 +881,14 @@ export default {
       flex-direction: row;
       position      : fixed;
       overflow      : auto;
-      top           : 60px;
+      top           : 6vh;
         .left-side-con {
-            width           : 50px;
+            @media screen and(min-width:800px) {
+              width : 5vw;
+            }
+            @media screen  and(max-width:800px){
+              width : 50px;
+            }
             height          : 100%;
             background-color: #08131E;
             text-align      : center;
@@ -895,16 +901,31 @@ export default {
                 // height:auto;
                 position: fixed;
                 top     : 45vh;
+                @media screen and(min-width:800px) {
+                  width : 3vw;
+                  margin : 0 1vw;
+                }
+                @media screen  and(max-width:800px){
+                  width : 40px;
+                  margin : 0 5px;
+                }
                 .item-con {
-                    width           : 40px;
-                    height          : 40px;
-                    border-radius   : 20px;
+                    @media screen and(min-width:800px) {
+                      width           : 3vw;
+                      height          : 3vw;
+                      border-radius   : 1.5vw;
+                    }
+                    @media screen  and(max-width:800px){
+                      width           : 40px;
+                      height          : 40px;
+                      border-radius   : 20px;
+                    }
                     margin          : 2vh 0;
                     background-color: #08131E;
                     display         : flex;
                     justify-content : center;
                     align-items     : center;
-                    transform       : translateY(-500%);
+                    transform       : translateY(-300%);
                     .inside-item {
                         width              : 24px;
                         height             : 24px;
@@ -955,15 +976,26 @@ export default {
         }
 
         .left-menu-con {
-            width           : 160px;
+            @media screen and(min-width:800px){
+              width           : 16vw;
+            }
+            @media screen and(max-width:799px){
+              width           : 160px;
+            }
             min-height      : 100vh;
             height          : 100%;
             background-color: #DEDEDE;
             text-align      : center;
             .menu-head {
-                width        : 160px !important;
-                height       : 60px;
-                line-height  : 60px;
+                // width        : 160px !important;
+                @media screen and(min-width:800px){
+                  width           : 16vw;
+                }
+                @media screen and(max-width:799px){
+                  width           : 160px;
+                }
+                height       : 6vh;
+                line-height  : 6vh;
                 text-align   : center;
                 font-size    : 12px;width: 48px;
                 font-size    : 12px;

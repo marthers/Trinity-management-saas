@@ -310,32 +310,32 @@ export default {
               //   return false
               // }
           }
-          
+
         console.log('baseConfig:')
         console.log(baseConfig);
         this.ifNotUuid();
         console.log(`this.rememberedPasswordIsChanged=${this.rememberedPasswordIsChanged}`)
         this.$axios.request({
-        url    : baseConfig.baseUrl.dev + 'user/sign_in_web_mobile_password',
-        method : 'post',
-        headers: {
-            'Content-Type'    : 'application/json; charset=utf-8',
-            'Trinity-Token'   : '',
-            'Request-Datatime': new Date().getTime()
-        },
-        data: {
-            'priority': '3',
-            'group'   : '',
-            'data'    : {
-            'phone'   : this.userName,
-            'password': !this.rememberedPasswordIsChanged ? md5(this.password) : this.password,
-            // 'new_password': md5(this.password),
-            'verify_code': '',
-            'captcha'    : this.graphValidateCodeShowForPasswordLogin ? this.graphCode        : '',
-            'device_id'  : localStorage.getItem('uuid') != null ? localStorage.getItem('uuid'): uuid(8,16),
-            'device_name': window.navigator.userAgent
-            }
-        }
+          url    : baseConfig.baseUrl.dev + 'user/sign_in_web_mobile_password',
+          method : 'post',
+          headers: {
+              'Content-Type'    : 'application/json; charset=utf-8',
+              'Trinity-Token'   : '',
+              'Request-Datatime': new Date().getTime()
+          },
+          data: {
+              'priority': '3',
+              'group'   : '',
+              'data'    : {
+              'phone'   : this.userName,
+              'password': !this.rememberedPasswordIsChanged ? md5(this.password) : this.password,
+              // 'new_password': md5(this.password),
+              'verify_code': '',
+              'captcha'    : this.graphValidateCodeShowForPasswordLogin ? this.graphCode        : '',
+              'device_id'  : localStorage.getItem('uuid') != null ? localStorage.getItem('uuid'): uuid(8,16),
+              'device_name': window.navigator.userAgent
+              }
+          }
         })
         .then(res => {
         console.log("login——res:");
@@ -640,6 +640,7 @@ export default {
                           name  : 'home',
                           params: resData
                         });
+                        debugger
                       }
                       else {
                         this.$Message.error({

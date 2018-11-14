@@ -256,6 +256,7 @@ export default {
                     console.log(user_info);
 
 
+                if(this.frontBase64Data.length > 0 && this.versoData.length > 0) {
                     UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
                         {
                             'priority': 5,
@@ -301,6 +302,15 @@ export default {
                     }).catch(err => {
                         console.log(err)
                     })
+                }
+                else {
+                    this.$Notice.error({
+                        title: '身份证照片缺失',
+                        desc : '身份证照片缺失'
+                    });
+                    return false
+                }
+
 
                 }
             }

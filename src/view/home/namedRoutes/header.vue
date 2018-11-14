@@ -60,120 +60,120 @@ export default {
 }
 <style lang="less" scoped>
 .header{
-width           : 100vw;
-height          : 60px;
-background-color: #26303A;
-color           : #FFF;
-text-align      : center;
-display         : flex;
-flex-direction  : row;
-align-items     : center;
-padding         : 0 30px;
-justify-content : space-between;
-position        : fixed;
-top             : 0;
-&-left {
-    font-size     : 20px;
-    display       : flex;
-    flex-direction: row;
-    align-items   : center;
-    &-logo{
-        width              : 55px;
-        height             : 55px;
-        background-image   : url('./../../assets/images/home/logo.png');
-        background-size    : contain;
-        background-position: center;
-        @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-            background-image: url('./../../assets/images/home/logo@2x.png');
-        }
-    }
-    &-slogan {
-        font-size: 28px;
-        color    : #FFF;
-        margin   : 16px;
-    }
-    &-dropdown {
-        width                     : 124px;
-        height                    : 36px;
-        border-top-left-radius    : 18px;
-        border-top-right-radius   : 18px;
-        border-bottom-left-radius : 18px;
-        border-bottom-right-radius: 18px;
-        background                : rgba(255,255,255,0.3);
-        color                     : #FFF;
-        font-size                 : 16px;
-        text-align                : center;
-        line-height               : 36px;
-    }
-}
-&-right{
-    color         : green;
-    display       : flex;
-    flex-direction: row;
-    align-items   : center;
-    &-search {
-        width                     : 240px !important;
-        height                    : 36px;
-        border-top-left-radius    : 18px;
-        border-top-right-radius   : 18px;
-        border-bottom-left-radius : 18px;
-        border-bottom-right-radius: 18px;
-        background                : rgba(255,255,255,0.3);
-        color                     : #FFF;
-        font-size                 : 16px;
-        text-align                : left;
-        text-indent               : 1em;
-        line-height               : 36px;
-        border                    : none;
-        //去掉边框颜色
-        outline: none;
-    }
-    &-line {
-        width           : 1px;
-        height          : 36px;
-        background-color: #D8D8D8;
-        margin          : 0 20px;
-    }
-    &-group {
-        display       : flex;
-        flex-direction: row;
-        cursor        : pointer;
-        &-icon {
-            width              : 18px;
-            height             : 20px;
-            background-image   : url('./../../assets/images/home/Group3.png');
-            background-size    : contain;
-            background-position: center;
-            @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                background-image: url('./../../assets/images/home/Group3@2x.png');
-            }
-        }
-        &-number {
-            background   : #B32436;
-            width        : 17px;
-            height       : 17px;
-            color        : #fff;
-            font-size    : 12px;
-            text-align   : center;
-            line-height  : 17px;
-            border-radius: 50%;
-            position     : relative;
-            left         : -10px;
-            bottom       : 2px;
-        }
-    }
-    &-Personal {
-        width              : 22px;
-        height             : 22px;
-        cursor             : pointer;
-        background-image   : url('./../../assets/images/home/Personal.png');
-        background-size    : contain;
-        background-position: center;
-        @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-            background-image: url('./../../assets/images/home/Personal@2x.png');
-        }
-    }
-}
+  width           : 100vw;
+  height          : .6rem;
+  background-color: #26303A;
+  color           : #FFF;
+  text-align      : center;
+  display         : flex;
+  flex-direction  : row;
+  align-items     : center;
+  padding         : 0 .3rem;
+  justify-content : space-between;
+  position        : fixed;
+  top             : 0;
+  &-left {
+      font-size     : .2rem;
+      display       : flex;
+      flex-direction: row;
+      align-items   : center;
+      &-logo{
+          width              : .55rem;
+          height             : .55rem;
+          background-image   : url('./../../assets/images/home/logo.png');
+          background-size    : contain;
+          background-position: center;
+          @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+              background-image: url('./../../assets/images/home/logo@2x.png');
+          }
+      }
+      &-slogan {
+          font-size: .28rem;
+          color    : #FFF;
+          margin   : .16rem;
+      }
+      &-dropdown {
+          width                     : 124px;
+          height                    : 36px;
+          border-top-left-radius    : 18px;
+          border-top-right-radius   : 18px;
+          border-bottom-left-radius : 18px;
+          border-bottom-right-radius: 18px;
+          background                : rgba(255,255,255,0.3);
+          color                     : #FFF;
+          font-size                 : 16px;
+          text-align                : center;
+          line-height               : 36px;
+      }
+  }
+  &-right{
+      color         : green;
+      display       : flex;
+      flex-direction: row;
+      align-items   : center;
+      &-search {
+          width                     : 240px !important;
+          height                    : 36px;
+          border-top-left-radius    : 18px;
+          border-top-right-radius   : 18px;
+          border-bottom-left-radius : 18px;
+          border-bottom-right-radius: 18px;
+          background                : rgba(255,255,255,0.3);
+          color                     : #FFF;
+          font-size                 : 16px;
+          text-align                : left;
+          text-indent               : 1em;
+          line-height               : 36px;
+          border                    : none;
+          //去掉边框颜色
+          outline: none;
+      }
+      &-line {
+          width           : 1px;
+          height          : 36px;
+          background-color: #D8D8D8;
+          margin          : 0 20px;
+      }
+      &-group {
+          display       : flex;
+          flex-direction: row;
+          cursor        : pointer;
+          &-icon {
+              width              : 18px;
+              height             : 20px;
+              background-image   : url('./../../assets/images/home/Group3.png');
+              background-size    : contain;
+              background-position: center;
+              @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                  background-image: url('./../../assets/images/home/Group3@2x.png');
+              }
+          }
+          &-number {
+              background   : #B32436;
+              width        : 17px;
+              height       : 17px;
+              color        : #fff;
+              font-size    : 12px;
+              text-align   : center;
+              line-height  : 17px;
+              border-radius: 50%;
+              position     : relative;
+              left         : -10px;
+              bottom       : 2px;
+          }
+      }
+      &-Personal {
+          width              : 22px;
+          height             : 22px;
+          cursor             : pointer;
+          background-image   : url('./../../assets/images/home/Personal.png');
+          background-size    : contain;
+          background-position: center;
+          @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+              background-image: url('./../../assets/images/home/Personal@2x.png');
+          }
+      }
+  }
 }
 </style>
 

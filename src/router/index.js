@@ -17,7 +17,7 @@ router.beforeEach((to,from,next) => {
       failedColor: '#f0ad4e',
       height     : 5
   });
-  if(localStorage.getItem('Trinity-Token') != null) {
+  if(localStorage.getItem('Trinity-Token') != null && localStorage.getItem('Trinity-Token').indexOf('undefined') < 0) {
     //当前已登录
     console.log('当前已登录')
     if(to.name == LOGIN_PAGE_NAME) {

@@ -52,7 +52,7 @@ class HttpRequest {
       // console.log(config)
       config.headers= {
         'Content-Type'    : 'application/json; charset=utf-8',
-        'Trinity-Token'   : localStorage.getItem('Trinity-Token') != null ? localStorage.getItem('Trinity-Token'): uuid(8,16),
+        'Trinity-Token'   : localStorage.getItem('Trinity-Token') != null && localStorage.getItem('Trinity-Token') ? localStorage.getItem('Trinity-Token'): uuid(8,16),
         'Request-Datatime': new Date().getTime()
       };
       return config
