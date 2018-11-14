@@ -14,3 +14,10 @@ export const getOrgDetail = (url,headers) => {
     method : 'post'
   })
 }
+export const getUserDetail = (url) => {
+  return axios.request({
+    url : url,
+    // headers : headers,
+    method : 'post'
+  })
+}

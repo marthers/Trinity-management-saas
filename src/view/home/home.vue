@@ -108,7 +108,10 @@ import CreatePerson from '@/view/noData/create/CreatePerson';
 import CreateMerchant from '@/view/noData/create/CreateMerchant';
 import CreateLegal from '@/view/noData/create/CreateLegal';
 import JoinInOrg from '@/components/JoinInOrg';
-import {getOrgDetail} from '@/api/login.js';
+import {
+  getOrgDetail,
+  getUserDetail
+  } from '@/api/login.js';
 export default {
     data() {
         return {
@@ -546,11 +549,11 @@ export default {
             this.createLegalShow        = false;
         },
         submitCreate (legalData) {
-                            this.NoDataIndexShow        = true;
-                            this.createPersonalInfoShow = false;
-                            this.createMerchantInfoShow = false;
-                            this.createLegalShow        = false;
-                        let reqData                     = {
+            this.NoDataIndexShow        = true;
+            this.createPersonalInfoShow = false;
+            this.createMerchantInfoShow = false;
+            this.createLegalShow        = false;
+            let reqData                     = {
                 'is_select_me'           : legalData.is_select_me,
                 'logo'                   : this.merchantData.logoBase64Data,
                 'organization_name'      : this.merchantData.corpName,
@@ -591,51 +594,125 @@ export default {
                 console.log(res)
                 if(res.status&& res.status == 200) {
                   // debugger
-                    console.log(res.data)
-                    // localStorage.setItem('Trinity-Token',res.data.data.token)
-                    getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail',
-                    {
-                        'Content-Type'    : 'application/json; charset=utf-8',
-                        'Trinity-Token'   : res.data.data.token,
-                        'Request-Datatime': new Date().getTime()
-                    })
-                    .then (res => {
-                        console.log(res);
-                        if(res.status && res.status == 200) {
-                        // debugger
-                        if(res.data.success && res.data.code == 0) {
-                            if(res.data.data) {
-                            // debugger;
-                            let data = res.data.data;
-                            // for(let item in data) {
-                            localStorage.setItem('org_detail_obj' , JSON.stringify(data))
-                            // }
-                            // debugger
+                    console.log(res.data);
+                    Promise.all([getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                    getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')])
+                    .then((result) => {
+                      console.log(result);
+                      if(result && result.length == 2) {
+
+                        let detailResArr = ['org','user']
+                        result.forEach((item,index) => {
+                            if(item.status && item.status == 200 && item.data.success && item.data.code == 0) {
+                              // detailResArr.push(item.data.data)
+                              // debugger
+                              // localStorage.setItem(detailResArr[index] + '_detail_obj' , JSON.stringify(item))
                             }
-                        }else {
-                            this.$Message.error({
-                                content : err && err.msg ? err.msg: '网络错误',
-                                duration: 5,
-                                closable: true
-                            });
-                        }
-                        }
-                        else {
-                        this.$Message.error({
-                            content : err.msg ? err.msg: '网络错误',
-                            duration: 5,
-                            closable: true
+                            else {
+                              this.$Message.error({
+                                  content : '网络错误',
+                                  duration: 5,
+                                  closable: true
+                              });
+                            }
                         });
-                        }
+                        console.log("detailResArr:")
+                        console.log(detailResArr);
+                        // localStorage.setItem('org_detail_obj' , JSON.stringify(detailResArr[0]))
+                      }
+                    }).catch((err) => {
+                      console.log(err)
+                      this.$Message.error({
+                          content : err.msg ? err.msg: '网络错误',
+                          duration: 5,
+                          closable: true
+                      });
                     })
-                    .catch(err => {
-                    console.log(err)
-                    this.$Message.error({
-                        content : err.msg ? err.msg: '网络错误',
-                        duration: 5,
-                        closable: true
-                    });
-                    })
+                    // localStorage.setItem('Trinity-Token',res.data.data.token)
+                    // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail',
+                    // {
+                    //     'Content-Type'    : 'application/json; charset=utf-8',
+                    //     'Trinity-Token'   : localStorage.getItem('Trinity-Token'),
+                    //     'Request-Datatime': new Date().getTime()
+                    // })
+                    // .then (res => {
+                    //     console.log(res);
+                    //     if(res.status && res.status == 200) {
+                    //     // debugger
+                    //     if(res.data.success && res.data.code == 0) {
+                    //         if(res.data.data) {
+                    //         // debugger;
+                    //         let data = res.data.data;
+                    //         // for(let item in data) {
+                    //         localStorage.setItem('org_detail_obj' , JSON.stringify(data))
+                    //         // }
+                    //         // debugger
+                    //         }
+                    //     }else {
+                    //         this.$Message.error({
+                    //             content : err && err.msg ? err.msg: '网络错误',
+                    //             duration: 5,
+                    //             closable: true
+                    //         });
+                    //     }
+                    //     }
+                    //     else {
+                    //     this.$Message.error({
+                    //         content : err.msg ? err.msg: '网络错误',
+                    //         duration: 5,
+                    //         closable: true
+                    //     });
+                    //     }
+                    // })
+                    // .catch(err => {
+                    //   console.log(err)
+                    //   this.$Message.error({
+                    //       content : err.msg ? err.msg: '网络错误',
+                    //       duration: 5,
+                    //       closable: true
+                    //   });
+                    // });
+                    // //getUserDetail
+                    // getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                    // .then (res => {
+                    //     console.log('getUserDetail_res:')
+                    //     console.log(res);
+                    //     if(res.status && res.status == 200) {
+                    //       // debugger
+                    //       if(res.data.success && res.data.code == 0) {
+                    //           if(res.data.data) {
+                    //           // debugger;
+                    //           let data = res.data.data;
+                    //           // for(let item in data) {
+                    //           localStorage.setItem('user_detail_obj' , JSON.stringify(data))
+                    //           // }
+                    //           // debugger
+                    //           }
+                    //       }else {
+                    //           this.$Message.error({
+                    //               content : err && err.msg ? err.msg: '网络错误',
+                    //               duration: 5,
+                    //               closable: true
+                    //           });
+                    //       }
+                    //     }
+                    //     else {
+                    //       this.$Message.error({
+                    //           content : err.msg ? err.msg: '网络错误',
+                    //           duration: 5,
+                    //           closable: true
+                    //       });
+                    //     }
+                    // })
+                    // .catch(err => {
+                    //   console.log(err)
+                    //   this.$Message.error({
+                    //       content : err.msg ? err.msg: '网络错误',
+                    //       duration: 5,
+                    //       closable: true
+                    //   });
+                    // });
+
                 }else {
                     this.$Message.error({
                         content : res.msg ? res.msg: '网络异常，请联系管理员及时处理',
@@ -715,7 +792,7 @@ export default {
         console.log(this.$route);
         // console.log(this)
         console.log(this.$attrs);
-        console.log(this.$listeners)
+        console.log(this.$listeners);
     }
 }
 </script>
