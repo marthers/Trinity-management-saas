@@ -110,6 +110,7 @@ export default {
         console.log('undo_user_organization_res：')
         console.log(res)
         if(res.status && res.status == 200) {
+          // debugger
           if(res.data.code == 201) {
               Promise.all(
                 [
@@ -171,6 +172,7 @@ export default {
           }
         }
         else {
+          // debugger
             this.$Message.error({
                 content : '网络异常，请联系管理员及时处理',
                 duration: 5,

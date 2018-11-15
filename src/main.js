@@ -35,6 +35,7 @@ console.log(iView)
 import VueScroller from 'vue-scroller'
 Vue.use(VueScroller)
 Vue.use(iView);
+Vue.prototype.$LoadingBar = iView.LoadingBar
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
 import 'iview/dist/styles/iview.css'

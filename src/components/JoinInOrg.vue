@@ -51,7 +51,7 @@ import {
   export default {
     data() {
       return {
-            title : '',
+            // title : '',
             onlyChooseOrg : false,
             selectedIndex : -1,
             searchContent : '',
@@ -79,6 +79,14 @@ import {
         total_pages : {
             type : Number,
             default : 10000
+        },
+        // ifPerson : {
+        //   type : Boolean,
+        //   default : false
+        // }
+        title : {
+          type : String,
+          default : '选择加盟商户'
         }
     },
     methods: {
@@ -241,7 +249,15 @@ import {
             console.log(`this.selectedIndex=${this.selectedIndex}`);
             console.log(this.orgList)
             if(this.selectedIndex != -1) {
-                this.$emit('superior-selected',this.orgList[this.selectedIndex]);
+              let obj = this.orgList[this.selectedIndex];
+              if(localStorage.getItem('ifPerson') != null && localStorage.getItem('ifPerson') != undefined) {
+                  obj.ifPerson = localStorage.getItem('ifPerson')
+              }
+              else {
+                  obj.ifPerson = false;
+              }
+                // this.$emit('superior-selected',this.orgList[this.selectedIndex]);
+                this.$emit('superior-selected',obj);
             }
             this.selectedIndex = -1;
             this.searchContent = '';
@@ -255,12 +271,12 @@ import {
         // console.log(`baseUrl=${baseUrl}`)
     },
     mounted() {
-        this.onlyChooseOrg = true;
-        if(this.onlyChooseOrg) {
-            this.title = '选择加盟商户（平台和大商户）'
-        }else{
-            this.title = '选择加入商户（平台、大商户、商户所有'
-        };
+        // this.onlyChooseOrg = true;
+        // if(this.onlyChooseOrg) {
+        //     this.title = '选择加盟商户（平台和大商户）'
+        // }else{
+        //     this.title = '选择加入商户（平台、大商户、商户所有)'
+        // };
     }
   }
 </script>

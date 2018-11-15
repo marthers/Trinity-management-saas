@@ -410,10 +410,12 @@ export default {
                 this.NoDataIndexShow        = false;
                 this.createPersonalInfoShow = true;
                 this.createShow             = true;
+                localStorage.setItem('ifPerson',0);
             }else {
                 this.createShow = false
                 this.NoDataIndexShow        = false;
                 this.createPersonalInfoShow = true;
+                localStorage.setItem('ifPerson',1)
             }
         },
         chooseOrgBack() {
@@ -702,6 +704,8 @@ export default {
         this.fidOrg = localStorage.getItem('fid_organization')
     },
     mounted() {
+      console.log("this.$LoadingBar:")
+      console.log(this.$LoadingBar)
     }
 }
 </script>

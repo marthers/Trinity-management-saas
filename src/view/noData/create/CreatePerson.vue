@@ -48,17 +48,17 @@
                     </img-upload>
                 </div>
             </div>
-            <div class = "first" v-if= "!createShow">
+            <!-- <div class = "first" v-if= "!createShow">
                 <span v-show = "selectedMerchant.organizationName && selectedMerchant.organizationName.length > 0" class = "chosen-org">
                     您已经选择{{selectedMerchant.organizationName}}。
                 </span>
                 <span v-show = "!selectedMerchant.organizationName">请选择您要加入的上级商户。</span>
                 <span class = "choose" @click = "chooseUpper">点此选择您的上级商户</span>
-            </div>
+            </div> -->
             <footer>
                 <div class = "back" @click.stop.prevent = "backToIndex">返回</div>
                 <div class = "next" @click.stop.prevent = "toMerchant" v-if = "createShow">下一步：商户信息</div>
-                <div class = "next"   @click.stop.prevent = "joinOrg" v-else>确定</div>
+                <div class = "next"   @click.stop.prevent = "joinOrgNext" v-else>下一步</div>
             </footer>
         </div>
         <Modal
@@ -71,6 +71,7 @@
             <join-in-org
                 :JoinInOrgShow       = "selectOrgShow"
                 :orgList.sync        = "orgList"
+                :title = "joinInOrgTitle"
                   @chooseOrgBack     = "chooseOrgBack"
                 :total_pages         = "total_pages"
                   @superior-selected = "superiorSelected" ></join-in-org>
@@ -93,7 +94,7 @@ import {getOrgList} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
 const baseUrl = baseConfig.baseUrl.localOrgHost;
 import {
-  // getOrgDetail,
+  getOrgDetail,
   getUserDetail
   } from '@/api/login.js';
 export default {
@@ -119,6 +120,7 @@ export default {
             selectOrgShow      : false,
             orgList            : [],
             total_pages        : 1000,
+            joinInOrgTitle : '选择加入商户（平台、大商户、商户所有)'
         }
     },
     methods : {
@@ -151,6 +153,23 @@ export default {
                                     return false
                                 }else {
                                     if(this.frontBase64Data.length > 0 && this.versoData.length > 0) {
+                                      let user_info = {
+                                          'ident_name': this.userName,
+                                          'ident_num' : this.IDNumber,
+                                      }
+                                      if(this.frontBase64Data.indexOf('base64') > 0) {
+                                        user_info.ident_up = this.frontBase64Data
+                                      }
+                                      else {
+                                          delete user_info.ident_up
+                                          console.log(this.frontBase64Data)
+                                      }
+                                      if(this.versoData.indexOf('base64') > 0) {
+                                        user_info.ident_down = this.versoData
+                                      }
+                                      else {
+                                          delete user_info.ident_down
+                                      }
                                         UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
                                             {
                                                 'priority': 5,
@@ -159,12 +178,7 @@ export default {
                                                     // 'edit_mode'  : this.isEdit ? 0: 1,
                                                     'edit_mode'  : 0,
                                                     'need_verify': 1,
-                                                    'user_info'  : {
-                                                        'ident_name': this.userName,
-                                                        'ident_num' : this.IDNumber,
-                                                        'ident_up'  : this.frontBase64Data,
-                                                        'ident_down': this.versoData
-                                                    }
+                                                    'user_info'  : user_info
                                                 }
                                             }
                                         )
@@ -252,10 +266,22 @@ export default {
                         }
                     }
                     if(this.frontBase64Data.length != 0) {
-                        user_info.ident_up = this.frontBase64Data
+                                      if(this.frontBase64Data.indexOf('base64') > 0) {
+                                        user_info.ident_up = this.frontBase64Data
+                                      }
+                                      else {
+                                          delete user_info.ident_up
+                                      }
+                        // user_info.ident_up = this.frontBase64Data.indexOf('base64') > 0 ? this.frontBase64Data : ''
                     }
                     if(this.versoData.length != 0) {
-                        user_info.ident_down = this.versoData
+                        // user_info.ident_down = this.versoData.indexOf('base64') > 0 ? this.versoData : ''
+                        if(this.versoData.indexOf('base64') > 0) {
+                          user_info.ident_down = this.versoData
+                        }
+                        else {
+                            delete user_info.ident_down
+                        }
                     };
                     console.log("user_info:");
                     console.log(user_info);
@@ -335,7 +361,7 @@ export default {
         },
         frontBase64(base64) {
             console.log('frontBase64:')
-            // console.log(base64);
+            console.log(base64);
             this.frontBase64Data = base64
         },
         deleteFront () {
@@ -352,7 +378,7 @@ export default {
         },
         versoBase64(base64) {
             console.log('versoBase64:')
-            // console.log(base64);
+            console.log(base64);
             this.versoData = base64
         },
         //选择上级商户
@@ -361,18 +387,19 @@ export default {
             // // this.$emit('merchant-select-upper')
             this.$nextTick(() => {
                 getOrgList(baseUrl + '/trinity-backstage/organization/list',
-                {
-                    'priority': 5,
-                    'id_organization'   : 0,
-                    'data'    : {
-                        'page_index': 1,
-                        'page_size' : 20,
-                        // "filters"   : [
-                        //     {"key":"idOrganization","operator":"=","value":1,"join":"or"},
-                        //     {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"}
-                        // ]
-                    }
-                })
+                  {
+                      'priority': 5,
+                      'id_organization'   : 0,
+                      'data'    : {
+                          'page_index': 1,
+                          'page_size' : 20,
+                          // "filters"   : [
+                          //     {"key":"idOrganization","operator":"=","value":1,"join":"or"},
+                          //     {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"}
+                          // ]
+                      }
+                  }
+                )
                 .then(res => {
                     console.log(res)
                     if(res.status && res.status == 200 && res.data.code == 0) {
@@ -403,9 +430,33 @@ export default {
                 })
             })
         },
-        joinOrg() {
-          if(this.selectedMerchant.organizationName && this.selectedMerchant.organizationName.length > 0) {
+        joinOrgNext() {
+          // if(this.selectedMerchant.organizationName && this.selectedMerchant.organizationName.length > 0) {
+          // }
+          // else {
+          //     this.$Message.warning({
+          //         content : '请选择上级！',
+          //         duration: 5,
+          //         closable: true
+          //     })
+          // }
               if(this.frontBase64Data.length > 0 && this.versoData.length > 0 && this.userName.length > 0 && this.IDNumber > 0) {
+                                      let user_info = {
+                                          'ident_name': this.userName,
+                                          'ident_num' : this.IDNumber,
+                                      }
+                                      if(this.frontBase64Data.indexOf('base64') > 0) {
+                                        user_info.ident_up = this.frontBase64Data
+                                      }
+                                      else {
+                                          delete user_info.ident_up
+                                      }
+                                      if(this.versoData.indexOf('base64') > 0) {
+                                        user_info.ident_down = this.versoData
+                                      }
+                                      else {
+                                          delete user_info.ident_down
+                                      }
                   UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
                       {
                           'priority': 5,
@@ -414,12 +465,7 @@ export default {
                               // 'edit_mode'  : this.isEdit ? 0: 1,
                               'edit_mode'  : 0,
                               'need_verify': 1,
-                              'user_info'  : {
-                                  'ident_name': this.userName,
-                                  'ident_num' : this.IDNumber,
-                                  'ident_up'  : this.frontBase64Data,
-                                  'ident_down': this.versoData
-                              }
+                              'user_info'  : user_info
                           }
                       }
                   )
@@ -442,29 +488,7 @@ export default {
                               }
                               else if(code == 0) {
                                   // this.$emit('createPersonSuccess',res.data.user_info);
-                                  debugger
-                                  joinOrg(
-                                    baseUrl + '/trinity-backstage/user/join_organization',
-                                    {
-                                      'priority': 5,
-                                      'id_organization'   : 0,
-                                      'user_info' : {
-                                        'fid_organization' : this.selectedMerchant.id_organization
-                                      }
-                                    })
-                                  .then(res => {
-                                      debugger
-                                      console.log(res)
-                                      debugger
-                                  })
-                                  .catch(err => {
-                                      console.log(err)
-                                      this.$Message.error({
-                                          content : '网络异常，请联系管理员及时处理',
-                                          duration: 5,
-                                          closable: true
-                                      })
-                                  })
+                                  this.chooseUpper()
                               }
                           }
                       }else {
@@ -492,24 +516,131 @@ export default {
                   });
                   return false
               }
-          }
-          else {
-              this.$Message.warning({
-                  content : '请选择上级！',
-                  duration: 5,
-                  closable: true
-              })
-          }
         },
         superiorSelected(selectedSuperior){
             console.log("selectedSuperior:");
             console.log(selectedSuperior);
+            if(selectedSuperior.ifPerson && selectedSuperior.ifPerson == 1) {
+                joinOrg(
+                  baseUrl + '/trinity-backstage/user/join_organization',
+                  {
+                    'priority': 5,
+                    'id_organization'   : 0,
+                    'data' : {
+                      'user_info' : {
+                        'fid_organization' : selectedSuperior.id_organization
+                      }
+                    }
+                  })
+                .then(res => {
+                  if(res.status == 200 && res.data.code == 0) {
+
+
+
+                    Promise.all(
+                      [
+                        getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                        getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                      ]
+                    )
+                    // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
+                    .then((result) => {
+                      console.log(result);
+                      if(result && result.length == 2) {
+                        localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                        localStorage.setItem('user_verified',result[1].data.data.verified)
+                        localStorage.setItem('org_verified',result[0].data.data.verified)
+                        // // if(result.status && result.status == 200 && result.data.success) {
+                        // //   localStorage.setItem('org_verified',result.data.data.verified);
+                        // this.NoDataIndexShow = false
+                        if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                          //跳转到商户信息
+                            this.$Notice.success({
+                                title: '跳转到商户信息',
+                                desc: '跳转到商户信息'
+                            });
+                        }
+                        else {
+                          if(result[0].data.data.verified == 1) {
+                            // 员工加入审核中
+                            this.$Notice.info({
+                                title: '员工加入审核中',
+                                desc: '员工加入审核中'
+                            });
+                          }
+                          else {
+                            //商户加盟审核中
+                            this.$Notice.info({
+                                title: '商户加盟审核中',
+                                desc: '商户加盟审核中'
+                            });
+                          }
+                        }
+                        this.$router.push({
+                          name : 'userReview'
+                        })
+                        // }
+                        // let detailResArr = ['org','user']
+                        // result.forEach((item,index) => {
+                        //     if(item.status && item.status == 200 && item.data.success && item.data.code == 0) {
+                        //       // detailResArr.push(item.data.data)
+                        //       debugger
+                        //       // console.log(item.data.data.verified)
+                        //       debugger
+                        //       // localStorage.setItem(detailResArr[index] + '_detail_obj' , JSON.stringify(item))
+                        //     }
+                        //     else {
+                        //       this.$Message.error({
+                        //           content : '网络错误',
+                        //           duration: 5,
+                        //           closable: true
+                        //       });
+                        //     }
+                        // });
+                        // console.log("detailResArr:")
+                        // console.log(detailResArr);
+                        // localStorage.setItem('org_detail_obj' , JSON.stringify(detailResArr[0]))
+                      }
+                    }).catch((err) => {
+                      console.log(err)
+                      this.$Message.error({
+                          content : err.msg ? err.msg: '网络错误',
+                          duration: 5,
+                          closable: true
+                      });
+                    })
+
+
+                  }
+                  else{
+                    this.$Message.error({
+                        content : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                  }
+                    // debugger
+                    // console.log(res);
+                    // this.$router.push({
+                    //   name : 'userReview'
+                    // })
+                    // debugger
+                })
+                .catch(err => {
+                    console.log(err)
+                    this.$Message.error({
+                        content : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                })
+            }
             this.selectedMerchant = selectedSuperior;
             this.$emit('selectedSuperior',selectedSuperior)
         },
     },
     created() {
-
+              this.$LoadingBar.start();
 
                     //getUserDetail
                     getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
@@ -517,10 +648,8 @@ export default {
                         console.log('getUserDetail_res:')
                         console.log(res);
                         if(res.status && res.status == 200) {
-                          // debugger
                           if(res.data.success && res.data.code == 0) {
                               if(res.data.data) {
-                                // debugger;
                                 let data = res.data.data;
                                 console.log(data)
                                 //姓名
@@ -552,7 +681,6 @@ export default {
                                   this.indentImgUp =peffixUrl + data.ident_up;
                                   this.frontBase64Data = data.ident_up
                                   this.beforeHasDataUp = true
-                                  // debugger
                                 }
                                 else {
                                   this.indentImgUp = '';
@@ -566,7 +694,6 @@ export default {
                                   this.versoData = data.ident_down
                                 }
                                 else {
-                                  // debugger
                                   this.beforeHasData = false
                                   this.indentImg            = '';
                                   this.versoData = ''
@@ -577,7 +704,6 @@ export default {
                                 if(data.verified) {
                                   localStorage.setItem('user_verified',data.verified)
                                 }
-                                // debugger
                               }
                           }else {
                               this.$Message.error({
@@ -593,7 +719,9 @@ export default {
                               duration: 5,
                               closable: true
                           });
+                          this.$LoadingBar.error()
                         }
+                        this.$LoadingBar.finish()
                     })
                     .catch(err => {
                       console.log(err)
@@ -602,42 +730,8 @@ export default {
                           duration: 5,
                           closable: true
                       });
+                      this.$LoadingBar.error()
                     });
-
-
-
-        // if(localStorage.getItem('ident_name') != null && localStorage.getItem('ident_name').length >  0) {
-        //     this.userNamePlaceholder = localStorage.getItem('ident_name');
-        //     this.userName            = localStorage.getItem('ident_name');
-        // }else {
-        //     this.userNamePlaceholder = '请输入真实姓名'
-        //     this.userName            = ''
-        // }
-
-        // if(localStorage.getItem('ident_num') != null && localStorage.getItem('ident_num').length >  0) {
-        //     this.IDPlaceholder = localStorage.getItem('ident_num');
-        //     this.IDNumber      = localStorage.getItem('ident_num');
-        // }else {
-        //     this.IDPlaceholder = '请输入身份证号码';
-        //     this.IDNumber      = ''
-        // }
-
-        // if(localStorage.getItem('ident_down') != null && localStorage.getItem('ident_down').length >  0) {
-        //     this.beforeHasData = true;
-        //     this.indentImg     = localStorage.getItem('ident_down');
-
-        // }else {
-        //     this.beforeHasData = false;
-        //     this.indentImg     = ''
-        // }
-
-        // if(localStorage.getItem('ident_up') != null && localStorage.getItem('ident_up').length >  0) {
-        //     this.beforeHasDataUp = true;
-        //     this.indentImgUp     = localStorage.getItem('ident_up')
-        // }else {
-        //     this.beforeHasDataUp = false;
-        //     this.indentImgUp     = ''
-        // }
     },
     props : {
         createShow : {

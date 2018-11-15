@@ -55,6 +55,7 @@
                 :orgList.sync        = "orgList"
                   @chooseOrgBack     = "chooseOrgBack"
                 :total_pages         = "total_pages"
+                :title = "title"
                   @superior-selected = "superiorSelected" ></join-in-org>
         </Modal>
     </div>
@@ -93,6 +94,7 @@ export default {
             page_index      : 1,
             page_size       : 20,
             total_pages     : 1000,
+            title : '选择加盟商户（平台和大商户)' //
             // content : '',
             // customToolbar: [
             //     ["bold", "italic", "underline"],
