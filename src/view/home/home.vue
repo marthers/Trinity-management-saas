@@ -72,15 +72,15 @@
                     <!-- <h2>User {{ $route.params.id }}</h2> -->
                     <router-view></router-view>
                     <!-- <router-view class="view" :name="contentRouterView"></router-view> -->
-                    <no-data-index @two-clicked = "twoClicked" v-if = "NoDataIndexShow && fidOrg == 0"></no-data-index>
+                    <no-data-index @two-clicked = "twoClicked" v-if = "NoDataIndexShow"></no-data-index>
                     <!-- <no-data-index @two-clicked = "twoClicked" v-if = "$route.meta.showName == 'NoDataIndex'"></no-data-index> -->
 
-                    <create-person  v-if = "createPersonalInfoShow && fidOrg == 0" @person-back = "personBack" @person-forward = "personForword" @createPersonSuccess = "createPersonSuccess" :createShow = "createShow"></create-person>
+                    <create-person  v-if = "createPersonalInfoShow" @person-back = "personBack" @person-forward = "personForword" @createPersonSuccess = "createPersonSuccess" :createShow = "createShow"></create-person>
                     <!-- <create-person v-if = "$route.meta.showName != 'NoDataIndex'" @person-back = "personBack" @person-forward = "personForword" @createPersonSuccess = "createPersonSuccess"></create-person> -->
 
-                    <create-merchant  v-if = "createMerchantInfoShow && fidOrg == 0" @back-to-person = "merchantBack" @to-legal = "toLegal" @merchant-select-upper = "merchantSelectUpper" @selectedSuperior = "selectedSuperiorMethod"></create-merchant>
+                    <create-merchant  v-if = "createMerchantInfoShow" @back-to-person = "merchantBack" @to-legal = "toLegal" @merchant-select-upper = "merchantSelectUpper" @selectedSuperior = "selectedSuperiorMethod"></create-merchant>
 
-                    <create-legal  v-if = "createLegalShow && fidOrg == 0" @back-to-merchant = "legalBack" @submit-create = "submitCreate"></create-legal>
+                    <create-legal  v-if = "createLegalShow" @back-to-merchant = "legalBack" @submit-create = "submitCreate"></create-legal>
 
                     <!-- <join-in-org :JoinInOrgShow = "JoinInOrgShow" @chooseOrgBack = "chooseOrgBack"></join-in-org> -->
                 </div>
@@ -388,104 +388,13 @@ export default {
             })
         },
         titleClicked(index) {
-            //    let target = ev.target.innerText || ev.srcElement.innerText;
             console.log(`this.menuList[index].clicked=${this.menuList[index].clicked}`)
-            // let val = ++this.menuList[index].clicked;
             let item = this.menuList[index];
             console.log(`item=${item}`)
             ++item.clicked
             this.menuList.splice(index,1,item)
             console.log(`index=${index}`);
             console.log(`item=${item}`)
-            //    this.menuList.forEach((item,index) => {
-            //        if(item.menuTitle == target) {
-            //         //    debugger
-            //         //    ++item.clicked
-            //            this.splice(this.menuList[index].clicked,1,++this.menuList[index].clicked)
-            //             // switch (target) {
-            //             //     case '概况':
-            //             //             ++this.count;
-            //             //             if(this.count%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //     case '订单管理':
-            //             //             ++this.orderCount;
-            //             //             if(this.orderCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //     case '结算管理':
-            //             //             ++this.settleCount;
-            //             //             if(this.settleCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //     case '会员管理':
-            //             //             ++this.memberCount;
-            //             //             if(this.memberCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //     case '商品管理':
-            //             //             ++this.goodsCount;
-            //             //             if(this.goodsCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //             console.log('商品管理this.menuList:');
-            //             //             console.log(this.menuList);
-            //             //     case '点位管理':
-            //             //             ++this.pointCount;
-            //             //             if(this.pointCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //             console.log('点位管理this.menuList:');
-            //             //             console.log(this.menuList);
-            //             //     case '设备管理':
-            //             //             ++this.deviceCount;
-            //             //             if(this.deviceCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //     case '活动管理':
-            //             //             ++this.activityCount;
-            //             //             if(this.activityCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //             console.log('活动管理this.menuList:');
-            //             //             console.log(this.menuList);
-            //             //     case '数据分析':
-            //             //             ++this.dataCount;
-            //             //             if(this.dataCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             //         default :  //系统设置
-            //             //             ++this.systemCount;
-            //             //             if(this.systemCount%2 >0) {
-            //             //                 this.menuList[index].clicked = true
-            //             //             }else {
-            //             //                 this.menuList[index].clicked = false
-            //             //             };
-            //             // }
-            //        }
-            //     //    else {
-            //     //        item.click = item.clicked;
-            //     //    }
-            //    })
-            //    this.menuList = Object.assign([],this.menuList)
         },
         orderTitleClicked() {
             ++this.orderCount;
@@ -500,17 +409,9 @@ export default {
             if(type === 'create') {
                 this.NoDataIndexShow        = false;
                 this.createPersonalInfoShow = true;
-                this.createShow             = true
-                // localStorage.setItem('create',true)
-                // this.$route.meta.showName = 'CreatePerson'
+                this.createShow             = true;
             }else {
                 this.createShow = false
-                // localStorage.setItem('create',false)
-                // this.JoinInOrgShow = true;
-                // this.NoDataIndexShow = false;
-                // this.createPersonalInfoShow = false;
-                // this.createMerchantInfoShow = false;
-                // this.createLegalShow        = false;
                 this.NoDataIndexShow        = false;
                 this.createPersonalInfoShow = true;
             }
@@ -583,7 +484,7 @@ export default {
             orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
                 {
                     'priority': 5,
-                    'group'   : 0,
+                    'id_organization'   : 0,
                     'data'    : {
                         'edit_mode'        : 0,
                         'organization_info': reqData
@@ -634,6 +535,9 @@ export default {
                             });
                           }
                         }
+                        this.$router.push({
+                          name : 'userReview'
+                        })
                         // }
                         // let detailResArr = ['org','user']
                         // result.forEach((item,index) => {
@@ -708,7 +612,8 @@ export default {
     },
     created () {
         console.log(this.$route.matched);
-        if(localStorage.getItem('fid_organization') == 0) {
+        this.$route.query.NoDataIndexShow = true
+        if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
             this.NoDataIndexShow = true
         }else {
             this.NoDataIndexShow = false;
@@ -716,49 +621,50 @@ export default {
             .then (res => {
                 console.log(res);
                 if(res.status && res.status == 200) {
-                // debugger
-                if(res.data.success && res.data.code == 0) {
-                    if(res.data.data) {
-                      // debugger;
-                      let data = res.data.data;
-                      if(data.verified) {
-                        localStorage.setItem('org_verified' , data.verified);
-                        if(data.verified == 1 && localStorage.getItem('user_verified') == 1) {
-                          //跳转到商户信息
-                            this.$Notice.success({
-                                title: '跳转到商户信息',
-                                desc: '跳转到商户信息'
-                            });
-                        }
-                        else {
-                          if(data.verified == 1) {
-                            // 员工加入审核中
-                            this.$Notice.info({
-                                title: '员工加入审核中',
-                                desc: '员工加入审核中'
-                            });
-                          }
-                          else {
-                            //商户加盟审核中
-                            this.$Notice.info({
-                                title: '商户加盟审核中',
-                                desc: '商户加盟审核中'
-                            });
-                          }
-                        }
-                        this.$router.push({
-                          name : 'userReview'
-                        })
-                      }
                     // debugger
+                    if(res.data.success && res.data.code == 0) {
+                        if(res.data.data) {
+                          // debugger;
+                          let data = res.data.data;
+                          if(data.verified) {
+                            localStorage.setItem('org_verified' , data.verified);
+                            if(data.verified == 1 && localStorage.getItem('user_verified') == 1) {
+                              //跳转到商户信息
+                                this.$Notice.success({
+                                    title: '跳转到商户信息',
+                                    desc: '跳转到商户信息'
+                                });
+                            }
+                            else {
+                              if(data.verified == 1) {
+                                // 员工加入审核中
+                                this.$Notice.info({
+                                    title: '员工加入审核中',
+                                    desc: '员工加入审核中'
+                                });
+                              }
+                              else {
+                                //商户加盟审核中
+                                this.$Notice.info({
+                                    title: '商户加盟审核中',
+                                    desc: '商户加盟审核中'
+                                });
+                              }
+                            }
+                            this.$router.push({
+                              name : 'userReview'
+                            })
+                          }
+                        // debugger
+                        }
                     }
-                }else {
-                    this.$Message.error({
-                        content : err && err.msg ? err.msg: '网络错误',
-                        duration: 5,
-                        closable: true
-                    });
-                }
+                    // else {
+                    //     this.$Message.error({
+                    //         content : '网络错误',
+                    //         duration: 5,
+                    //         closable: true
+                    //     });
+                    // }
                 }
                 else {
                 this.$Message.error({

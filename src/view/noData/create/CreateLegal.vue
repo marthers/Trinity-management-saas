@@ -25,11 +25,11 @@
                     <div class = "img-not-uploaded-box" v-if = "disabled" :style = "{backgroundImage : 'url(' + frontBase64Data + ')'}">
                         <!-- <div class = "img-not-uploaded"></div> -->
                     </div>
-                    <img-upload 
+                    <img-upload
                         v-else
-                        @base64   = "frontBase64" 
-                        @deleteBase64 = "deleteFront" 
-                        :modalTitle = "frontModalTitle" 
+                        @base64   = "frontBase64"
+                        @deleteBase64 = "deleteFront"
+                        :modalTitle = "frontModalTitle"
                         :uploadId   = "frontUploadId"
                         :beforeHasData = "beforeHasDataUp"
                         :indentImg = 'indentImgUp'></img-upload>
@@ -44,11 +44,11 @@
                     <div class = "img-not-uploaded-box" v-if = "disabled" :style = "{backgroundImage : 'url(' + versoLegalBase64Data + ')'}">
                         <!-- <div class = "img-not-uploaded"></div> -->
                     </div>
-                    <img-upload 
+                    <img-upload
                         v-else
-                        @base64   = "versoLegalBase64" 
-                        @deleteBase64 = "deleteVerso" 
-                        :modalTitle = "versoModalTitle" 
+                        @base64   = "versoLegalBase64"
+                        @deleteBase64 = "deleteVerso"
+                        :modalTitle = "versoModalTitle"
                         :uploadId   = "versoUploadId"></img-upload>
                 </div>
             </div>
@@ -69,6 +69,10 @@
 </template>
 <script>
 import ImgUpload from '@/components/ImgUpload';
+import {
+  getUserDetail
+  } from '@/api/login.js';
+import baseConfig from '@/config/index';
 export default {
     name: 'CreatePerson',
     data() {
@@ -86,7 +90,8 @@ export default {
             beforeHasDataUp : false,
             indentImgUp : '',
             versoModalTitle : '证件反面照',
-            versoUploadId : 'versoLegalUploadId'
+            versoUploadId : 'versoLegalUploadId',
+            userReqCount : 0
         }
     },
     methods : {
@@ -115,16 +120,45 @@ export default {
             console.log(`this.legal=${this.legal}`);
             if(this.legal == 'self') {
                 this.disabled = true;
-                this.legalID = localStorage.getItem('ident_num');
+                // this.legalID = localStorage.getItem('ident_num');
                 let peffixUrl = ''
                 if(process.env.NODE_ENV == 'development') {
-                    peffixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com' 
+                    peffixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
                 }else {
-                    peffixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com' 
+                    peffixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
                 }
-                this.frontBase64Data = peffixUrl + localStorage.getItem('ident_up');
-                this.versoLegalBase64Data = peffixUrl + localStorage.getItem('ident_down');
-                this.legalName = localStorage.getItem('ident_name')
+                // this.userReqCount ++;
+                // if(this.userReqCount < 2) {
+                    getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                    .then(res => {
+                      console.log('getUserDetail_res:')
+                      console.log(res);
+                      if(res.status && res.status == 200 && res.data.success && res.data.code == 0) {
+                        let data = res.data.data
+                        this.frontBase64Data = peffixUrl + data.ident_up;
+                        this.versoLegalBase64Data = peffixUrl + data.ident_down;
+                        this.legalName = data.ident_name;
+                        this.legalID =  data.ident_num;
+                      }
+                      else {
+                        this.$Message.error({
+                            content : res.data.msg ? res.data.msg : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                      }
+                    })
+                    .catch(err => {
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                    })
+                // }
+                // this.frontBase64Data = peffixUrl + localStorage.getItem('ident_up');
+                // this.versoLegalBase64Data = peffixUrl + localStorage.getItem('ident_down');
+                // this.legalName = localStorage.getItem('ident_name')
             }else {
                 this.disabled = false;
                 this.legalID = '请输入身份证号码';

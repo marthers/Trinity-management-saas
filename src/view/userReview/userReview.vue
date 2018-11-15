@@ -71,7 +71,11 @@
 <script>
 import {undo_user_organization} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
-const jiweiDevHost = baseConfig.baseUrl.jiweiDevHost
+const jiweiDevHost = baseConfig.baseUrl.jiweiDevHost;
+import {
+  getOrgDetail,
+  getUserDetail
+  } from '@/api/login.js';
 export default {
   name : 'userReview',
   data() {
@@ -105,8 +109,81 @@ export default {
       .then(res => {
         console.log('undo_user_organization_res：')
         console.log(res)
+        if(res.status && res.status == 200) {
+          if(res.data.code == 201) {
+              Promise.all(
+                [
+                  getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                  getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                ]
+              )
+              .then((result) => {
+                console.log(result);
+                if(result && result.length == 2) {
+                  localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                  localStorage.setItem('user_verified',result[1].data.data.verified)
+                  localStorage.setItem('org_verified',result[0].data.data.verified)
+                  if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                    //跳转到商户信息
+                      this.$Notice.success({
+                          title: '跳转到商户信息',
+                          desc: '跳转到商户信息'
+                      });
+                  }
+                  else {
+                    if(result[0].data.data.verified == 1) {
+                      // 员工加入审核中
+                      this.$Notice.info({
+                          title: '员工加入审核中',
+                          desc: '员工加入审核中'
+                      });
+                    }
+                    else {
+                      //商户加盟审核中
+                      this.$Notice.info({
+                          title: '商户加盟审核中',
+                          desc: '商户加盟审核中'
+                      });
+                    }
+                  }
+                }
+              })
+              .catch((err) => {
+                console.log(err)
+                this.$Message.error({
+                    content : err.msg ? err.msg: '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+              })
+          }
+          else if(res.data.code == 0) {
+              this.$Notice.success({
+                  title: '撤销成功',
+                  desc: '请重新加盟或者加入'
+              });
+              this.$router.push({
+                name : 'home',
+                params : {
+                  NoDataIndexShow : true
+                }
+              })
+          }
+        }
+        else {
+            this.$Message.error({
+                content : '网络异常，请联系管理员及时处理',
+                duration: 5,
+                closable: true
+            })
+        }
       }).catch(err => {
-        console.log(err)
+        console.log(err);
+        this.$Message.error({
+            content : err && err.msg ? err.msg :'网络异常，请联系管理员及时处理',
+            duration: 5,
+            closable: true
+        })
       })
     console.log(`process.env.NODE_ENV=${process.env.NODE_ENV}`);
       console.log(`jiweiDevHost=${jiweiDevHost + '/trinity-backstage/organization/undo_user_organization'}`)

@@ -58,7 +58,7 @@
             <footer>
                 <div class = "back" @click.stop.prevent = "backToIndex">返回</div>
                 <div class = "next" @click.stop.prevent = "toMerchant" v-if = "createShow">下一步：商户信息</div>
-                <div class = "next"   @click.stop.prevent = "chooseUpper" v-else>确定</div>
+                <div class = "next"   @click.stop.prevent = "joinOrg" v-else>确定</div>
             </footer>
         </div>
         <Modal
@@ -83,6 +83,7 @@ import {
     identifyID
 } from '@/libs/validate.js';
 import {UserInfoEdit} from '@/api/user.js';
+import {joinOrg} from '@/api/org/org.js';
 import ImgUpload from '@/components/ImgUpload';
 import JoinInOrg from '@/components/JoinInOrg';
 import {
@@ -151,22 +152,22 @@ export default {
                                 }else {
                                     if(this.frontBase64Data.length > 0 && this.versoData.length > 0) {
                                         UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
-                                        {
-                                            'priority': 5,
-                                            'group'   : 0,
-                                            'data'    : {
-                                                // 'edit_mode'  : this.isEdit ? 0: 1,
-                                                'edit_mode'  : 0,
-                                                'need_verify': 1,
-                                                'user_info'  : {
-                                                    'ident_name': this.userName,
-                                                    'ident_num' : this.IDNumber,
-                                                    'ident_up'  : this.frontBase64Data,
-                                                    'ident_down': this.versoData
+                                            {
+                                                'priority': 5,
+                                                'id_organization'   : 0,
+                                                'data'    : {
+                                                    // 'edit_mode'  : this.isEdit ? 0: 1,
+                                                    'edit_mode'  : 0,
+                                                    'need_verify': 1,
+                                                    'user_info'  : {
+                                                        'ident_name': this.userName,
+                                                        'ident_num' : this.IDNumber,
+                                                        'ident_up'  : this.frontBase64Data,
+                                                        'ident_down': this.versoData
+                                                    }
                                                 }
                                             }
-                                        }
-                                    )
+                                        )
                                         .then(res => {
                                             console.log("res:")
                                             console.log(res)
@@ -264,7 +265,7 @@ export default {
                     UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
                         {
                             'priority': 5,
-                            'group'   : 0,
+                            'id_organization'   : 0,
                             'data'    : {
                                 // 'edit_mode'  : this.isEdit ? 0: 1,
                                 'edit_mode'  : 0,
@@ -362,7 +363,7 @@ export default {
                 getOrgList(baseUrl + '/trinity-backstage/organization/list',
                 {
                     'priority': 5,
-                    'group'   : 0,
+                    'id_organization'   : 0,
                     'data'    : {
                         'page_index': 1,
                         'page_size' : 20,
@@ -402,7 +403,106 @@ export default {
                 })
             })
         },
+        joinOrg() {
+          if(this.selectedMerchant.organizationName && this.selectedMerchant.organizationName.length > 0) {
+              if(this.frontBase64Data.length > 0 && this.versoData.length > 0 && this.userName.length > 0 && this.IDNumber > 0) {
+                  UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
+                      {
+                          'priority': 5,
+                          'id_organization'   : 0,
+                          'data'    : {
+                              // 'edit_mode'  : this.isEdit ? 0: 1,
+                              'edit_mode'  : 0,
+                              'need_verify': 1,
+                              'user_info'  : {
+                                  'ident_name': this.userName,
+                                  'ident_num' : this.IDNumber,
+                                  'ident_up'  : this.frontBase64Data,
+                                  'ident_down': this.versoData
+                              }
+                          }
+                      }
+                  )
+                  .then(res => {
+                      console.log("res:")
+                      console.log(res)
+                      console.log("res.data:")
+                      console.log(res.data)
+                      if(res.status && res.status == 200) {
+                              console.log(`code=${res.data.code}`)
+                          if(res.data) {
+                              let code = res.data.code;
+                              console.log(`code=${res.data.code}`)
+                              if(code == 1) {
+                                  this.$Message.info({
+                                      content : "Token因为超时而失效",
+                                      duration: 5,
+                                      closable: true
+                                  });
+                              }
+                              else if(code == 0) {
+                                  // this.$emit('createPersonSuccess',res.data.user_info);
+                                  debugger
+                                  joinOrg(
+                                    baseUrl + '/trinity-backstage/user/join_organization',
+                                    {
+                                      'priority': 5,
+                                      'id_organization'   : 0,
+                                      'user_info' : {
+                                        'fid_organization' : this.selectedMerchant.id_organization
+                                      }
+                                    })
+                                  .then(res => {
+                                      debugger
+                                      console.log(res)
+                                      debugger
+                                  })
+                                  .catch(err => {
+                                      console.log(err)
+                                      this.$Message.error({
+                                          content : '网络异常，请联系管理员及时处理',
+                                          duration: 5,
+                                          closable: true
+                                      })
+                                  })
+                              }
+                          }
+                      }else {
+                          this.$Message.error({
+                              content : '网络异常，请联系管理员及时处理',
+                              duration: 5,
+                              closable: true
+                          })
+                      }
+                  }).catch(err => {
+                      console.log(err)
+                      this.$Message.error({
+                          content : '网络异常，请联系管理员及时处理',
+                          duration: 5,
+                          closable: true
+                      })
+                  })
+                  console.log("this.$emit('person-forward')");
+
+              }
+              else {
+                  this.$Notice.error({
+                      title: '个人数据缺失',
+                      desc : '个人数据缺失'
+                  });
+                  return false
+              }
+          }
+          else {
+              this.$Message.warning({
+                  content : '请选择上级！',
+                  duration: 5,
+                  closable: true
+              })
+          }
+        },
         superiorSelected(selectedSuperior){
+            console.log("selectedSuperior:");
             console.log(selectedSuperior);
             this.selectedMerchant = selectedSuperior;
             this.$emit('selectedSuperior',selectedSuperior)
@@ -432,6 +532,12 @@ export default {
                                   this.userNamePlaceholder = '请输入真实姓名'
                                   this.userName            = ''
                                 }
+                                let peffixUrl = ''
+                                if(process.env.NODE_ENV == 'development') {
+                                    peffixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                                }else {
+                                    peffixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                                }
                                 // 身份证号
                                 if(data.ident_num && data.ident_num.length > 0) {
                                   this.IDPlaceholder = data.ident_num;
@@ -443,7 +549,7 @@ export default {
                                 }
                                 // 身份证正面
                                 if(data.ident_up && data.ident_up.length > 0) {
-                                  this.indentImgUp = data.ident_up;
+                                  this.indentImgUp =peffixUrl + data.ident_up;
                                   this.frontBase64Data = data.ident_up
                                   this.beforeHasDataUp = true
                                   // debugger
@@ -455,7 +561,7 @@ export default {
                                 }
                                 // 身份证反面
                                 if(data.ident_down && data.ident_down.length > 0) {
-                                  this.indentImg = data.ident_down;
+                                  this.indentImg = peffixUrl + data.ident_down;
                                   this.beforeHasData = true
                                   this.versoData = data.ident_down
                                 }
@@ -563,7 +669,7 @@ export default {
                 width       : 4px;
                 height      : 36px;
                 background  : linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
-                margin-right: .625rem /* 10/16 */;
+                margin-right: 20px /* 10/16 */;
             }
             .right {
                 max-width  : 200px;

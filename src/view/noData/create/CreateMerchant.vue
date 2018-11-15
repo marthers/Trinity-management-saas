@@ -123,7 +123,7 @@ export default {
             getOrgList(baseUrl + '/trinity-backstage/organization/list',
             {
                 'priority': 5,
-                'group'   : 0,
+                'id_organization'   : 0,
                 'data'    : {
                     'page_index': page_index,
                     'page_size' : this.page_size
@@ -165,7 +165,7 @@ export default {
                 getOrgList(baseUrl + '/trinity-backstage/organization/list',
                 {
                     'priority': 5,
-                    'group'   : 0,
+                    'id_organization'   : 0,
                     'data'    : {
                         'page_index': 1,
                         'page_size' : 20,

@@ -325,7 +325,7 @@ export default {
           },
           data: {
               'priority': '3',
-              'group'   : '',
+              'id_organization'   : '',
               'data'    : {
               'phone'   : this.userName,
               'password': !this.rememberedPasswordIsChanged ? md5(this.password) : this.password,
@@ -536,7 +536,7 @@ export default {
               },
               data: {
                 'priority': '3',
-                'group'   : '',
+                'id_organization'   : '',
                 'data'    : {
                   'phone'      : this.userName,
                   'password'   : '',
@@ -654,7 +654,7 @@ export default {
                           name  : 'home',
                           params: resData
                         });
-                        debugger
+                        // debugger
                       }
                       else {
                         this.$Message.error({
@@ -770,7 +770,7 @@ export default {
           },
           data: {
             'priority': '3',
-            'group'   : '',
+            'id_organization'   : '',
             'data'    : reqData
           }
         })
@@ -911,7 +911,7 @@ export default {
                     },
                     data: {
                       'priority': '3',
-                      'group'   : '',
+                      'id_organization'   : '',
                       'data'    : {
                         'phone'       : this.registerUsername,
                         'new_password': md5(this.confirmRegisterPassword),
@@ -998,7 +998,7 @@ export default {
                     },
                     data: {
                       'priority': '3',
-                      'group'   : '',
+                      'id_organization'   : '',
                       'data'    : {
                         'phone'      : this.registerUsername,
                         'password'   : md5(this.confirmRegisterPassword),
@@ -1216,7 +1216,7 @@ export default {
               },
               data: {
                 'priority': '3',
-                'group'   : '',
+                'id_organization'   : '',
                 'data'    : {
                   'phone'   : this.userName,
                 //   'password': md5(this.password),
@@ -1462,7 +1462,7 @@ export default {
                     },
                     data: {
                       'priority': '3',
-                      'group'   : '',
+                      'id_organization'   : '',
                       'data'    : {
                         'phone': !this.registerShow ? this.userName: this.registerUsername,
                         'type' : this.identifyVerificationCode
@@ -1562,7 +1562,7 @@ export default {
                     },
                     data: JSON.stringify({
                       'priority': '3',
-                      'group'   : '',
+                      'id_organization'   : '',
                       'data'    : {
                         'phone': !this.registerShow ? this.userName: this.registerUsername,
                         'type' : this.identifyVerificationCode                               //手机验证码登录接口
