@@ -26,6 +26,11 @@ export default [
             //     path : 'MyOrg',
             //     component : () => import('@/view/myOrg/MyOrg')
             // }
+            {
+                name     : 'userReview',
+                path     : 'userReview',
+                component: () => import('@/view/userReview/userReview')
+            },
         ]
     },
     {

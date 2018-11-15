@@ -70,7 +70,7 @@
                 </div>
                 <div class = "content">
                     <!-- <h2>User {{ $route.params.id }}</h2> -->
-                    <!-- <router-view></router-view> -->
+                    <router-view></router-view>
                     <!-- <router-view class="view" :name="contentRouterView"></router-view> -->
                     <no-data-index @two-clicked = "twoClicked" v-if = "NoDataIndexShow && fidOrg == 0"></no-data-index>
                     <!-- <no-data-index @two-clicked = "twoClicked" v-if = "$route.meta.showName == 'NoDataIndex'"></no-data-index> -->
@@ -605,35 +605,35 @@ export default {
                     .then((result) => {
                       console.log(result);
                       if(result && result.length == 2) {
-                        // localStorage.setItem('fid_organization') = result[1].data.data.fid_organization
-                        // localStorage.setItem('user_verified') = result[1].data.data.verified
-                        // localStorage.setItem('org_verified') = result[0].data.data.verified
+                        localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                        localStorage.setItem('user_verified',result[1].data.data.verified)
+                        localStorage.setItem('org_verified',result[0].data.data.verified)
                         // // if(result.status && result.status == 200 && result.data.success) {
                         // //   localStorage.setItem('org_verified',result.data.data.verified);
                         // this.NoDataIndexShow = false
-                        // if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                        //   //跳转到商户信息
-                        //     this.$Notice.success({
-                        //         title: '跳转到商户信息',
-                        //         desc: '跳转到商户信息'
-                        //     });
-                        // }
-                        // else {
-                        //   if(result[0].data.data.verified == 1) {
-                        //     // 员工加入审核中
-                        //     this.$Notice.info({
-                        //         title: '员工加入审核中',
-                        //         desc: '员工加入审核中'
-                        //     });
-                        //   }
-                        //   else {
-                        //     //商户加盟审核中
-                        //     this.$Notice.info({
-                        //         title: '商户加盟审核中',
-                        //         desc: '商户加盟审核中'
-                        //     });
-                        //   }
-                        // }
+                        if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                          //跳转到商户信息
+                            this.$Notice.success({
+                                title: '跳转到商户信息',
+                                desc: '跳转到商户信息'
+                            });
+                        }
+                        else {
+                          if(result[0].data.data.verified == 1) {
+                            // 员工加入审核中
+                            this.$Notice.info({
+                                title: '员工加入审核中',
+                                desc: '员工加入审核中'
+                            });
+                          }
+                          else {
+                            //商户加盟审核中
+                            this.$Notice.info({
+                                title: '商户加盟审核中',
+                                desc: '商户加盟审核中'
+                            });
+                          }
+                        }
                         // }
                         // let detailResArr = ['org','user']
                         // result.forEach((item,index) => {
@@ -722,7 +722,33 @@ export default {
                       // debugger;
                       let data = res.data.data;
                       if(data.verified) {
-                        localStorage.setItem('org_verified' , data.verified)
+                        localStorage.setItem('org_verified' , data.verified);
+                        if(data.verified == 1 && localStorage.getItem('user_verified') == 1) {
+                          //跳转到商户信息
+                            this.$Notice.success({
+                                title: '跳转到商户信息',
+                                desc: '跳转到商户信息'
+                            });
+                        }
+                        else {
+                          if(data.verified == 1) {
+                            // 员工加入审核中
+                            this.$Notice.info({
+                                title: '员工加入审核中',
+                                desc: '员工加入审核中'
+                            });
+                          }
+                          else {
+                            //商户加盟审核中
+                            this.$Notice.info({
+                                title: '商户加盟审核中',
+                                desc: '商户加盟审核中'
+                            });
+                          }
+                        }
+                        this.$router.push({
+                          name : 'userReview'
+                        })
                       }
                     // debugger
                     }

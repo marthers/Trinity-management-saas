@@ -13,3 +13,9 @@ export const orgEdit = (url,data) => {
       method: 'post'
     })
   }
+export const undo_user_organization = url=> {
+    return axios.request({
+      url: url,
+      method: 'post'
+    })
+  }
