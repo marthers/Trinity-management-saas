@@ -34,3 +34,11 @@ export const UserInfoEdit = (url,data) => {
         data
     })
 }
+
+//申请加入组织的用户个数接口
+export const ApplyJoinOrganization  = url => {
+  return axios.request({
+      url   : url,
+      method: 'post'
+  })
+}

@@ -516,10 +516,10 @@ export default {
                         // this.NoDataIndexShow = false
                         if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
                           //跳转到商户信息
-                            this.$Notice.success({
-                                title: '跳转到商户信息',
-                                desc: '跳转到商户信息'
-                            });
+                            // this.$Notice.success({
+                            //     title: '跳转到商户信息',
+                            //     desc: '跳转到商户信息'
+                            // });
                         }
                         else {
                           if(result[0].data.data.verified == 1) {
@@ -619,71 +619,148 @@ export default {
             this.NoDataIndexShow = true
         }else {
             this.NoDataIndexShow = false;
-            getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
-            .then (res => {
-                console.log(res);
-                if(res.status && res.status == 200) {
-                    // debugger
-                    if(res.data.success && res.data.code == 0) {
-                        if(res.data.data) {
-                          // debugger;
-                          let data = res.data.data;
-                          if(data.verified) {
-                            localStorage.setItem('org_verified' , data.verified);
-                            if(data.verified == 1 && localStorage.getItem('user_verified') == 1) {
-                              //跳转到商户信息
-                                this.$Notice.success({
-                                    title: '跳转到商户信息',
-                                    desc: '跳转到商户信息'
-                                });
-                            }
-                            else {
-                              if(data.verified == 1) {
-                                // 员工加入审核中
-                                this.$Notice.info({
-                                    title: '员工加入审核中',
-                                    desc: '员工加入审核中'
-                                });
-                              }
-                              else {
-                                //商户加盟审核中
-                                this.$Notice.info({
-                                    title: '商户加盟审核中',
-                                    desc: '商户加盟审核中'
-                                });
-                              }
-                            }
-                            this.$router.push({
-                              name : 'userReview'
-                            })
-                          }
-                        // debugger
+
+
+                    Promise.all(
+                      [
+                        getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                        getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                      ]
+                    )
+                    // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
+                    .then((result) => {
+                      console.log(result);
+                      if(result && result.length == 2) {
+                        localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                        localStorage.setItem('user_verified',result[1].data.data.verified)
+                        localStorage.setItem('org_verified',result[0].data.data.verified)
+                        // // if(result.status && result.status == 200 && result.data.success) {
+                        // //   localStorage.setItem('org_verified',result.data.data.verified);
+                        // this.NoDataIndexShow = false
+                        if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                          //跳转到商户信息
+                            // this.$Notice.success({
+                            //     title: '跳转到商户信息',
+                            //     desc: '跳转到商户信息'
+                            // });
                         }
-                    }
-                    // else {
-                    //     this.$Message.error({
-                    //         content : '网络错误',
-                    //         duration: 5,
-                    //         closable: true
-                    //     });
-                    // }
-                }
-                else {
-                this.$Message.error({
-                    content : err.msg ? err.msg: '网络错误',
-                    duration: 5,
-                    closable: true
-                });
-                }
-            })
-            .catch(err => {
-              console.log(err)
-              this.$Message.error({
-                  content : err.msg ? err.msg: '网络错误',
-                  duration: 5,
-                  closable: true
-              });
-            });
+                        else {
+                          if(result[0].data.data.verified == 1) {
+                            // 员工加入审核中
+                            this.$Notice.info({
+                                title: '员工加入审核中',
+                                desc: '员工加入审核中'
+                            });
+                          }
+                          else {
+                            //商户加盟审核中
+                            this.$Notice.info({
+                                title: '商户加盟审核中',
+                                desc: '商户加盟审核中'
+                            });
+                          }
+                        }
+                        this.$router.push({
+                          name : 'userReview'
+                        })
+                        // }
+                        // let detailResArr = ['org','user']
+                        // result.forEach((item,index) => {
+                        //     if(item.status && item.status == 200 && item.data.success && item.data.code == 0) {
+                        //       // detailResArr.push(item.data.data)
+                        //       debugger
+                        //       // console.log(item.data.data.verified)
+                        //       debugger
+                        //       // localStorage.setItem(detailResArr[index] + '_detail_obj' , JSON.stringify(item))
+                        //     }
+                        //     else {
+                        //       this.$Message.error({
+                        //           content : '网络错误',
+                        //           duration: 5,
+                        //           closable: true
+                        //       });
+                        //     }
+                        // });
+                        // console.log("detailResArr:")
+                        // console.log(detailResArr);
+                        // localStorage.setItem('org_detail_obj' , JSON.stringify(detailResArr[0]))
+                      }
+                    }).catch((err) => {
+                      console.log(err)
+                      this.$Message.error({
+                          content : err.msg ? err.msg: '网络错误',
+                          duration: 5,
+                          closable: true
+                      });
+                    })
+
+            // getOrgDetail(
+            //   baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'
+            // )
+            // .then (res => {
+            //     console.log(res);
+            //     if(res.status && res.status == 200) {
+            //         // debugger
+            //         if(res.data.success && res.data.code == 0) {
+            //             if(res.data.data) {
+            //               // debugger;
+            //               let data = res.data.data;
+            //               if(data.verified) {
+            //                 localStorage.setItem('org_verified' , data.verified);
+            //                 if(data.verified == 1 && localStorage.getItem('user_verified') == 1) {
+            //                   //跳转到商户信息
+            //                     this.$Notice.success({
+            //                         title: '跳转到商户信息',
+            //                         desc: '跳转到商户信息'
+            //                     });
+            //                 }
+            //                 else {
+            //                   if(data.verified == 1) {
+            //                     // 员工加入审核中
+            //                     this.$Notice.info({
+            //                         title: '员工加入审核中',
+            //                         desc: '员工加入审核中'
+            //                     });
+            //                   }
+            //                   else {
+            //                     //商户加盟审核中
+            //                     this.$Notice.info({
+            //                         title: '商户加盟审核中',
+            //                         desc: '商户加盟审核中'
+            //                     });
+            //                   }
+            //                 }
+            //                 this.$router.push({
+            //                   name : 'userReview'
+            //                 })
+            //               }
+            //             // debugger
+            //             }
+            //         }
+            //         // else {
+            //         //     this.$Message.error({
+            //         //         content : '网络错误',
+            //         //         duration: 5,
+            //         //         closable: true
+            //         //     });
+            //         // }
+            //     }
+            //     else {
+            //     this.$Message.error({
+            //         content : err.msg ? err.msg: '网络错误',
+            //         duration: 5,
+            //         closable: true
+            //     });
+            //     }
+            // })
+            // .catch(err => {
+            //   console.log(err)
+            //   this.$Message.error({
+            //       content : err.msg ? err.msg: '网络错误',
+            //       duration: 5,
+            //       closable: true
+            //   });
+            // });
         }
         // this.$route.meta.showName = 'NoDataIndex'
         // this.$delete(this.$route.matched[0].components,'NoDataIndex')

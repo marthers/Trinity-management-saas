@@ -9,7 +9,7 @@
           <div class = "merchant-con">
             <div class= "up">
               <div class = "left">
-                  <div  alt="" class = "logo left" v-bind:style = "{backgroundImage :'url(' + logo + ')'}"></div>
+                  <div  alt="" class = "logo left" v-bind:style = "{backgroundImage :'url(' + corpObj.logo + ')'}"></div>
                   <div class = "right">
                       <p class = "corp-name">
                           {{
@@ -18,7 +18,7 @@
                       </p>
                       <p>
                           <span>公司证照号</span>
-                          <span>{{corpId}}</span>
+                          <span>{{corpObj.corporate_ident}}</span>
                       </p>
                   </div>
               </div>
@@ -27,11 +27,11 @@
             <div class = "down">
               <p>
                   <span>法律负责人</span>
-                  <span>{{legal}}</span>
+                  <span>{{corpObj.corporate_name}}</span>
               </p>
               <p>
                   <span>法人证件号</span>
-                  <span>{{legalId}}</span>
+                  <span>{{corpObj.corporate_ident}}</span>
               </p>
             </div>
           </div>
@@ -71,6 +71,9 @@
 <script>
 import {undo_user_organization} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
+import {
+  ApplyJoinOrganization,//申请加入组织的用户个数接口
+} from '@/api/user.js';
 const jiweiDevHost = baseConfig.baseUrl.jiweiDevHost;
 import {
   getOrgDetail,
@@ -83,13 +86,15 @@ export default {
       underReviewShow : false,
       joinInshow : false,
       auditShow : true,
-      legal : '马云',
-      legalId: 0,
-      logo : 'https://u.djicdn.com/uploads/ad_image_file/file/1234/970_250.jpg',
-      corpId : 0,
+      // legal : '马云',
+      // legalId: 0,
+      // logo : 'https://u.djicdn.com/uploads/ad_image_file/file/1234/970_250.jpg',
+      // corpObj.ident_up : 0,
       corpName : '很多客户等级撒低级',
       merchantCount : 112,
-      userCount : 8
+      userCount : 8,
+      corpObj : {},
+      userObj : {}
     }
   },
   // props : {
@@ -199,7 +204,57 @@ export default {
     uv = localStorage.getItem("user_verified");
     if(ov == 1 && uv == 1) {
       this.underReviewShow = false;
-      // if()
+              Promise.all(
+                [
+                  getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                  getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                ]
+              )
+              .then((result) => {
+                console.log(result);
+                if(result && result.length == 2) {
+                  localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                  localStorage.setItem('user_verified',result[1].data.data.verified)
+                  localStorage.setItem('org_verified',result[0].data.data.verified)
+                  this.corpObj = result[0].data.data;
+                  this.userObj = result[1].data.data;
+                  console.log(this.corpObj)
+                  console.log(this.userObj)
+                }
+              })
+              .catch((err) => {
+                console.log(err)
+                this.$Message.error({
+                    content : err.msg ? err.msg: '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+              });
+
+              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
+              .then(res => {
+                console.log(res);
+                if(res.status && res.status == 200 && res.data.code == 0) {
+                  let data = res.data.data;
+                  console.log("ApplyJoinOrganization:");
+                  console.log(data);
+                }
+                else {
+                  this.$Message.error({
+                      content : res && res.msg ? res.msg: '网络错误',
+                      duration: 5,
+                      closable: true
+                  });
+                }
+              })
+              .catch(err => {
+                console.log(err);
+                this.$Message.error({
+                    content : err && err.msg ? err.msg: '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+              })
     }
     else{
       this.underReviewShow = true;
