@@ -381,11 +381,11 @@ export default {
                     }
                     console.log("this.user_info:");
                     console.log(this.user_info);
-                    this.$Notice.success({
-                        title   : '登录成功',
-                        desc    : '欢迎进入Trinity Tech Saas',
-                        duration: 6
-                    });
+                    // this.$Notice.success({
+                    //     title   : '登录成功',
+                    //     desc    : '欢迎进入Trinity Tech Saas',
+                    //     duration: 6
+                    // });
                     // if(resData.fid_organization != 0) {
                     //   console.log(baseConfig.baseUrl.localOrgHost + 'trinity-backstage/organization/detail')
                     //   getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
@@ -645,11 +645,11 @@ export default {
                         //     duration: 5,
                         //     closable: true
                         // });
-                        this.$Notice.success({
-                            title   : '登录成功',
-                            desc    : '欢迎进入Trinity Tech Saas',
-                            duration: 7
-                        });
+                        // this.$Notice.success({
+                        //     title   : '登录成功',
+                        //     desc    : '欢迎进入Trinity Tech Saas',
+                        //     duration: 7
+                        // });
                         this.$router.push({
                           name  : 'home',
                           params: resData
@@ -1114,11 +1114,11 @@ export default {
                             //     duration: 5,
                             //     closable: true
                             // });
-                            this.$Notice.success({
-                                title   : '登录成功',
-                                desc    : '欢迎进入Trinity Tech Saas',
-                                duration: 7
-                            });
+                            // this.$Notice.success({
+                            //     title   : '登录成功',
+                            //     desc    : '欢迎进入Trinity Tech Saas',
+                            //     duration: 7
+                            // });
                             this.$router.push({
                               name  : 'home',
                               params: resData
@@ -1325,11 +1325,11 @@ export default {
                         //     duration: 5,
                         //     closable: true
                         // });
-                        this.$Notice.success({
-                            title   : '登录成功',
-                            desc    : '欢迎进入Trinity Tech Saas',
-                            duration: 7
-                        });
+                        // this.$Notice.success({
+                        //     title   : '登录成功',
+                        //     desc    : '欢迎进入Trinity Tech Saas',
+                        //     duration: 7
+                        // });
                         this.$router.push({
                           name  : 'home',
                           params: resData

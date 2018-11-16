@@ -106,7 +106,14 @@ import {
                         'id_organization'   : 0,
                         'data'    : {
                             'page_index' :this.page_index,
-                            'page_size' : this.page_size
+                            'page_size' : this.page_size,
+                            "filters":[
+                              {"key":"idOrganization","operator":"=","value":1,"join":"or"},
+                              {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
+                              {"key":"verified","operator":"=","value":1,"join":"and"},
+                              {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                              {"key":"rightfulStatus","operator":"=","value":1,"join":"and"}
+                            ]
                         }
                     })
                     .then(res => {
@@ -153,7 +160,14 @@ import {
                 'group'   : 0,
                 'data'    : {
                     'page_index' :this.page_index,
-                    'page_size' : this.page_size
+                    'page_size' : this.page_size,
+                    "filters":[
+                      {"key":"idOrganization","operator":"=","value":1,"join":"or"},
+                      {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
+                      {"key":"verified","operator":"=","value":1,"join":"and"},
+                      {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                      {"key":"rightfulStatus","operator":"=","value":1,"join":"and"}
+                    ]
                 }
             })
             .then(res => {

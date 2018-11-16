@@ -128,7 +128,14 @@ export default {
                 'id_organization'   : 0,
                 'data'    : {
                     'page_index': page_index,
-                    'page_size' : this.page_size
+                    'page_size' : this.page_size,
+                    "filters":[
+                      {"key":"idOrganization","operator":"=","value":1,"join":"or"},
+                      {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
+                      {"key":"verified","operator":"=","value":1,"join":"and"},
+                      {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                      {"key":"rightfulStatus","operator":"=","value":1,"join":"and"}
+                    ]
                 }
             })
             .then(res => {
@@ -171,9 +178,10 @@ export default {
                     'data'    : {
                         'page_index': 1,
                         'page_size' : 20,
-                        "filters"   : [
-                            {"key":"idOrganization","operator":"=","value":1,"join":"or"},
-                            {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"}
+                        "filters":[
+                          {"key":"verified","operator":"=","value":1,"join":"and"},
+                          {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                          {"key":"rightfulStatus","operator":"=","value":1,"join":"and"}
                         ]
                     }
                 })
@@ -351,9 +359,9 @@ export default {
                     height             : 60px;
                     background-size    : contain;
                     background-position: center;
-                    background-image   : url('./../../../assets/images/noData/imgNotUploaded.png');
+                    background-image   : url('./../../../assets/images/upload.png');
                     @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                        background-image: url('./../../../assets/images/noData/imgNotUploaded@2x.png');
+                        background-image: url('./../../../assets/images/upload@2x.png');
                     }
                     margin: 18px 16px;
                 }
@@ -413,9 +421,9 @@ export default {
                         height             : 60px;
                         background-size    : contain;
                         background-position: center;
-                        background-image   : url('./../../../assets/images/noData/imgNotUploaded.png');
+                        background-image   : url('./../../../assets/images/upload.png');
                         @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                            background-image: url('./../../../assets/images/noData/imgNotUploaded@2x.png');
+                            background-image: url('./../../../assets/images/upload@2x.png');
                         }
                         margin: 46.5px 88px;
                     }

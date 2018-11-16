@@ -156,9 +156,9 @@
             height             : 60px;
             background-size    : contain;
             background-position: center;
-            background-image   : url('./../assets/images/noData/imgNotUploaded.png');
+            background-image   : url('./../assets/images/upload.png');
             @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                background-image: url('./../assets/images/noData/imgNotUploaded@2x.png');
+                background-image: url('./../assets/images/upload@2x.png');
             }
             margin: 46.5px 88px;
         }

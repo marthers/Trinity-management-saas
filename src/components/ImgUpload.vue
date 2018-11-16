@@ -1,19 +1,4 @@
 <template>
-    <!-- <div class="form-group">
-      <label class="control-label">上传图片</label>
-      <div class="control-form">
-        <p class="help-block">(建议图片格式为：JPEG/BMP/PNG/GIF，大小不超过5M，最多可上传4张)</p>
-        <ul class="upload-imgs">
-          <li v-if="imgLen>=maxNum ? false : true">
-            <input type="file" class="upload" @change="addImg" ref="inputer" multiple accept="image/png,image/jpeg,image/gif,image/jpg"/>
-            <a class="add"><i class="iconfont icon-plus"></i><p>点击上传</p></a>
-          </li>
-          <li v-for='(value, key) in imgs' :key = "key" @click="delImg(key)">
-            <p class="img"><img :src="getObjectURL(value)"><a class="close" @click="delImg(key)">×</a></p>
-          </li>
-        </ul>
-      </div>
-    </div> -->
     <div>
         <label class = "upload-con" :for = "uploadId">
             <div :class = "[ beforeHasData ? 'before-has-data' : imgLen < maxNum ? 'img-not-uploaded' : 'has-uploaded']" ref = "hasUploaded" id= "has-uploaded"
@@ -87,12 +72,8 @@
             this.fil = inputDOM.files;
             console.log("this.fil:")
             console.log(this.fil)
-                // this.fil.push(inputDOM.files[inputDOM.files-1]);
-            // let oldLen = this.imgLen;
-            // let len    = this.fil.length+oldLen;
             let len = this.fil.length
             if(len>this.maxNum){
-            //   alert('最多可上传4张，您还可以上传'+(4-oldLen)+'张');
                 this.$Notice.warning({
                     title: '本次最多只能上传' + this.maxNum + '张照片'
                 });
@@ -112,12 +93,7 @@
                 this.$emit('base64',base64)
             })
             console.log(this.$refs.hasUploaded)
-                // this.$refs.hasUploaded.style.width              = 240 + 'px'
-                // this.$refs.hasUploaded.style.height             = 153 + 'px';
                 this.$refs.hasUploaded.style.backgroundImage = 'url(' + this.getObjectURL(this.fil[i]) + ')';
-                // this.$refs.hasUploaded.style.backgroundSize     = 'contain'
-                // this.$refs.hasUploaded.style.backgroundPosition = 'center'
-                // this.$refs.hasUploaded.style.backgroundRepeat   = 'no-repeat'
             }
           }
           catch(err) {
@@ -142,46 +118,12 @@
             a.readAsDataURL(blob);
         },
       delImg(){
-        //   console.log("key:")
-        //   console.log(key)
-        // this.$delete(this.imgs,key);
-        // this.imgLen--;
         this.imgs   = {}
         this.imgLen = 0;
         this.$emit('deleteBase64')
-        // debugger
-        // for(let item in this.imgs) {
-        //     this.blobToDataURL(this.imgs[item],base64 => {
-        //         console.log(base64)
-        //     })
-        // }
       },
     },
-    // watch : {
-    //   beforeHasData : val => {
-    //     console.log("oldVal,newVal:")
-    //     console.log(val)
-    //     let self = this
-    //     if(val) {
-    //         let bgUrl = 'url(' + 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com' + this.indentImg + ')';
-    //         let oDiv = document.getElementById('has-uploaded');
-    //         oDiv.style.backgroundImage =bgUrl
-    //     }
-    //   }
-    // }
     mounted() {
-        // if(this.beforeHasData) {
-          // debugger
-        // if(this.indentImg && this.indentImg.length > 0) {
-          // setTimeout(() => {
-          //   let bgUrl = 'url(' + 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com' + this.indentImg + ')';
-          //   this.$refs.hasUploaded.style.backgroundImage =bgUrl
-          // },250)
-        // }
-        // }
-        // else {
-        //   debugger
-        // }
     }
   }
 </script>
@@ -230,9 +172,10 @@
         height             : 60px !important;
         background-size    : contain;
         background-position: center;
-        background-image   : url('./../assets/images/noData/imgNotUploaded.png') !important;
+        /* background-image   : url('./../assets/images/noData/imgNotUploaded.png') !important; */
+            background-image   : url('./../assets/images/upload.png') !important;
         @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-            background-image: url('./../assets/images/noData/imgNotUploaded@2x.png') !important;
+            background-image: url('./../assets/images/upload@2x.png') !important;
         }
         margin: 46.5px 88px;
         .upload-button {

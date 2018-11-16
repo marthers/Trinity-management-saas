@@ -156,6 +156,8 @@ export default {
                                       let user_info = {
                                           'ident_name': this.userName,
                                           'ident_num' : this.IDNumber,
+                                          'record_status' : 1,
+                                          'rightful_status' : 1
                                       }
                                       if(this.frontBase64Data.indexOf('base64') > 0) {
                                         user_info.ident_up = this.frontBase64Data
@@ -393,6 +395,13 @@ export default {
                       'data'    : {
                           'page_index': 1,
                           'page_size' : 20,
+                          "filters":[
+                            {"key":"idOrganization","operator":"=","value":1,"join":"or"},
+                            {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
+                            {"key":"verified","operator":"=","value":1,"join":"and"},
+                            {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                            {"key":"rightfulStatus","operator":"=","value":1,"join":"and"}
+                          ]
                           // "filters"   : [
                           //     {"key":"idOrganization","operator":"=","value":1,"join":"or"},
                           //     {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"}
@@ -444,6 +453,8 @@ export default {
                                       let user_info = {
                                           'ident_name': this.userName,
                                           'ident_num' : this.IDNumber,
+                                          'record_status' : 1,
+                                          'rightful_status' : 1
                                       }
                                       if(this.frontBase64Data.indexOf('base64') > 0) {
                                         user_info.ident_up = this.frontBase64Data
@@ -843,9 +854,9 @@ export default {
                         height             : 60px;
                         background-size    : contain;
                         background-position: center;
-                        background-image   : url('./../../../assets/images/noData/imgNotUploaded.png');
+                        background-image   : url('./../../../assets/images/upload.png');
                         @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                            background-image: url('./../../../assets/images/noData/imgNotUploaded@2x.png');
+                            background-image: url('./../../../assets/images/upload@2x.png');
                         }
                         margin: 46.5px 88px;
                     }

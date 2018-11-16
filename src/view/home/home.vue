@@ -457,6 +457,9 @@ export default {
             this.createMerchantInfoShow = false;
             this.createLegalShow        = false;
             let reqData                     = {
+                'property' : 0,
+                'record_status' : 1,
+                'rightful_status' : 1,
                 'is_select_me'           : legalData.is_select_me,
                 'logo'                   : this.merchantData.logoBase64Data,
                 'organization_name'      : this.merchantData.corpName,
@@ -514,29 +517,29 @@ export default {
                         // // if(result.status && result.status == 200 && result.data.success) {
                         // //   localStorage.setItem('org_verified',result.data.data.verified);
                         // this.NoDataIndexShow = false
-                        if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                          //跳转到商户信息
-                            // this.$Notice.success({
-                            //     title: '跳转到商户信息',
-                            //     desc: '跳转到商户信息'
-                            // });
-                        }
-                        else {
-                          if(result[0].data.data.verified == 1) {
-                            // 员工加入审核中
-                            this.$Notice.info({
-                                title: '员工加入审核中',
-                                desc: '员工加入审核中'
-                            });
-                          }
-                          else {
-                            //商户加盟审核中
-                            this.$Notice.info({
-                                title: '商户加盟审核中',
-                                desc: '商户加盟审核中'
-                            });
-                          }
-                        }
+                        // if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                        //   //跳转到商户信息
+                        //     // this.$Notice.success({
+                        //     //     title: '跳转到商户信息',
+                        //     //     desc: '跳转到商户信息'
+                        //     // });
+                        // }
+                        // else {
+                        //   if(result[0].data.data.verified == 1) {
+                        //     // 员工加入审核中
+                        //     this.$Notice.info({
+                        //         title: '员工加入审核中',
+                        //         desc: '员工加入审核中'
+                        //     });
+                        //   }
+                        //   else {
+                        //     //商户加盟审核中
+                        //     this.$Notice.info({
+                        //         title: '商户加盟审核中',
+                        //         desc: '商户加盟审核中'
+                        //     });
+                        //   }
+                        // }
                         this.$router.push({
                           name : 'userReview'
                         })
@@ -614,9 +617,13 @@ export default {
     },
     created () {
         console.log(this.$route.matched);
-        this.$route.query.NoDataIndexShow = true
+        // this.$route.query.NoDataIndexShow = true
         if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
-            this.NoDataIndexShow = true
+            this.NoDataIndexShow = true;
+            this.JoinInOrgShow          = false;
+            this.createPersonalInfoShow = false;
+            this.createMerchantInfoShow = false;
+            this.createLegalShow        = false;
         }else {
             this.NoDataIndexShow = false;
 
@@ -637,29 +644,29 @@ export default {
                         // // if(result.status && result.status == 200 && result.data.success) {
                         // //   localStorage.setItem('org_verified',result.data.data.verified);
                         // this.NoDataIndexShow = false
-                        if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                          //跳转到商户信息
-                            // this.$Notice.success({
-                            //     title: '跳转到商户信息',
-                            //     desc: '跳转到商户信息'
-                            // });
-                        }
-                        else {
-                          if(result[0].data.data.verified == 1) {
-                            // 员工加入审核中
-                            this.$Notice.info({
-                                title: '员工加入审核中',
-                                desc: '员工加入审核中'
-                            });
-                          }
-                          else {
-                            //商户加盟审核中
-                            this.$Notice.info({
-                                title: '商户加盟审核中',
-                                desc: '商户加盟审核中'
-                            });
-                          }
-                        }
+                        // if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                        //   //跳转到商户信息
+                        //     // this.$Notice.success({
+                        //     //     title: '跳转到商户信息',
+                        //     //     desc: '跳转到商户信息'
+                        //     // });
+                        // }
+                        // else {
+                        //   if(result[0].data.data.verified == 1) {
+                        //     // 员工加入审核中
+                        //     this.$Notice.info({
+                        //         title: '员工加入审核中',
+                        //         desc: '员工加入审核中'
+                        //     });
+                        //   }
+                        //   else {
+                        //     //商户加盟审核中
+                        //     this.$Notice.info({
+                        //         title: '商户加盟审核中',
+                        //         desc: '商户加盟审核中'
+                        //     });
+                        //   }
+                        // }
                         this.$router.push({
                           name : 'userReview'
                         })
@@ -762,21 +769,6 @@ export default {
             //   });
             // });
         }
-        // this.$route.meta.showName = 'NoDataIndex'
-        // this.$delete(this.$route.matched[0].components,'NoDataIndex')
-        'use strict';
-        var person = {
-            name : 'sss',
-            age  : 18,
-            child: {
-                name: 'childP',
-                age : 2
-            }
-        };
-        console.log(Object.getOwnPropertyDescriptor(person,'child'));
-        console.log(Object.getOwnPropertyDescriptor(person,'name'))
-        console.log(Object.getOwnPropertyDescriptor(person,'dwjkhhjdwhdwa'));
-        console.log(Object.getOwnPropertyDescriptor(person,'age'));
         // localStorage.clear();
         this.fidOrg = localStorage.getItem('fid_organization')
     },

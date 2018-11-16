@@ -90,9 +90,9 @@ export default {
       // legalId: 0,
       // logo : 'https://u.djicdn.com/uploads/ad_image_file/file/1234/970_250.jpg',
       // corpObj.ident_up : 0,
-      corpName : '很多客户等级撒低级',
-      merchantCount : 112,
-      userCount : 8,
+      corpName : '',
+      merchantCount : '',
+      userCount :'',
       corpObj : {},
       userObj : {}
     }
