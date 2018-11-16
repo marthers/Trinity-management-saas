@@ -121,11 +121,11 @@ export default {
             if(this.legal == 'self') {
                 this.disabled = true;
                 // this.legalID = localStorage.getItem('ident_num');
-                let peffixUrl = ''
+                let prefixUrl = ''
                 if(process.env.NODE_ENV == 'development') {
-                    peffixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
                 }else {
-                    peffixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
                 }
                 // this.userReqCount ++;
                 // if(this.userReqCount < 2) {
@@ -135,8 +135,8 @@ export default {
                       console.log(res);
                       if(res.status && res.status == 200 && res.data.success && res.data.code == 0) {
                         let data = res.data.data
-                        this.frontBase64Data = peffixUrl + data.ident_up;
-                        this.versoLegalBase64Data = peffixUrl + data.ident_down;
+                        this.frontBase64Data = prefixUrl + data.ident_up;
+                        this.versoLegalBase64Data = prefixUrl + data.ident_down;
                         this.legalName = data.ident_name;
                         this.legalID =  data.ident_num;
                       }
@@ -156,8 +156,8 @@ export default {
                         })
                     })
                 // }
-                // this.frontBase64Data = peffixUrl + localStorage.getItem('ident_up');
-                // this.versoLegalBase64Data = peffixUrl + localStorage.getItem('ident_down');
+                // this.frontBase64Data = prefixUrl + localStorage.getItem('ident_up');
+                // this.versoLegalBase64Data = prefixUrl + localStorage.getItem('ident_down');
                 // this.legalName = localStorage.getItem('ident_name')
             }else {
                 this.disabled = false;

@@ -1,9 +1,85 @@
 <template>
   <div class= "user-review">
       <div class = "under-review-con" v-if = "underReviewShow">
-          <p class = "under-review-word" v-if = "joinInshow">商户加盟审核中，请耐心等待</p>
-          <p class = "under-review-word" v-else>员工加入审核中，请耐心等待</p>
-          <button class = "cancel" @click.stop.prevent = "cancel">撤销</button>
+          <div class = "under-review-word" v-if = "joinInshow">
+              <!-- 商户加盟审核中，请耐心等待 -->
+              <div class = "header">
+                  <div class = "left" v-if = "corpShow">
+                      <div class = "logo"  v-bind:style = "{backgroundImage :'url(' + corpObj.logo + ')'}"></div>
+                      <div class= "right-corp">
+                          <p class = "corp">
+                              <span>{{corpObj.corporate_name}}</span>
+                              <span class = "state">审核中</span>
+                          </p>
+                          <p>
+                              <span>公司证照号</span>
+                              <span>{{corpObj.corporate_ident}}</span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class = "left" v-else>
+                      <div class = "logo"  v-if = "!userObj.avator || userObj.avator.length == 0" v-bind:style = "{backgroundImage :'url(' + userObj.ident_up + ')'}"></div>
+                      <div class = "logo"  v-if = "userObj.avator && userObj.avator.length > 0" v-bind:style = "{backgroundImage :'url(' + userObj.avator + ')'}"></div>
+                      <div class= "right-corp">
+                          <p class = "corp">
+                              <span>{{userObj.ident_name}}</span>
+                              <span class = "state">审核中</span>
+                          </p>
+                          <p>
+                              <span>身份证号：</span>
+                              <span>{{userObj.ident_num | filterId}}</span>
+                          </p>
+                      </div>
+                  </div>
+                  <div class = "right"></div>
+              </div>
+              <div class = "body">
+                <div class = "con" v-if = "corpShow">
+                  <p>
+                    <span class = "title">公司简介:</span>
+                    <span class = "content des">{{corpObj.organization_desc}}</span>
+                  </p>
+                  <p>
+                    <span class = "title">法人:</span>
+                    <span class = "content">{{corpObj.corporate_name}}</span>
+                  </p>
+                  <p>
+                    <span class = "title">法人证件号:</span>
+                    <span class = "content">{{corpObj.corporate_ident}}</span>
+                  </p>
+                  <p>
+                    <span class = "title">公司营业执照:</span>
+                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + corpObj.corporate_card_up + ')'}"></span>
+                  </p>
+                </div>
+                <div class = "con" v-else>
+                  <p>
+                    <span class = "title">用户账号:</span>
+                    <span class = "content des">{{userObj.phone}}</span>
+                  </p>
+                  <p>
+                    <span class = "title">申请加入的组织是:</span>
+                    <span class = "content">{{corpObj.corporate_name}}</span>
+                  </p>
+                  <!-- <p>
+                    <span class = "title">法人证件号:</span>
+                    <span class = "content">{{userObj.corporate_ident}}</span>
+                  </p> -->
+                  <p>
+                    <span class = "title">身份证正面:</span>
+                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + userObj.ident_down + ')'}"></span>
+                  </p>
+                  <p>
+                    <span class = "title">身份证反面:</span>
+                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + userObj.ident_up + ')'}"></span>
+                  </p>
+                </div>
+              </div>
+              <!-- <div class = "footer"></div> -->
+              <button class = "cancel" @click.stop.prevent = "cancel">撤销</button>
+          </div>
+          <div class = "under-review-word" v-else>员工加入审核中，请耐心等待</div>
+          <!-- <button class = "cancel" @click.stop.prevent = "cancel">撤销</button> -->
       </div>
       <div v-else class = "merchant-info-con">
           <div class = "merchant-con">
@@ -83,6 +159,7 @@ export default {
   name : 'userReview',
   data() {
     return {
+      corpShow : false,
       underReviewShow : false,
       joinInshow : false,
       auditShow : true,
@@ -107,6 +184,16 @@ export default {
   //     default : true
   //   }
   // },
+  filters : {
+      filterId : id => {
+        if(!id || id.length == 0){
+          return '暂无';
+        }
+        else {
+          return  id.replace(/(\d{3})\d{10}(\d{4})/,'$1**********$2')
+        }
+      }
+  },
   methods : {
     cancel() {
       let url = jiweiDevHost + '/trinity-backstage/organization/undo_user_application'
@@ -164,6 +251,7 @@ export default {
               })
           }
           else if(res.data.code == 0) {
+            // debugger
               this.$Notice.success({
                   title: '撤销成功',
                   desc: '请重新加盟或者加入'
@@ -202,8 +290,6 @@ export default {
   created() {
     let ov = localStorage.getItem('org_verified'),
     uv = localStorage.getItem("user_verified");
-    if(ov == 1 && uv == 1) {
-      this.underReviewShow = false;
               Promise.all(
                 [
                   getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
@@ -216,8 +302,20 @@ export default {
                   localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
                   localStorage.setItem('user_verified',result[1].data.data.verified)
                   localStorage.setItem('org_verified',result[0].data.data.verified)
-                  this.corpObj = result[0].data.data;
+                  this.corpObj = result[0].data.data.organization_mini;
                   this.userObj = result[1].data.data;
+                  let prefixUrl = ''
+                  if(process.env.NODE_ENV == 'development') {
+                      prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                  }else {
+                      prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                  }
+                  this.corpObj.logo = prefixUrl + this.corpObj.logo;
+                  this.userObj.logo = prefixUrl + this.userObj.logo;
+                  this.userObj.ident_down = prefixUrl + this.userObj.ident_down
+                  this.userObj.ident_up = prefixUrl + this.userObj.ident_up
+                  this.corpObj.corporate_card_up = prefixUrl + this.corpObj.corporate_card_up
+                  console.log("this.corpObj:")
                   console.log(this.corpObj)
                   console.log(this.userObj)
                 }
@@ -230,6 +328,8 @@ export default {
                     closable: true
                 });
               });
+    if(ov == 1 && uv == 1) {
+      this.underReviewShow = false;
 
               ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
               .then(res => {
@@ -260,9 +360,11 @@ export default {
       this.underReviewShow = true;
       if(ov == 1) {
         this.joinInshow = false
+        this.corpShow = true
       }
       else {
         this.joinInshow = true
+        this.corpShow = false
       }
     }
   }
@@ -278,32 +380,131 @@ export default {
   .under-review-con,.merchant-info-con {
     width : 100%;
     margin : 0 auto;
-    color : #fff;
+    color : #4A4A4A;
     font-size : 16px;
   }
   .under-review-con {
-      height : 30vh;
-      background-size : contain;
-      background-position : center;
-      background-image: url('./../../assets/images/noData/surveyBg.png');
-      @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-          background-image: url('./../../assets/images/noData/surveyBg@2x.png');
-      }
+      height : 100%;
+      width: 100%;
+      background-color: #fff;
+      // background-size : contain;
+      // background-position : center;
+      // background-image: url('./../../assets/images/noData/surveyBg.png');
+      // @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+      //     background-image: url('./../../assets/images/noData/surveyBg@2x.png');
+      // }
       display : flex;
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      padding : 2%;
       .under-review-word {
-        margin : 20px;
+        width : 96%;
+        height: 96%;
+        // background-color: pink;
+        box-sizing: border-box;
+        text-align: left;
+        .header {
+          width : 100%;
+          height: 140px;
+          padding-bottom : 50px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 2px dashed #DEDEDE;
+          .right {
+            width : 120px;
+            height: 72px;
+            background-size: contain;
+            background-position: center;
+            background-image: url('./../../assets/images/myOrg/under_review.png');
+            @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                background-image: url('./../../assets/images/myOrg/under_review@2x.png');
+            }
+          }
+          .left {
+            display: flex;
+            flex-direction: row;
+            justify-content: left;
+            align-items: center;
+            // border-bottom: 2px dashed #DEDEDE;
+            .logo {
+                width : 98px;
+                height: 98px;
+                background-size: cover;
+                background-position: center;
+            }
+            .right-corp {
+              margin-left: 20px;
+              height: 98px;
+              line-height: 98px;
+              p {
+                height: 49px;
+                line-height: 49px;
+                color : #4A4A4A;
+                font-size : 14px;
+                text-align: left;
+              }
+              .corp {
+                font-size : 24px;
+                color : #000;
+                font-weight: bold;
+                .state {
+                  color : #48A8DA;
+                  font-size : 16px;
+                  font-weight: normal;
+                }
+              }
+            }
+          }
+        }
+        .body {
+          font-size : 14px;
+          color : #000;
+          p{
+            // height: 20px;
+            margin : 3vh 0;
+            span {
+              display: inline-block;
+              height: 100%;
+              font-size : 14px;
+              vertical-align: text-top;
+            }
+            .content {
+              margin-left : 2%;
+            }
+            .title {
+              width : 20%;
+              text-align: right;
+            }
+            .corporate_card_up {
+              width : 240px;
+              height: 153px;
+              background-size: contain;
+              background-position: center;
+            }
+            .des {
+              max-width: 70%;
+              height: auto;
+              // overflow: hidden;
+              // white-space: nowrap;
+              // text-overflow: ellipsis;
+            }
+          }
+        }
       }
     .cancel {
+      font-size:18px;
+      font-weight: bold;
+      color : #fff;
       outline: none;
-      width : 100px;
-      height : 30px;
+      width : 160px;
+      height : 36px;
       line-height: 30px;
       text-align: center;
-      border-radius : 5px;
-      // font-size : 14px;
+      border-radius : 4px;
+      margin-top : 40px;
       letter-spacing: 2px;
       border: 1px solid transparent;  //自定义边框
       background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);

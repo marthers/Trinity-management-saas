@@ -90,8 +90,18 @@
             this.imgLen++;
             this.$set(this.imgs,this.fil[i].name+'?'+new Date().getTime()+i,this.fil[i]);
             this.blobToDataURL(this.fil[i],base64 => {
+            // this.getBase64(this.fil[i],base64 => {
+              console.log("base64.length:")
+              console.log(base64.length)
                 this.$emit('base64',base64)
             })
+            // var canvas = document.createElement('canvas');
+            // // var context = canvas.getContext('2d');
+            // canvas.width = 400;
+            // canvas.height = 400;
+            // canvas.getContext("2d").drawImage(this.fil[i],0,0,400,400);
+            // var base64 = canvas.toDataURL('image/jpeg')
+            // this.$emit('base64',base64)
             console.log(this.$refs.hasUploaded)
                 this.$refs.hasUploaded.style.backgroundImage = 'url(' + this.getObjectURL(this.fil[i]) + ')';
             }
@@ -111,6 +121,22 @@
           url = window.webkitURL.createObjectURL(file) ;
         }
         return url ;
+      },
+      getBase64(url, callback){
+          //通过构造函数来创建的 img 实例，在赋予 src 值后就会立刻下载图片，相比 createElement() 创建 <img> 省去了 append()，也就避免了文档冗余和污染
+          var Img = new Image(),
+              dataURL='';
+          Img.src=url;
+          Img.onload=function(){ //要先确保图片完整获取到，这是个异步事件
+              var canvas = document.createElement("canvas"), //创建canvas元素
+                  width=Img.width, //确保canvas的尺寸和图片一样
+                  height=Img.height;
+              canvas.width=width;
+              canvas.height=height;
+              canvas.getContext("2d").drawImage(Img,0,0,width,height); //将图片绘制到canvas中
+              dataURL=canvas.toDataURL('image/jpeg'); //转换图片为dataURL
+              callback?callback(dataURL):null; //调用回调函数
+          };
       },
         blobToDataURL(blob, callback) {
             let a        = new FileReader();

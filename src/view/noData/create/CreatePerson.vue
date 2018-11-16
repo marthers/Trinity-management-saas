@@ -672,11 +672,11 @@ export default {
                                   this.userNamePlaceholder = '请输入真实姓名'
                                   this.userName            = ''
                                 }
-                                let peffixUrl = ''
+                                let prefixUrl = ''
                                 if(process.env.NODE_ENV == 'development') {
-                                    peffixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
                                 }else {
-                                    peffixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
                                 }
                                 // 身份证号
                                 if(data.ident_num && data.ident_num.length > 0) {
@@ -689,7 +689,7 @@ export default {
                                 }
                                 // 身份证正面
                                 if(data.ident_up && data.ident_up.length > 0) {
-                                  this.indentImgUp =peffixUrl + data.ident_up;
+                                  this.indentImgUp =prefixUrl + data.ident_up;
                                   this.frontBase64Data = data.ident_up
                                   this.beforeHasDataUp = true
                                 }
@@ -700,7 +700,7 @@ export default {
                                 }
                                 // 身份证反面
                                 if(data.ident_down && data.ident_down.length > 0) {
-                                  this.indentImg = peffixUrl + data.ident_down;
+                                  this.indentImg = prefixUrl + data.ident_down;
                                   this.beforeHasData = true
                                   this.versoData = data.ident_down
                                 }

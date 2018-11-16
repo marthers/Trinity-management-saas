@@ -638,9 +638,16 @@ export default {
                     .then((result) => {
                       console.log(result);
                       if(result && result.length == 2) {
-                        localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                        localStorage.setItem('user_verified',result[1].data.data.verified)
-                        localStorage.setItem('org_verified',result[0].data.data.verified)
+                        if(result[1].data.data.verified) {
+                          localStorage.setItem('user_verified',result[1].data.data.verified)
+                        }
+                        if(result[0].data.data.verified) {
+                          localStorage.setItem('user_verified',result[0].data.data.verified)
+                        }
+                        if(result[1].data.data.fid_organization) {
+                          localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
+                        }
+                        // localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
                         // // if(result.status && result.status == 200 && result.data.success) {
                         // //   localStorage.setItem('org_verified',result.data.data.verified);
                         // this.NoDataIndexShow = false
