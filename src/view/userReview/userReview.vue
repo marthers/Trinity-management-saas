@@ -1,5 +1,6 @@
 <template>
   <div class= "user-review">
+    <!-- 审核中 -->
       <div class = "under-review-con" v-if = "underReviewShow">
           <div class = "under-review-word" v-if = "joinInshow">
               <!-- 商户加盟审核中，请耐心等待 -->
@@ -8,7 +9,7 @@
                       <div class = "logo"  v-bind:style = "{backgroundImage :'url(' + corpObj.logo + ')'}"></div>
                       <div class= "right-corp">
                           <p class = "corp">
-                              <span>{{corpObj.corporate_name}}</span>
+                              <span>{{corpObj.organization_name}}</span>
                               <span class = "state">审核中</span>
                           </p>
                           <p>
@@ -59,7 +60,7 @@
                   </p>
                   <p>
                     <span class = "title">申请加入的组织是:</span>
-                    <span class = "content">{{corpObj.corporate_name}}</span>
+                    <span class = "content">{{corpObj.organization_name}}</span>
                   </p>
                   <!-- <p>
                     <span class = "title">法人证件号:</span>
@@ -78,23 +79,25 @@
               <!-- <div class = "footer"></div> -->
               <button class = "cancel" @click.stop.prevent = "cancel">撤销</button>
           </div>
-          <div class = "under-review-word" v-else>员工加入审核中，请耐心等待</div>
+          <!-- <div class = "under-review-word" v-else>员工加入审核中，请耐心等待</div> -->
           <!-- <button class = "cancel" @click.stop.prevent = "cancel">撤销</button> -->
       </div>
+    <!-- 我的组织 -->
       <div v-else class = "merchant-info-con">
           <div class = "merchant-con">
             <div class= "up">
               <div class = "left">
                   <div  alt="" class = "logo left" v-bind:style = "{backgroundImage :'url(' + corpObj.logo + ')'}"></div>
+                  <!-- <div  alt="" class = "logo left" v-bind:style = "{backgroundImage :'@/assets/images/myOrg/merchants.png'}" v-else></div> -->
                   <div class = "right">
                       <p class = "corp-name">
                           {{
-                            corpName
+                            corpObj.organization_name
                           }}
                       </p>
                       <p>
                           <span>公司证照号</span>
-                          <span>{{corpObj.corporate_ident}}</span>
+                          <span>{{corpObj.organization_num}}</span>
                       </p>
                   </div>
               </div>
@@ -116,7 +119,7 @@
                   <div class = "icon">
                     <div class = "num">
                         {{
-                          userCount
+                          userCount | filterCount
                         }}
                     </div>
                   </div>
@@ -130,7 +133,7 @@
                   <div class = "icon">
                     <div class = "num">
                         {{
-                          merchantCount
+                          merchantCount | filterCount
                         }}
                     </div>
                   </div>
@@ -185,12 +188,24 @@ export default {
   //   }
   // },
   filters : {
+    // 过滤身份证号
       filterId : id => {
         if(!id || id.length == 0){
           return '暂无';
         }
         else {
           return  id.replace(/(\d{3})\d{10}(\d{4})/,'$1**********$2')
+        }
+      },
+      // 过滤加入的数量
+      filterCount : count => {
+        if(!count) {
+          return '0'
+        }
+        else {
+          if(count > 10) {
+            return 9 + '+'
+          }
         }
       }
   },
@@ -204,41 +219,44 @@ export default {
         if(res.status && res.status == 200) {
           // debugger
           if(res.data.code == 201) {
+          }
+          else if(res.data.code == 0) {
+            // debugger
               Promise.all(
                 [
-                  getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                  // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
                   getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
                 ]
               )
               .then((result) => {
                 console.log(result);
-                if(result && result.length == 2) {
-                  localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                  localStorage.setItem('user_verified',result[1].data.data.verified)
-                  localStorage.setItem('org_verified',result[0].data.data.verified)
-                  if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                    //跳转到商户信息
-                      this.$Notice.success({
-                          title: '跳转到商户信息',
-                          desc: '跳转到商户信息'
-                      });
-                  }
-                  else {
-                    if(result[0].data.data.verified == 1) {
-                      // 员工加入审核中
-                      this.$Notice.info({
-                          title: '员工加入审核中',
-                          desc: '员工加入审核中'
-                      });
-                    }
-                    else {
-                      //商户加盟审核中
-                      this.$Notice.info({
-                          title: '商户加盟审核中',
-                          desc: '商户加盟审核中'
-                      });
-                    }
-                  }
+                if(result && result.length == 1) {
+                  localStorage.setItem('fid_organization',result[0].data.data.fid_organization);
+                  localStorage.setItem('user_verified',result[0].data.data.verified)
+                  // localStorage.setItem('org_verified',result[0].data.data.verified)
+                  // if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
+                  //   //跳转到商户信息
+                  //     this.$Notice.success({
+                  //         title: '跳转到商户信息',
+                  //         desc: '跳转到商户信息'
+                  //     });
+                  // }
+                  // else {
+                  //   if(result[0].data.data.verified == 1) {
+                  //     // 员工加入审核中
+                  //     this.$Notice.info({
+                  //         title: '员工加入审核中',
+                  //         desc: '员工加入审核中'
+                  //     });
+                  //   }
+                  //   else {
+                  //     //商户加盟审核中
+                  //     this.$Notice.info({
+                  //         title: '商户加盟审核中',
+                  //         desc: '商户加盟审核中'
+                  //     });
+                  //   }
+                  // }
                 }
               })
               .catch((err) => {
@@ -249,9 +267,6 @@ export default {
                     closable: true
                 });
               })
-          }
-          else if(res.data.code == 0) {
-            // debugger
               this.$Notice.success({
                   title: '撤销成功',
                   desc: '请重新加盟或者加入'
@@ -299,9 +314,18 @@ export default {
               .then((result) => {
                 console.log(result);
                 if(result && result.length == 2) {
-                  localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                  localStorage.setItem('user_verified',result[1].data.data.verified)
-                  localStorage.setItem('org_verified',result[0].data.data.verified)
+                  // localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                  // localStorage.setItem('user_verified',result[1].data.data.verified)
+                  // localStorage.setItem('org_verified',result[0].data.data.verified)
+                  if(result[1].data.data.verified) {
+                    localStorage.setItem('user_verified',result[1].data.data.verified)
+                  }
+                  if(result[0].data.code == 0 && result[0].data.data.verified) {
+                    localStorage.setItem('user_verified',result[0].data.data.verified)
+                  }
+                  if(result[1].data.data.fid_organization) {
+                    localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
+                  }
                   this.corpObj = result[0].data.data.organization_mini;
                   this.userObj = result[1].data.data;
                   let prefixUrl = ''
@@ -338,6 +362,9 @@ export default {
                   let data = res.data.data;
                   console.log("ApplyJoinOrganization:");
                   console.log(data);
+                  this.userCount = data.user_list.length
+                  // this.merchantCount = data.organization_list.length
+                  this.merchantCount = 333
                 }
                 else {
                   this.$Message.error({
@@ -359,12 +386,12 @@ export default {
     else{
       this.underReviewShow = true;
       if(ov == 1) {
-        this.joinInshow = false
-        this.corpShow = true
+        this.joinInshow = true
+        this.corpShow = false
       }
       else {
         this.joinInshow = true
-        this.corpShow = false
+        this.corpShow = true
       }
     }
   }
@@ -400,7 +427,8 @@ export default {
       padding : 2%;
       .under-review-word {
         width : 96%;
-        height: 96%;
+        height: 100%;
+        overflow : auto;
         // background-color: pink;
         box-sizing: border-box;
         text-align: left;
@@ -416,7 +444,7 @@ export default {
           .right {
             width : 120px;
             height: 72px;
-            background-size: contain;
+            background-size: 100% 100%;
             background-position: center;
             background-image: url('./../../assets/images/myOrg/under_review.png');
             @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
@@ -432,7 +460,7 @@ export default {
             .logo {
                 width : 98px;
                 height: 98px;
-                background-size: cover;
+                background-size: 100% 100%;
                 background-position: center;
             }
             .right-corp {
@@ -479,9 +507,9 @@ export default {
               text-align: right;
             }
             .corporate_card_up {
-              width : 240px;
-              height: 153px;
-              background-size: contain;
+              width : 50%;
+              height: 20vh;
+              background-size: 100% 100%;
               background-position: center;
             }
             .des {
@@ -505,6 +533,7 @@ export default {
       text-align: center;
       border-radius : 4px;
       margin-top : 40px;
+      // margin-bottom : 200px;
       letter-spacing: 2px;
       border: 1px solid transparent;  //自定义边框
       background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
@@ -558,7 +587,7 @@ export default {
           .logo {
             width : 98px;
             height: 98px;
-            background-size: contain;
+            background-size: 100% 100%;
             background-position: center;
           }
           .right {
@@ -612,7 +641,7 @@ export default {
         .icon {
           width : 60px;
           height : 60px;
-          background-size: contain;
+          background-size: 100% 100%;
           background-position: center;
           background-image: url('./../../assets/images/myOrg/person.png');
           @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
@@ -664,7 +693,7 @@ export default {
         .icon {
           width : 60px;
           height : 60px;
-          background-size: contain;
+          background-size: 100% 100%;
           background-position: center;
           background-image: url('./../../assets/images/myOrg/merchants.png');
           @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {

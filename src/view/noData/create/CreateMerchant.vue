@@ -35,7 +35,7 @@
             </div>
             <div class = "con corp-id">
                 <p class = "info">公司简要描述：</p>
-                <Input v-model="des" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入公司简要描述(选填)" @on-keyup="des=des.replace(/[^\u4E00-\u9FA5|,|.]/g,'')"/>
+                <Input v-model="des" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入公司简要描述(选填)" @on-keyup="des=des.replace(/[^\u4E00-\u9FA5|,|.]/g,'')" class = "corp-des" maxlength = "254"/>
             </div>
             <footer>
                 <div class = "back" @click.stop.prevent = "backToPerson">上一步</div>
@@ -357,7 +357,7 @@ export default {
                 .img-not-uploaded {
                     width              : 64px;
                     height             : 60px;
-                    background-size    : contain;
+                    background-size    : 100% 100%;
                     background-position: center;
                     background-image   : url('./../../../assets/images/upload.png');
                     @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
@@ -419,7 +419,7 @@ export default {
                     .img-not-uploaded {
                         width              : 64px;
                         height             : 60px;
-                        background-size    : contain;
+                        background-size    : 100% 100%;
                         background-position: center;
                         background-image   : url('./../../../assets/images/upload.png');
                         @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
@@ -437,7 +437,11 @@ export default {
             flex-direction : row;
             justify-content: left;
             align-items    : center;
-            height         : 36px;
+            height         : auto;
+            /* 公司简要描述 */
+            .corp-des {
+              margin : 20px 0;
+            }
             .info {
                 width       : 140px;
                 height      : 20px;

@@ -81,7 +81,7 @@ export default {
           width              : .55rem;
           height             : .55rem;
           background-image   : url('./../../assets/images/home/logo.png');
-          background-size    : contain;
+          background-size    : 100% 100%;
           background-position: center;
           @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
               background-image: url('./../../assets/images/home/logo@2x.png');
@@ -142,7 +142,7 @@ export default {
               width              : 18px;
               height             : 20px;
               background-image   : url('./../../assets/images/home/Group3.png');
-              background-size    : contain;
+              background-size    : 100% 100%;
               background-position: center;
               @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                   background-image: url('./../../assets/images/home/Group3@2x.png');
@@ -167,7 +167,7 @@ export default {
           height             : 22px;
           cursor             : pointer;
           background-image   : url('./../../assets/images/home/Personal.png');
-          background-size    : contain;
+          background-size    : 100% 100%;
           background-position: center;
           @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
               background-image: url('./../../assets/images/home/Personal@2x.png');

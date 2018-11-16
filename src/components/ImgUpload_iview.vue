@@ -154,7 +154,7 @@
         .img-not-uploaded {
             width              : 64px;
             height             : 60px;
-            background-size    : contain;
+            background-size    : 100% 100%;
             background-position: center;
             background-image   : url('./../assets/images/upload.png');
             @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {

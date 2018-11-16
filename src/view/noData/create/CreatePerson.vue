@@ -20,7 +20,7 @@
             </div>
             <div class = "con id-number">
                 <p class = "info">身份证号：</p>
-                <input type="text" v-model="IDNumber" class = "input" :placeholder="IDPlaceholder"  onkeyup="this.value=this.value.replace(/[^\w]/g,'');"/>
+                <input type="text" v-model="IDNumber" class = "input" :placeholder="IDPlaceholder"  onkeyup="this.value=this.value.replace(/[^\w]/g,'');" maxlength = "20"/>
             </div>
             <div class = "id-con">
                 <div class = "face-con">
@@ -558,9 +558,18 @@ export default {
                     .then((result) => {
                       console.log(result);
                       if(result && result.length == 2) {
-                        localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                        localStorage.setItem('user_verified',result[1].data.data.verified)
-                        localStorage.setItem('org_verified',result[0].data.data.verified)
+                        // localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                        // localStorage.setItem('user_verified',result[1].data.data.verified)
+                        // localStorage.setItem('org_verified',result[0].data.data.verified)
+                        if(result[1].data.data.verified) {
+                          localStorage.setItem('user_verified',result[1].data.data.verified)
+                        }
+                        if(result[0].data.code == 0 && result[0].data.data.verified) {
+                          localStorage.setItem('user_verified',result[0].data.data.verified)
+                        }
+                        if(result[1].data.data.fid_organization) {
+                          localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
+                        }
                         // // if(result.status && result.status == 200 && result.data.success) {
                         // //   localStorage.setItem('org_verified',result.data.data.verified);
                         // this.NoDataIndexShow = false
@@ -852,7 +861,7 @@ export default {
                     .img-not-uploaded {
                         width              : 64px;
                         height             : 60px;
-                        background-size    : contain;
+                        background-size    : 100% 100%;
                         background-position: center;
                         background-image   : url('./../../../assets/images/upload.png');
                         @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {

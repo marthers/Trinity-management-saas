@@ -49,7 +49,7 @@ export default {
     .bg {
         width: 100%;
         height : 25%;
-        background-size : contain;
+        background-size : 100% 100%;
         background-position : center;
         background-image: url('./../../assets/images/noData/surveyBg.png');
         @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
@@ -104,7 +104,7 @@ export default {
             .icon {
                 width              : 60px;
                 height             : 60px;
-                background-size    : contain;
+                background-size    : 100% 100%;
                 background-position: center;
                 margin             : 0 30px;
             }

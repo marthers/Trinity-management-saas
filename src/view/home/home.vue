@@ -625,6 +625,7 @@ export default {
             this.createMerchantInfoShow = false;
             this.createLegalShow        = false;
         }else {
+          // {
             this.NoDataIndexShow = false;
 
 
@@ -641,7 +642,7 @@ export default {
                         if(result[1].data.data.verified) {
                           localStorage.setItem('user_verified',result[1].data.data.verified)
                         }
-                        if(result[0].data.data.verified) {
+                        if(result[0].data.code == 0 && result[0].data.data.verified) {
                           localStorage.setItem('user_verified',result[0].data.data.verified)
                         }
                         if(result[1].data.data.fid_organization) {
@@ -845,7 +846,7 @@ export default {
             width              : 55px;
             height             : 55px;
             background-image   : url('./../../assets/images/home/logo.png');
-            background-size    : contain;
+            background-size    : 100% 100%;
             background-position: center;
             @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                 background-image: url('./../../assets/images/home/logo@2x.png');
@@ -906,7 +907,7 @@ export default {
                 width              : 18px;
                 height             : 20px;
                 background-image   : url('./../../assets/images/home/Group3.png');
-                background-size    : contain;
+                background-size    : 100% 100%;
                 background-position: center;
                 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                     background-image: url('./../../assets/images/home/Group3@2x.png');
@@ -931,7 +932,7 @@ export default {
             height             : 22px;
             cursor             : pointer;
             background-image   : url('./../../assets/images/home/Personal.png');
-            background-size    : contain;
+            background-size    : 100% 100%;
             background-position: center;
             @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                 background-image: url('./../../assets/images/home/Personal@2x.png');
@@ -996,7 +997,7 @@ export default {
                         width              : 24px;
                         height             : 24px;
                         cursor             : pointer;
-                        background-size    : contain;
+                        background-size    : 100% 100%;
                         background-position: center;
                     }
                 }

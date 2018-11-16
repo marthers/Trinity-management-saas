@@ -196,7 +196,7 @@
     .img-not-uploaded {
         width              : 64px !important;
         height             : 60px !important;
-        background-size    : contain;
+        background-size    : 100% 100%;
         background-position: center;
         /* background-image   : url('./../assets/images/noData/imgNotUploaded.png') !important; */
             background-image   : url('./../assets/images/upload.png') !important;
@@ -222,7 +222,7 @@
     .before-has-data {
         width              : 240px !important;
         height             : 153px !important;
-        background-size    : contain;
+        background-size    : 100% 100%;
         background-position: center;
         background-repeat  : no-repeat;
         .upload-button {
@@ -243,7 +243,7 @@
     .has-uploaded{
         width              : 240px !important;
         height             : 153px !important;
-        background-size    : contain;
+        background-size    : 100% 100%;
         background-position: center;
         background-repeat  : no-repeat;
         .upload-button {
