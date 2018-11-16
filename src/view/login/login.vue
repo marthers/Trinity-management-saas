@@ -327,13 +327,13 @@ export default {
               'priority': '3',
               'id_organization'   : '',
               'data'    : {
-              'phone'   : this.userName,
-              'password': !this.rememberedPasswordIsChanged ? md5(this.password) : this.password,
-              // 'new_password': md5(this.password),
-              'verify_code': '',
-              'captcha'    : this.graphValidateCodeShowForPasswordLogin ? this.graphCode        : '',
-              'device_id'  : localStorage.getItem('uuid') != null ? localStorage.getItem('uuid'): uuid(8,16),
-              'device_name': window.navigator.userAgent
+                'phone'   : this.userName,
+                'password': localStorage.getItem('rememberPassword') && this.password == localStorage.getItem('password') ? this.password : md5(this.password) ,
+                // 'new_password': md5(this.password),
+                'verify_code': '',
+                'captcha'    : this.graphValidateCodeShowForPasswordLogin ? this.graphCode        : '',
+                'device_id'  : localStorage.getItem('uuid') != null ? localStorage.getItem('uuid'): uuid(8,16),
+                'device_name': window.navigator.userAgent
               }
           }
         })
