@@ -216,7 +216,8 @@ export default {
             })
         },
         backToPerson() {
-            this.$emit('back-to-person')
+            // this.$emit('back-to-person');
+            this.$router.go(-1);
         },
         toEditLegalPerson() {
             // if(this.selectedMerchant.length == 0) {

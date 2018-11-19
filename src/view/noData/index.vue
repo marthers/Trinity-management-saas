@@ -1,5 +1,6 @@
 <template>
     <div class = "nodata-index">
+                    <router-view></router-view>
         <div class = "bg">
             <p class = "welcome">welcome</p>
             <p class = "welcome-chinese">欢迎来到自助设备运营管理平台</p>
@@ -35,7 +36,13 @@ export default {
     methods : {
         twoClicked(type) {
             console.log(`type=${type}`)
-            this.$emit('two-clicked',type)
+            // this.$emit('two-clicked',type)
+            this.$router.push({
+              name : 'CreatePerson',
+              params : {
+                typeChosen : type
+              }
+            })
             console.log(this.$route.meta)
         }
     }

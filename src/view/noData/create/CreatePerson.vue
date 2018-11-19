@@ -126,21 +126,24 @@ export default {
             selectOrgShow      : false,
             orgList            : [],
             total_pages        : 1000,
-            joinInOrgTitle : '选择加入商户（平台、大商户、商户所有)'
+            joinInOrgTitle : '选择加入商户（平台、大商户、商户所有)',
+            createShow : true
         }
     },
     methods : {
         backToIndex() {
-            this.$emit('person-back')
+            // this.$emit('person-back')
+            this.$router.back();
         },
         chooseOrgBack() {
             this.selectOrgShow = false;
         },
         toMerchant() {
             // this.$emit('createPersonSuccess');
-            if(this.userName == localStorage.getItem('ident_name') && this.IDNumber == localStorage.getItem('ident_num') && this.frontBase64Data.length == 0 && localStorage.getItem('ident_down') != null && localStorage.getItem('ident_up') != null && this.versoData.length == 0) {
-                this.$emit('createPersonSuccess',{});
-            }else {
+            // if(this.userName == localStorage.getItem('ident_name') && this.IDNumber == localStorage.getItem('ident_num') && this.frontBase64Data.length == 0 && localStorage.getItem('ident_down') != null && localStorage.getItem('ident_up') != null && this.versoData.length == 0) {
+            //     this.$emit('createPersonSuccess',{});
+            // }
+            // else {
                 if(this.userName != localStorage.getItem('ident_name') && this.IDNumber != localStorage.getItem('ident_num') && this.frontBase64Data.length != 0 && this.versoData.length != 0) {
                     if(this.userName.length > 0) {
                         if(!validateCName(this.userName)) {
@@ -207,7 +210,10 @@ export default {
                                                             closable: true
                                                         });
                                                     }else if(code == 0) {
-                                                        this.$emit('createPersonSuccess',res.data.user_info);
+                                                        // this.$emit('createPersonSuccess',res.data.user_info);
+                                                        this.$router.push({
+                                                          name : 'createMerchant'
+                                                        })
                                                     }
                                                 }
                                             }else {
@@ -337,7 +343,10 @@ export default {
                                     if(res.data.user_info.phone) {
                                         localStorage.setItem('name',resData.user_info.name)
                                     }
-                                    this.$emit('createPersonSuccess',res.data.user_info);
+                                    // this.$emit('createPersonSuccess',res.data.user_info);
+                                    this.$router.push({
+                                      name : 'createMerchant'
+                                    })
                                 }
                             }
                         }else {
@@ -361,7 +370,7 @@ export default {
 
 
                 }
-            }
+            // }
 
 
 
@@ -666,6 +675,13 @@ export default {
         },
     },
     created() {
+        console.log(this.$route.params)
+        if(this.$route.params.typeChosen == 'join') {
+          this.createShow = false
+        }
+        else {
+          this.createShow = true
+        }
               this.$LoadingBar.start();
 
                     //getUserDetail
@@ -759,12 +775,12 @@ export default {
                       this.$LoadingBar.error()
                     });
     },
-    props : {
-        createShow : {
-            type   : Boolean,
-            default: true
-        }
-    },
+    // props : {
+    //     createShow : {
+    //         type   : Boolean,
+    //         default: true
+    //     }
+    // },
     components : {
         ImgUpload,JoinInOrg
     }
