@@ -16,7 +16,13 @@
             </div> -->
             <div class = "con username">
                 <p class = "info">姓名：</p>
-                <input type="text" v-model.trim="userName" class = "input" :placeholder="userNamePlaceholder"  maxlength = "20" onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5]/g,'')"/>
+                <input type="text"
+                    v-model.trim="userName"
+                    class = "input"
+                    :placeholder="userNamePlaceholder"
+                    maxlength = "20"
+                    onkeyup="this.value=this.value.replace(/[^\u4e00-\u9fa5]/g,'')"
+                    onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[\d]/g,''))"/>
             </div>
             <div class = "con id-number">
                 <p class = "info">身份证号：</p>
