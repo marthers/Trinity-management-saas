@@ -246,7 +246,7 @@ export default {
                           uv = localStorage.getItem("user_verified");
                           if(ov == 1 && uv == 1) {
                             this.underReviewShow = false;
-                              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
+                              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/detail')
                               .then(res => {
                                 console.log(res);
                                 if(res.status && res.status == 200 && res.data.code == 0) {
@@ -372,7 +372,7 @@ export default {
                 if(ov == 1 && uv == 1) {
                   this.underReviewShow = false;
 
-                          ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
+                          ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/detail')
                           .then(res => {
                             console.log(res);
                             if(res.status && res.status == 200 && res.data.code == 0) {
