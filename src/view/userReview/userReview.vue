@@ -224,39 +224,78 @@ export default {
             // debugger
               Promise.all(
                 [
-                  // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                  getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
                   getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
                 ]
               )
               .then((result) => {
                 console.log(result);
                 if(result && result.length == 1) {
-                  localStorage.setItem('fid_organization',result[0].data.data.fid_organization);
-                  localStorage.setItem('user_verified',result[0].data.data.verified)
-                  // localStorage.setItem('org_verified',result[0].data.data.verified)
-                  // if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                  //   //跳转到商户信息
-                  //     this.$Notice.success({
-                  //         title: '跳转到商户信息',
-                  //         desc: '跳转到商户信息'
-                  //     });
-                  // }
-                  // else {
-                  //   if(result[0].data.data.verified == 1) {
-                  //     // 员工加入审核中
-                  //     this.$Notice.info({
-                  //         title: '员工加入审核中',
-                  //         desc: '员工加入审核中'
-                  //     });
-                  //   }
-                  //   else {
-                  //     //商户加盟审核中
-                  //     this.$Notice.info({
-                  //         title: '商户加盟审核中',
-                  //         desc: '商户加盟审核中'
-                  //     });
-                  //   }
-                  // }
+                  result.forEach((item,index) => {
+                      if(item.status == 200 && item.data && item.data.code == 0) {
+                          if(result[1].data.data.verified) {
+                            localStorage.setItem('user_verified',result[1].data.data.verified)
+                          }
+                          if(result[0].data.code == 0 && result[0].data.data.verified) {
+                            localStorage.setItem('org_verified',result[0].data.data.verified)
+                          }
+                          if(result[1].data.data.fid_organization) {
+                            localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
+                          }
+                          let ov = localStorage.getItem('org_verified'),
+                          uv = localStorage.getItem("user_verified");
+                          if(ov == 1 && uv == 1) {
+                            this.underReviewShow = false;
+                              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
+                              .then(res => {
+                                console.log(res);
+                                if(res.status && res.status == 200 && res.data.code == 0) {
+                                  let data = res.data.data;
+                                  console.log("ApplyJoinOrganization:");
+                                  console.log(data);
+                                  this.userCount = data.user_list.length
+                                  // this.merchantCount = data.organization_list.length
+                                  this.merchantCount = 333
+                                }
+                                else {
+                                  this.$Message.error({
+                                      content : res && res.msg ? res.msg: '网络错误',
+                                      duration: 5,
+                                      closable: true
+                                  });
+                                }
+                              })
+                              .catch(err => {
+                                console.log(err);
+                                this.$Message.error({
+                                    content : err && err.msg ? err.msg: '网络错误',
+                                    duration: 5,
+                                    closable: true
+                                });
+                              })
+                          }
+                          else{
+                            this.underReviewShow = true;
+                            if(ov == 1) {
+                              this.joinInshow = true
+                              this.corpShow = false
+                            }
+                            else {
+                              this.joinInshow = true
+                              this.corpShow = true
+                            }
+                          }
+                      }
+                      else {
+                          this.$Message.error({
+                              content : '网络错误',
+                              duration: 5,
+                              closable: true
+                          });
+                      }
+                  })
+                  // localStorage.setItem('fid_organization',result[0].data.data.fid_organization);
+                  // localStorage.setItem('user_verified',result[0].data.data.verified)
                 }
               })
               .catch((err) => {
@@ -325,6 +364,15 @@ export default {
                 }
                 this.corpObj = result[0].data.data.organization_mini;
                 this.userObj = result[1].data.data;
+            }
+            else {
+                this.$Message.error({
+                    content : '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+            }
+        })
                 let prefixUrl = ''
                 if(process.env.NODE_ENV == 'development') {
                     prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
@@ -339,15 +387,6 @@ export default {
                 console.log("this.corpObj:")
                 console.log(this.corpObj)
                 console.log(this.userObj)
-            }
-            else {
-                this.$Message.error({
-                    content : '网络错误',
-                    duration: 5,
-                    closable: true
-                });
-            }
-        })
       }
       else {
         this.$Message.error({
