@@ -351,9 +351,9 @@ export default {
                     localStorage.setItem('Trinity-Token',resData.token)
                     localStorage.setItem('password',resData.password);
                     this.user_info = resData.user_info;
-                    // debugger
+                    //
                     console.log(resData.user_info);
-                    // debugger
+                    //
                     // for(let item in resData.user_info) {
                     //   console.log(item);
                     //   localStorage.setItem(item,resData.user_info[item])
@@ -390,18 +390,18 @@ export default {
                     //   console.log(baseConfig.baseUrl.localOrgHost + 'trinity-backstage/organization/detail')
                     //   getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
                     //   .then (res => {
-                    //       // debugger
+                    //       //
                     //       console.log(res);
                     //       if(res.status && res.status == 200) {
-                    //         // debugger
+                    //         //
                     //         if(res.data.success && res.data.code == 0) {
                     //           if(res.data.data) {
-                    //             // debugger;
+                    //             // ;
                     //             let data = res.data.data;
                     //             // for(let item in data) {
                     //             localStorage.setItem('org_detail_obj' , JSON.stringify(data))
                     //             // }
-                    //             // debugger
+                    //             //
                     //           }
                     //         }else {
                     //           this.$Message.error({
@@ -521,7 +521,7 @@ export default {
         console.log('手机验证码登录')
         //手机验证码登录,手机号合法
         if (validateMobilephone(this.userName)) {
-          // debugger
+          //
           console.log(`this.loginVerify=${this.loginVerify}`)
           if (validateVerificationCode(this.loginVerify)) {
             this.ifNotUuid();
@@ -592,15 +592,15 @@ export default {
                         //   .then (res => {
                         //       console.log(res);
                         //       if(res.status && res.status == 200) {
-                        //         // debugger
+                        //         //
                         //         if(res.data.success && res.data.code == 0) {
                         //           if(res.data.data) {
-                        //             // debugger;
+                        //             // ;
                         //             let data = res.data.data;
                         //             // for(let item in data) {
                         //             localStorage.setItem('org_detail_obj' , JSON.stringify(data))
                         //             // }
-                        //             // debugger
+                        //             //
                         //           }
                         //         }else {
                         //           this.$Message.error({
@@ -654,7 +654,7 @@ export default {
                           name  : 'home',
                           params: resData
                         });
-                        // debugger
+                        //
                       }
                       else {
                         this.$Message.error({
@@ -1061,15 +1061,15 @@ export default {
                             //   .then (res => {
                             //       console.log(res);
                             //       if(res.status && res.status == 200) {
-                            //         // debugger
+                            //         //
                             //         if(res.data.success && res.data.code == 0) {
                             //           if(res.data.data) {
-                            //             // debugger;
+                            //             // ;
                             //             let data = res.data.data;
                             //             // for(let item in data) {
                             //             localStorage.setItem('org_detail_obj' , JSON.stringify(data))
                             //             // }
-                            //             // debugger
+                            //             //
                             //           }
                             //         }else {
                             //           this.$Message.error({
@@ -1195,7 +1195,7 @@ export default {
                     closable: true
                   })
                 }else {
-                  console.log('debugger')
+                  console.log('')
                 }
               }
             }
@@ -1238,6 +1238,9 @@ export default {
                       //登录成功的数据包
                       if(res.data.data) {
                         let resData = res.data.data;
+
+                        console.log(resData)
+
                         localStorage.setItem('Trinity-Token',resData.token)
                         this.user_info = resData.user_info;
                         // if(resData.user_info.phone) {
@@ -1272,15 +1275,15 @@ export default {
                         //   .then (res => {
                         //       console.log(res);
                         //       if(res.status && res.status == 200) {
-                        //         // debugger
+                        //         //
                         //         if(res.data.success && res.data.code == 0) {
                         //           if(res.data.data) {
-                        //             // debugger;
+                        //             // ;
                         //             let data = res.data.data;
                         //             // for(let item in data) {
                         //             localStorage.setItem('org_detail_obj' , JSON.stringify(data))
                         //             // }
-                        //             // debugger
+                        //             //
                         //           }
                         //         }else {
                         //           this.$Message.error({
@@ -1318,18 +1321,11 @@ export default {
                                 localStorage.removeItem('password');
                             }
                         }
+
+                        console.log(localStorage)
+
                         console.log("this.user_info:");
                         console.log(this.user_info);
-                        // this.$Message.success({
-                        //     content : '登录成功',
-                        //     duration: 5,
-                        //     closable: true
-                        // });
-                        // this.$Notice.success({
-                        //     title   : '登录成功',
-                        //     desc    : '欢迎进入Trinity Tech Saas',
-                        //     duration: 7
-                        // });
                         this.$router.push({
                           name  : 'home',
                           params: resData
@@ -1422,7 +1418,7 @@ export default {
             })
         }
         else {
-            // debugger
+            //
         }
       }
     },
@@ -1649,7 +1645,7 @@ export default {
         duration: 3
     });
     // if(!this.notRemember) {
-        // debugger
+        //
         if(localStorage.getItem('password') != null) {
             this.password = localStorage.getItem('password')
             this.notRemember = !localStorage.getItem('rememberPassword')

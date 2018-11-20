@@ -41,14 +41,10 @@
         <footer>
             <div class = "left">
                 <div @click.stop.prevent="handleSelectAll" class = "select-all-container">
-                    <!-- <div :class = "{tableSelect%2 > 0 ? 'selected' : '','select-all-icon'}"></div> -->
-                    <!-- <div class = "select-all-icon"></div> -->
-                    <Radio
-                      :value="selectAllRadio"
-                      :true-value = "selectAllTrue"
-                      :false-value = "selectAllFalse"
-                      @on-change = "selectAllRadioChange">全选</Radio>
-                    <!-- <div class = "select-all">全选</div> -->
+                  <div class = "radio-list">
+                      <div class = "checked-radio" v-if = "selectAll"></div>
+                  </div>
+                  <div class = "select-all-word">全选</div>
                 </div>
                 <div class = "batch-through" @click.stop.prevent = "batchThrough">批量通过</div>
             </div>
@@ -64,10 +60,10 @@ export default {
   name : 'CheckList',
   data() {
     return {
-      // tableSelect : 0,
-      selectAllRadio : false,
-      selectAllTrue : false,
-      selectAllFalse : true,
+      selectAll : false,
+      // selectAllRadio : false,
+      // selectAllTrue : false,
+      // selectAllFalse : true,
       title : '员工审核',
       namePlaceholder : '用户名',
       nameVal : '',
@@ -109,6 +105,7 @@ export default {
                               click: () => {
                                 params.row.option.selected = !params.row.option.selected
                               }
+                              // click: vm.handleSelect(params)
                           },
                           // 'attrs' : {
                           // }
@@ -421,10 +418,6 @@ export default {
       console.log(index);
       this.rejectModalShow = true
     },
-    selectAllRadioChange() {
-      console.log(`this.selectAllRadio=${this.selectAllRadio}`)
-      // this.selectAllRadio = !this.selectAllRadio
-    },
     timeOk() {
       console.log(`this.startTime=${this.startTime}`);
       console.log(`this.endTime=${this.endTime}`);
@@ -435,19 +428,41 @@ export default {
     },
     //全选
     handleSelectAll() {
-      this.tableSelect ++;
-      // if(this.tableSelection%2 > 0) {
-        this.$refs.tableSelection.selectAll(this.tableSelect%2 > 0)
-      // }
+      this.selectAll = !this.selectAll
+      this.tableData.forEach((item,index) => {
+        item.option.selected = this.selectAll
+      })
     },
     //批量通过
     batchThrough() {
-
+      let selectedArr = this.tableData.filter(item => {
+         if(item.option.selected) {
+           return true
+         }
+         else {
+           return
+         }
+      });
+      console.log(selectedArr);
+      this.tableData.forEach((item,index) => {
+        console.log(item.option.selected)
+      })
+    },
+    handleSelect(params){
+      console.log(params)
     }
   },
   components : {
     RejectModal
-  }
+  },
+  // watch : {
+  //   tableData :
+  //   {
+  //     handlerTable(newVal,oldVal) {
+
+  //     }
+  //   }
+  // }
 }
 </script>
 <style>
@@ -560,12 +575,27 @@ export default {
   border-radius : 50%;
   background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
 }
+.list-con footer .right li {
+  width: 32px;
+  height : 32px;
+  border-radius : 50%;
+}
+.list-con footer .right .ivu-page-prev {
+  content : '';
+  background-size: cover;
+  background-position : center;
+  background-image : url('./../../assets/icons/pager/prev.png')
+}
+.list-con footer .right .ivu-page-prev a {
+ visibility: hidden;
+}
 </style>
+
 <style lang="scss" scoped>
 .list-con {
   width : 100%;
   height: 100%;
-  // background-color: pink;
+  user-select: none;
   padding : 2.5%;
   .title {
     width : 100%;
@@ -634,6 +664,9 @@ export default {
     }
   }
   footer {
+    margin : 2vh 0;
+    // position: fixed;
+    // bottom : 10px;
     display : flex;
     flex-direction : row;
     justify-content : space-between;
@@ -648,19 +681,49 @@ export default {
         font-size : 16px;
         .batch-through {
           color : #2CA7C9;
+          cursor: pointer;
+          user-select: none;
         }
         .select-all-container {
-          color : #4A4A4A;
-          .select-all-icon {
-            width:16px;
-            height : 16px;
-            border: 1px solid #979797;
-            border-radius : 50%;
-          }
-          .selected {
-            background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
-          }
+            cursor: pointer;
+            margin-right: 10px;
+            color : #4A4A4A;
+            .radio-list {
+              width : 16px;
+              height : 16px;
+              border-radius : 50%;
+              border : 1px solid #979797;
+              display : flex;
+              justify-content : center;
+              align-items : center;
+              .checked-radio {
+                width : 10px;
+                height : 10px;
+                border-radius : 50%;
+                background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+              }
+            }
+            display: flex;
+            flex-direction: row;
+            height: 16px;
+            align-items: center;
+            // .select-all-icon {
+            //   width:16px;
+            //   height : 16px;
+            //   border: 1px solid #979797;
+            //   border-radius : 50%;
+            // }
+            // .selected {
+            //   background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+            // }
+            // 全选
+            .select-all-word {
+              margin-left: 3px;
+              user-select: none;
+            }
         }
+    }
+    .right {
     }
   }
 }
