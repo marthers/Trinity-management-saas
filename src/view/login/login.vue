@@ -1220,7 +1220,7 @@ export default {
                 'data'    : {
                   'phone'   : this.userName,
                 //   'password': md5(this.password),
-                    'password': !this.rememberedPasswordIsChanged ? md5(this.password) : this.password,
+                    'password': this.rememberedPasswordIsChanged && this.userName == localStorage.getItem('userPhone') ?  this.password : md5(this.password),
                   // 'new_password': md5(this.password),
                   'verify_code': this.registerVerifyCode,
                   'captcha'    : this.graphValidateCodeShow ? this.graphCode                        : '',
@@ -1243,22 +1243,6 @@ export default {
 
                         localStorage.setItem('Trinity-Token',resData.token)
                         this.user_info = resData.user_info;
-                        // if(resData.user_info.phone) {
-                        //     localStorage.setItem('userPhone',resData.user_info.phone)
-                        // }
-                        // if(!this.notRemember) {
-                        //     localStorage.setItem('rememberPassword',true)
-                        //     localStorage.setItem('password',resData.password);
-                        // }else{
-                        //     localStorage.setItem('rememberPassword',false);
-                        //     if(localStorage.getItem('password') != null) {
-                        //         localStorage.removeItem('password');
-                        //     }
-                        // }
-                        // for(let item in resData.user_info) {
-                        //   console.log(item);
-                        //   localStorage.setItem(item,resData.user_info[item])
-                        // }
                         if(resData.user_info.verified) {
                             localStorage.setItem('user_verified',resData.user_info.verified)
                         }
@@ -1269,47 +1253,6 @@ export default {
                             localStorage.setItem('userPhone',resData.user_info.phone)
                         }
                         localStorage.setItem('fid_organization',resData.fid_organization);
-                        // if(resData.fid_organization != 0) {
-                        //   console.log(baseConfig.baseUrl.localOrgHost + 'trinity-backstage/organization/detail')
-                        //   getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
-                        //   .then (res => {
-                        //       console.log(res);
-                        //       if(res.status && res.status == 200) {
-                        //         //
-                        //         if(res.data.success && res.data.code == 0) {
-                        //           if(res.data.data) {
-                        //             // ;
-                        //             let data = res.data.data;
-                        //             // for(let item in data) {
-                        //             localStorage.setItem('org_detail_obj' , JSON.stringify(data))
-                        //             // }
-                        //             //
-                        //           }
-                        //         }else {
-                        //           this.$Message.error({
-                        //               content : err.msg ? err.msg :'网络错误',
-                        //               duration: 5,
-                        //               closable: true
-                        //           });
-                        //         }
-                        //       }
-                        //       else {
-                        //         this.$Message.error({
-                        //             content : err.msg ? err.msg :'网络错误',
-                        //             duration: 5,
-                        //             closable: true
-                        //         });
-                        //       }
-                        //   })
-                        //   .catch(err => {
-                        //     console.log(err)
-                        //     this.$Message.error({
-                        //         content : err.msg ? err.msg :'网络错误',
-                        //         duration: 5,
-                        //         closable: true
-                        //     });
-                        //   })
-                        // }
                         localStorage.setItem('organization_level',resData.organization_level);
                         localStorage.setItem('permission',resData.permission);
                         if(!this.notRemember) {
@@ -1342,11 +1285,6 @@ export default {
                     //登录失败
                     else{
                         if(res.data.code == 105) {
-                          // this.$Message.info({
-                          //     content : res.data.msg ? res.data.msg: '更换设备需要验证',
-                          //     duration: 5,
-                          //     closable: true
-                          // });
                           this.changeDevice             = true;
                           this.registerOrReset          = '设备验证';
                           this.registerOrSubmit         = '验证'
@@ -1375,30 +1313,10 @@ export default {
                           this.captchaUrl            = res.data.code == 101 ? 'captcha/phone' : 'captcha/device';
                           this.getCaptcha();
                         }
+                        else if(res.data.code == 400) {
+
+                        }
                     }
-                // }
-                // else {
-                //     this.$Message.error({
-                //         content : res.data.msg ? res.data.msg: '登录失败',
-                //         duration: 5,
-                //         closable: true
-                //     });
-                // }
-              //请求成功
-            //   if(res.status && res.status == 200) {
-            //     console.log("res.data:");
-            //     console.log(res.data);
-            //     console.log("res.data.data:")
-            //     console.log(res.data.data)
-            //   }
-            //   //请求失败
-            //   else{
-            //     this.$Message.error({
-            //         content : '网络异常，请及时联系管理员',
-            //         duration: 5,
-            //         closable: true
-            //     });
-            //   }
               console.log(res);
               console.log("this.$config:");
               console.log(this.$config);
@@ -1646,8 +1564,8 @@ export default {
     });
     // if(!this.notRemember) {
         //
-        if(localStorage.getItem('password') != null) {
-            this.password = localStorage.getItem('password')
+        if(localStorage.getItem('password') != null ) {
+            // this.password = localStorage.getItem('password')
             this.notRemember = !localStorage.getItem('rememberPassword')
         }else {
             this.notRemember = true

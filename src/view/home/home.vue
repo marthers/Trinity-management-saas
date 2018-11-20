@@ -456,9 +456,9 @@ export default {
         },
         submitCreate (legalData) {
             // this.NoDataIndexShow        = true;
-            this.$router.push({
-              name : 'NoDataIndex'
-            })
+            // this.$router.push({
+            //   name : 'NoDataIndex'
+            // })
             this.createPersonalInfoShow = false;
             this.createMerchantInfoShow = false;
             this.createLegalShow        = false;

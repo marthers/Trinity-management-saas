@@ -35,7 +35,7 @@
             </div>
             <div class = "con corp-id">
                 <p class = "info">公司简要描述：</p>
-                <Input v-model="des" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入公司简要描述(选填)" @on-keyup="des=des.replace(/[^\u4E00-\u9FA5|,|.]/g,'')" class = "corp-des" maxlength = "254"/>
+                <Input v-model="des" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入公司简要描述(选填)" @on-keyup="des=des.replace(/[^\u4E00-\u9FA5|,|.]/g,'')" class = "corp-des" :maxlength = "maxlength"/>
             </div>
             <footer>
                 <div class = "back" @click.stop.prevent = "backToPerson">上一步</div>
@@ -78,7 +78,9 @@ export default {
     name: 'CreatePerson',
     data() {
         return {
+            // merchantData : {},
             userName        : '',
+            maxlength : 254,
             IDNumber        : '',
             logoModalTitle  : '公司Logo',
             logoUploadId    : 'logoUploadId',
@@ -94,6 +96,7 @@ export default {
             page_index      : 1,
             page_size       : 20,
             total_pages     : 1000,
+            merchantData : {},
             title : '选择加盟商户（平台和大商户)' //
             // content : '',
             // customToolbar: [
@@ -113,7 +116,10 @@ export default {
             console.log(this.content);
         },
         superiorSelected(selectedSuperior){
+          // debugger
             console.log(selectedSuperior);
+            this.merchantData = Object.assign({},selectedSuperior);
+            // debugger
             this.selectedMerchant = selectedSuperior;
             this.$emit('selectedSuperior',selectedSuperior)
         },
@@ -252,14 +258,27 @@ export default {
             if(this.des.replace(/s+/g,'').length > 0) {
                 console.log(`filterStr(this.des)=${filterStr(this.des)}`);
             }
-            this.$emit('to-legal',{
+            
+            this.merchantData           = {
                 'selectedMerchant': JSON.stringify(this.selectedMerchant),
                 'logoBase64Data'  : this.logoBase64Data,
                 'corpBase64Data'  : this.corpBase64Data,
                 'IDNumber'        : this.IDNumber,
                 'corpName'        : this.userName,
                 'des'             : this.des
+            };
+            this.$router.push({
+              name : 'CreateLegal',
+              params : this.merchantData
             })
+            // this.$emit('to-legal',{
+            //     'selectedMerchant': JSON.stringify(this.selectedMerchant),
+            //     'logoBase64Data'  : this.logoBase64Data,
+            //     'corpBase64Data'  : this.corpBase64Data,
+            //     'IDNumber'        : this.IDNumber,
+            //     'corpName'        : this.userName,
+            //     'des'             : this.des
+            // })
         },
         logoBase64(base64) {
             console.log('logoBase64_base64:');

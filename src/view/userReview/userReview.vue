@@ -303,97 +303,114 @@ export default {
     }
   },
   created() {
-    let ov = localStorage.getItem('org_verified'),
-    uv = localStorage.getItem("user_verified");
-              Promise.all(
-                [
-                  getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-                  getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
-                ]
-              )
-              .then((result) => {
-                console.log(result);
-                if(result && result.length == 2) {
-                  // localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                  // localStorage.setItem('user_verified',result[1].data.data.verified)
-                  // localStorage.setItem('org_verified',result[0].data.data.verified)
-                  if(result[1].data.data.verified) {
-                    localStorage.setItem('user_verified',result[1].data.data.verified)
-                  }
-                  if(result[0].data.code == 0 && result[0].data.data.verified) {
-                    localStorage.setItem('user_verified',result[0].data.data.verified)
-                  }
-                  if(result[1].data.data.fid_organization) {
-                    localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
-                  }
-                  this.corpObj = result[0].data.data.organization_mini;
-                  this.userObj = result[1].data.data;
-                  let prefixUrl = ''
-                  if(process.env.NODE_ENV == 'development') {
-                      prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
-                  }else {
-                      prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
-                  }
-                  this.corpObj.logo = prefixUrl + this.corpObj.logo;
-                  this.userObj.logo = prefixUrl + this.userObj.logo;
-                  this.userObj.ident_down = prefixUrl + this.userObj.ident_down
-                  this.userObj.ident_up = prefixUrl + this.userObj.ident_up
-                  this.corpObj.corporate_card_up = prefixUrl + this.corpObj.corporate_card_up
-                  console.log("this.corpObj:")
-                  console.log(this.corpObj)
-                  console.log(this.userObj)
+    Promise.all(
+      [
+        getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+        getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+      ]
+    )
+    .then((result) => {
+      console.log(result);
+      if(result && result.length == 2) {
+        result.forEach((item,index) => {
+            if(item.status == 200 && item.data && item.data.code == 0) {
+                if(result[1].data.data.verified) {
+                  localStorage.setItem('user_verified',result[1].data.data.verified)
                 }
-              })
-              .catch((err) => {
-                console.log(err)
+                if(result[0].data.code == 0 && result[0].data.data.verified) {
+                  localStorage.setItem('user_verified',result[0].data.data.verified)
+                }
+                if(result[1].data.data.fid_organization) {
+                  localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
+                }
+                this.corpObj = result[0].data.data.organization_mini;
+                this.userObj = result[1].data.data;
+                let prefixUrl = ''
+                if(process.env.NODE_ENV == 'development') {
+                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                }else {
+                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                }
+                this.corpObj.logo = prefixUrl + this.corpObj.logo;
+                this.userObj.logo = prefixUrl + this.userObj.logo;
+                this.userObj.ident_down = prefixUrl + this.userObj.ident_down
+                this.userObj.ident_up = prefixUrl + this.userObj.ident_up
+                this.corpObj.corporate_card_up = prefixUrl + this.corpObj.corporate_card_up
+                console.log("this.corpObj:")
+                console.log(this.corpObj)
+                console.log(this.userObj)
+            }
+            else {
                 this.$Message.error({
-                    content : err.msg ? err.msg: '网络错误',
+                    content : '网络错误',
                     duration: 5,
                     closable: true
                 });
-              });
-    if(ov == 1 && uv == 1) {
-      this.underReviewShow = false;
+            }
+        })
+      }
+      else {
+        this.$Message.error({
+            content : '网络错误',
+            duration: 5,
+            closable: true
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      this.$Message.error({
+          content : err.msg ? err.msg: '网络错误',
+          duration: 5,
+          closable: true
+      });
+    });
+  },
+  mounted() {
+      let ov = localStorage.getItem('org_verified'),
+      uv = localStorage.getItem("user_verified");
+      if(ov == 1 && uv == 1) {
+        this.underReviewShow = false;
 
-              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
-              .then(res => {
-                console.log(res);
-                if(res.status && res.status == 200 && res.data.code == 0) {
-                  let data = res.data.data;
-                  console.log("ApplyJoinOrganization:");
-                  console.log(data);
-                  this.userCount = data.user_list.length
-                  // this.merchantCount = data.organization_list.length
-                  this.merchantCount = 333
-                }
-                else {
+                ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
+                .then(res => {
+                  console.log(res);
+                  if(res.status && res.status == 200 && res.data.code == 0) {
+                    let data = res.data.data;
+                    console.log("ApplyJoinOrganization:");
+                    console.log(data);
+                    this.userCount = data.user_list.length
+                    // this.merchantCount = data.organization_list.length
+                    this.merchantCount = 333
+                  }
+                  else {
+                    this.$Message.error({
+                        content : res && res.msg ? res.msg: '网络错误',
+                        duration: 5,
+                        closable: true
+                    });
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
                   this.$Message.error({
-                      content : res && res.msg ? res.msg: '网络错误',
+                      content : err && err.msg ? err.msg: '网络错误',
                       duration: 5,
                       closable: true
                   });
-                }
-              })
-              .catch(err => {
-                console.log(err);
-                this.$Message.error({
-                    content : err && err.msg ? err.msg: '网络错误',
-                    duration: 5,
-                    closable: true
-                });
-              })
-    }
-    else{
-      this.underReviewShow = true;
-      if(ov == 1) {
-        this.joinInshow = true
-        this.corpShow = false
+                })
       }
-      else {
-        this.joinInshow = true
-        this.corpShow = true
+      else{
+        this.underReviewShow = true;
+        if(ov == 1) {
+          this.joinInshow = true
+          this.corpShow = false
+        }
+        else {
+          this.joinInshow = true
+          this.corpShow = true
+        }
       }
-    }
   }
 }
 </script>

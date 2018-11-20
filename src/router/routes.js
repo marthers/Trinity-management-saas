@@ -20,23 +20,23 @@ export default [
                 name     : 'NoDataIndex',
                 path     : 'NoDataIndex',
                 component: () => import('@/view/noData'),
-                children : [
-                  {
-                    name : 'CreatePerson',
-                    path : 'CreatePerson',
-                    component : () => import('@/view/noData/create/CreatePerson')
-                  },
-                  {
-                    name : 'CreateMerchant',
-                    path : 'CreateMerchant',
-                    component : () => import('@/view/noData/create/CreateMerchant')
-                  },
-                  {
-                    name : 'CreateLegal',
-                    path : 'CreateLegal',
-                    component : () => import('@/view/noData/create/CreateLegal')
-                  }
-                ]
+                // children : [
+                // ]
+            },
+            {
+              name : 'CreatePerson',
+              path : 'CreatePerson',
+              component : () => import('@/view/noData/create/CreatePerson')
+            },
+            {
+              name : 'CreateMerchant',
+              path : 'CreateMerchant',
+              component : () => import('@/view/noData/create/CreateMerchant')
+            },
+            {
+              name : 'CreateLegal',
+              path : 'CreateLegal',
+              component : () => import('@/view/noData/create/CreateLegal')
             },
             {
               name : 'CheckList',

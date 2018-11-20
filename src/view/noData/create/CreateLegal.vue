@@ -72,7 +72,10 @@ import ImgUpload from '@/components/ImgUpload';
 import {
   getUserDetail
   } from '@/api/login.js';
+import {orgEdit} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
+// const baseUrl      = baseConfig.baseUrl.dev;
+const localOrgHost = baseConfig.baseUrl.localOrgHost
 export default {
     name: 'CreatePerson',
     data() {
@@ -99,22 +102,88 @@ export default {
             this.$emit('back-to-merchant')
         },
         submitCreate() {
-            if(this.legal == 'self') {
-                this.$emit('submit-create',{
-                    'is_select_me' : 1
-                })
+            let reqData                     = {
+                'property' : 0,
+                'record_status' : 1,
+                'rightful_status' : 1,
+                'is_select_me'           : this.legal == 'self' ? 1 : 0,
+                'logo'                   : this.$route.params.logoBase64Data,
+                'organization_name'      : this.$route.params.corpName,
+                'organization_num'       : this.$route.params.IDNumber,
+                'organization_license_up': this.$route.params.corpBase64Data,
+                'organization_desc'      : this.$route.params.des ? this.$route.params.des: '',
+                // 'parent_id_organization' : this.merchantData.id_organization ? this.merchantData.id_organization : 1
+                'parent_id_organization': this.$route.params.id_organization ? this.$route.params.id_organization: 1
             }
-            else {
-                let o = {
-                    'is_select_me' : 0,
-                    'corporate_name' : this.userName,
-                    'corporate_ident' : this.IDNumber,
-                    'corporate_card_up' : this.corporate_card_up,
-                    'corporate_card_down' : this.versoLegalBase64Data
+            if(this.legal !== 'self') {
+                    reqData.corporate_name = this.userName,
+                    reqData.corporate_ident = this.IDNumber,
+                    reqData.corporate_card_up = this.corporate_card_up,
+                    reqData.corporate_card_down = this.versoLegalBase64Data
+                // console.log(o)
+            }
+
+            
+            orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
+                {
+                    'priority': 5,
+                    'id_organization'   : 0,
+                    'data'    : {
+                        'edit_mode'        : 0,
+                        'organization_info': reqData
+                    }
                 }
-                console.log(o)
-                this.$emit('submit-create',o)
-            }
+            )
+            .then(res => {
+                console.log(res)
+                if(res.status&& res.status == 200) {
+                  // debugger
+                    console.log(res.data);
+                        this.$router.push({
+                          name : 'userReview'
+                        })
+                    // Promise.all(
+                    //   [
+                    //     getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+                    //     getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                    //   ]
+                    // )
+                    // .then((result) => {
+                    //   console.log(result);
+                    //   if(result && result.length == 2) {
+                    //     localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+                    //     localStorage.setItem('user_verified',result[1].data.data.verified)
+                    //     localStorage.setItem('org_verified',result[0].data.data.verified)
+                    //     this.$router.push({
+                    //       name : 'userReview'
+                    //     })
+                    //   }
+                    // }).catch((err) => {
+                    //   console.log(err)
+                    //   this.$Message.error({
+                    //       content : err.msg ? err.msg: '网络错误',
+                    //       duration: 5,
+                    //       closable: true
+                    //   });
+                    // })
+
+                }else {
+                    this.$Message.error({
+                        content : res.msg ? res.msg: '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                this.$Message.error({
+                    content : '网络异常，请联系管理员及时处理',
+                    duration: 5,
+                    closable: true
+                })
+            })
+
         },
         radioChange() {
             console.log(`this.legal=${this.legal}`);
@@ -184,6 +253,9 @@ export default {
         deleteVerso(){
             this.versoLegalBase64Data = ''
         }
+    },
+    created() {
+        console.log(this.$route.params)
     },
     components : {
         ImgUpload

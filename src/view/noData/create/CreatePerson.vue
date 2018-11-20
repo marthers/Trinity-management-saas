@@ -210,9 +210,10 @@ export default {
                                                             closable: true
                                                         });
                                                     }else if(code == 0) {
+                                                      // debugger
                                                         // this.$emit('createPersonSuccess',res.data.user_info);
                                                         this.$router.push({
-                                                          name : 'createMerchant'
+                                                          name : 'CreateMerchant'
                                                         })
                                                     }
                                                 }
