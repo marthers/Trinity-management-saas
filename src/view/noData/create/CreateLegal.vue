@@ -117,13 +117,13 @@ export default {
             }
             if(this.legal !== 'self') {
                     reqData.corporate_name = this.userName,
-                    reqData.corporate_ident = this.IDNumber,
+                   qData.corporate_ident = this.IDNumber,
                     reqData.corporate_card_up = this.corporate_card_up,
                     reqData.corporate_card_down = this.versoLegalBase64Data
                 // console.log(o)
             }
 
-            
+
             orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
                 {
                     'priority': 5,

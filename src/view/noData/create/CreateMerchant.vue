@@ -254,11 +254,11 @@ export default {
                     desc : '请先上传公司营业执照照片'
                 });
                 return false
-            }
+}
             if(this.des.replace(/s+/g,'').length > 0) {
                 console.log(`filterStr(this.des)=${filterStr(this.des)}`);
             }
-            
+
             this.merchantData           = {
                 'selectedMerchant': JSON.stringify(this.selectedMerchant),
                 'logoBase64Data'  : this.logoBase64Data,

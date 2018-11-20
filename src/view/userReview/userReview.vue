@@ -68,11 +68,11 @@
                   </p> -->
                   <p>
                     <span class = "title">身份证正面:</span>
-                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + userObj.ident_down + ')'}"></span>
+                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + userObj.ident_up + ')'}"></span>
                   </p>
                   <p>
                     <span class = "title">身份证反面:</span>
-                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + userObj.ident_up + ')'}"></span>
+                    <span class = "content corporate_card_up" :style = "{backgroundImage : 'url(' + userObj.ident_down + ')'}"></span>
                   </p>
                 </div>
               </div>
@@ -364,6 +364,53 @@ export default {
                 }
                 this.corpObj = result[0].data.data.organization_mini;
                 this.userObj = result[1].data.data;
+
+                // let ov = localStorage.getItem('org_verified'),
+                // uv = localStorage.getItem("user_verified");
+                let ov = result[0].data.data.organization_mini.verified,
+                uv = result[1].data.data.verified;
+                if(ov == 1 && uv == 1) {
+                  this.underReviewShow = false;
+
+                          ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
+                          .then(res => {
+                            console.log(res);
+                            if(res.status && res.status == 200 && res.data.code == 0) {
+                              let data = res.data.data;
+                              console.log("ApplyJoinOrganization:");
+                              console.log(data);
+                              this.userCount = data.user_list.length
+                              // this.merchantCount = data.organization_list.length
+                              this.merchantCount = 333
+                            }
+                            else {
+                              this.$Message.error({
+                                  content : res && res.msg ? res.msg: '网络错误',
+                                  duration: 5,
+                                  closable: true
+                              });
+                            }
+                          })
+                          .catch(err => {
+                            console.log(err);
+                            this.$Message.error({
+                                content : err && err.msg ? err.msg: '网络错误',
+                                duration: 5,
+                                closable: true
+                            });
+                          })
+                }
+                else{
+                  this.underReviewShow = true;
+                  if(ov == 1) {
+                    this.joinInshow = true
+                    this.corpShow = false
+                  }
+                  else {
+                    this.joinInshow = true
+                    this.corpShow = true
+                  }
+                }
             }
             else {
                 this.$Message.error({
@@ -373,20 +420,20 @@ export default {
                 });
             }
         })
-                let prefixUrl = ''
-                if(process.env.NODE_ENV == 'development') {
-                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
-                }else {
-                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
-                }
-                this.corpObj.logo = prefixUrl + this.corpObj.logo;
-                this.userObj.logo = prefixUrl + this.userObj.logo;
-                this.userObj.ident_down = prefixUrl + this.userObj.ident_down
-                this.userObj.ident_up = prefixUrl + this.userObj.ident_up
-                this.corpObj.corporate_card_up = prefixUrl + this.corpObj.corporate_card_up
-                console.log("this.corpObj:")
-                console.log(this.corpObj)
-                console.log(this.userObj)
+          let prefixUrl = ''
+          if(process.env.NODE_ENV == 'development') {
+              prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+          }else {
+              prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+          }
+          this.corpObj.logo = prefixUrl + this.corpObj.logo;
+          this.userObj.logo = prefixUrl + this.userObj.logo;
+          this.userObj.ident_down = prefixUrl + this.userObj.ident_down
+          this.userObj.ident_up = prefixUrl + this.userObj.ident_up
+          this.corpObj.corporate_card_up = prefixUrl + this.corpObj.corporate_card_up
+          console.log("this.corpObj:")
+          console.log(this.corpObj)
+          console.log(this.userObj)
       }
       else {
         this.$Message.error({
@@ -404,52 +451,9 @@ export default {
           closable: true
       });
     });
+
   },
   mounted() {
-      let ov = localStorage.getItem('org_verified'),
-      uv = localStorage.getItem("user_verified");
-      if(ov == 1 && uv == 1) {
-        this.underReviewShow = false;
-
-                ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/apply_join_organization')
-                .then(res => {
-                  console.log(res);
-                  if(res.status && res.status == 200 && res.data.code == 0) {
-                    let data = res.data.data;
-                    console.log("ApplyJoinOrganization:");
-                    console.log(data);
-                    this.userCount = data.user_list.length
-                    // this.merchantCount = data.organization_list.length
-                    this.merchantCount = 333
-                  }
-                  else {
-                    this.$Message.error({
-                        content : res && res.msg ? res.msg: '网络错误',
-                        duration: 5,
-                        closable: true
-                    });
-                  }
-                })
-                .catch(err => {
-                  console.log(err);
-                  this.$Message.error({
-                      content : err && err.msg ? err.msg: '网络错误',
-                      duration: 5,
-                      closable: true
-                  });
-                })
-      }
-      else{
-        this.underReviewShow = true;
-        if(ov == 1) {
-          this.joinInshow = true
-          this.corpShow = false
-        }
-        else {
-          this.joinInshow = true
-          this.corpShow = true
-        }
-      }
   }
 }
 </script>
