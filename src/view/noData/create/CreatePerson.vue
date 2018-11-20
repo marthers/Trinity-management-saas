@@ -408,8 +408,11 @@ export default {
                       'priority': 5,
                       'id_organization'   : 0,
                       'data'    : {
-                          'page_index': 1,
-                          'page_size' : 20,
+                          "list_type" : 0,
+                          "pager" : {
+                            'page_index': 1,
+                            'page_size' : 20
+                          },
                           "filters":[
                             {"key":"idOrganization","operator":"=","value":1,"join":"or"},
                             {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
@@ -553,7 +556,10 @@ export default {
                     'priority': 5,
                     'id_organization'   : 0,
                     'data' : {
-                      'user_info' : {
+                      // 'user_info' : {
+                      //   'fid_organization' : selectedSuperior.id_organization
+                      // }
+                      'to_organization' : {
                         'fid_organization' : selectedSuperior.id_organization
                       }
                     }

@@ -105,8 +105,11 @@ import {
                         'priority': 5,
                         'id_organization'   : 0,
                         'data'    : {
-                            'page_index' :this.page_index,
-                            'page_size' : this.page_size,
+                            "list_type" : 0,
+                            "pager" : {
+                              'page_index': 1,
+                              'page_size' : 20
+                            },
                             "filters":[
                               {"key":"idOrganization","operator":"=","value":1,"join":"or"},
                               {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
@@ -159,8 +162,11 @@ import {
                 'priority': 5,
                 'group'   : 0,
                 'data'    : {
-                    'page_index' :this.page_index,
-                    'page_size' : this.page_size,
+                    "list_type" : 0,
+                    "pager" : {
+                      'page_index': 1,
+                      'page_size' : 20
+                    },
                     "filters":[
                       {"key":"idOrganization","operator":"=","value":1,"join":"or"},
                       {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},

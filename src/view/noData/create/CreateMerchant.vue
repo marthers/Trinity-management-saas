@@ -127,8 +127,13 @@ export default {
                 'priority': 5,
                 'id_organization'   : 0,
                 'data'    : {
-                    'page_index': page_index,
-                    'page_size' : this.page_size,
+                    // 'page_index': page_index,
+                    // 'page_size' : this.page_size,
+                    "list_type" : 0,
+                    "pager" : {
+                      'page_index': 1,
+                      'page_size' : this.page_size
+                    },
                     "filters":[
                       {"key":"idOrganization","operator":"=","value":1,"join":"or"},
                       {"key":"parentIdOrganization","operator":"=","value":1,"join":"and"},
@@ -176,8 +181,11 @@ export default {
                     'priority': 5,
                     'id_organization'   : 0,
                     'data'    : {
-                        'page_index': 1,
-                        'page_size' : 20,
+                        "list_type" : 0,
+                        "pager" : {
+                          'page_index': 1,
+                          'page_size' : 20
+                        },
                         "filters":[
                           {"key":"verified","operator":"=","value":1,"join":"and"},
                           {"key":"recordStatus","operator":"=","value":1,"join":"and"},
