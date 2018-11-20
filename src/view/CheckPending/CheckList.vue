@@ -31,7 +31,7 @@
                 <!-- <TimePicker type="timerange" placement="bottom" placeholder="开始时间" style="width: 168px" :value = "startTime" @on-ok = "timeOk"></TimePicker>
                 <TimePicker type="timerange" placement="bottom" placeholder="结束时间" style="width: 168px" :value = "endTime" @on-ok = "timeOk"></TimePicker> -->
             </div>
-            <button class = "button" @click.syop.prevent = "submitSearch">查询</button>
+            <button class = "button" @click.stop.prevent = "submitSearch">查询</button>
         </div>
         <Table
           :columns="tableColumn"
@@ -55,9 +55,11 @@
             <!-- <div class = "right"></div> -->
             <Page :total="100" class = "right"/>
         </footer>
+        <reject-modal :rejectModalShow = "rejectModalShow" @closeModal = "closeModal"></reject-modal>
     </div>
 </template>
 <script>
+import RejectModal from './../../components/rejectModal';
 export default {
   name : 'CheckList',
   data() {
@@ -73,6 +75,7 @@ export default {
       groupVal : '',
       startTime : '',
       endTime : '',
+      rejectModalShow : false,
       startOptions: {
           disabledDate (date) {
               return date && date.valueOf() < Date.now() - 86400000;
@@ -88,52 +91,39 @@ export default {
           {
               // type: 'html',
               align: 'center',
+              width : 100,
               render: (h, params) => {
-                  return h('div', [
-                      // h('Icon', {
-                      //     props: {
-                      //         type: 'md-checkmark-circle'
-                      //     }
-                      // }),
-                      // h('strong', params.row.name)
-                      // 'class' : {
-                      //    'radio-con' : true
-                      // },
-                      // on: {
-                      //     click: () => {
-                      //       params.row.option.selected = !params.row.option.selected
-                      //     }
-                      // }
+                  return h('div', {
+                    style : {
+                      position : 'relative',
+                      left : '50%',
+                      width : '30px'
+                    }
+                  },[
                       h('div', {
                           'class': {
                               'radio-list' : true,
-                              'radio-con' : params.row.option.selected,
+                              // 'radio-con' : params.row.option.selected,
                           },
                           on: {
                               click: () => {
                                 params.row.option.selected = !params.row.option.selected
                               }
                           },
-                          'attrs' : {
-                            'visibility' : !params.row.option.selected ? 'visible' : 'hidden'
-                            // 'checked' : params.row.option.selected
+                          // 'attrs' : {
+                          // }
+                      },[
+                        h('div',{
+                          style : {
+                            width: '10px',
+                            height : '10px',
+                            'visibility' : params.row.option.selected ? 'visible' : 'hidden'
+                          },
+                          'class' : {
+                            'checked-radio' : params.row.option.selected
                           }
-                      }),
-                      // h('radio', {
-                      //     'class': {
-                      //         // 'radio-list' : true,
-                      //         // 'radio-selected-list' : params.row.option.selected,
-                      //     },
-                      //     'attrs' : {
-                      //       'visibility' : params.row.option.selected ? 'visible' : 'hidden',
-                      //       'checked' : params.row.option.selected
-                      //     },
-                      //     on: {
-                      //         click: () => {
-                      //           params.row.option.selected = !params.row.option.selected
-                      //         }
-                      //     },
-                      // })
+                        })
+                      ])
                   ]);
               },
               title: '选项',
@@ -146,7 +136,18 @@ export default {
           {
               title: '序号',
               key: 'order',
-              type : 'index'
+              type : 'index',
+              align: 'center',
+              render : (h,params) => {
+                return h('span',{
+                  on : {
+                    'click' : ev => {
+                      ev = e || event;
+                      ev.preventDefault()
+                    }
+                  }
+                })
+              }
           },
           {
               title: '用户账号',
@@ -170,47 +171,70 @@ export default {
           },
           {
               title: '注册时间',
-              key: 'registerTime'
+              key: 'registerTime',
+              align: 'center',
           },
           {
               title: '操作',
               key: 'operation',
+              width : 300,
+              align: 'center',
               render: (h, params) => {
-                  return h('div', [
-                      h('Icon', {
-                          props: {
-                              type: params.row.operation.validate ? 'md-checkmark-circle' : 'md-close-circle',
-                              content : '验证'
+                  return h('div', {
+                    'class' : {
+                      'operation-con' : true
+                    }
+                  },[
+                      h('div', {
+                          on : {
+                            click: () => {
+                                this.getVerify(params)
+                            }
+                          },
+                          style : {
+                            width : '19px',
+                            height : '20px'
+                          },
+                          'class' : {
+                            'operation-left-two' : true,
+                            'verify' : true
                           }
                       }),
-                      h('span', {
-                          props: {
-                            slot : 'content'
+                      h('div',{
+                        on : {
+                          click: () => {
+                              this.getVerify(params)
+                          }
+                        },
+                        'class' : {
+                          'operation-left-two-word' : true
+                        }
+                      }, '验证'),
+                      h('div', {
+                          style : {
+                            width : '19px',
+                            height : '20px'
                           },
-                          // [
-                          //   {
-                          //   }
-                          // ]
-                      },'验证'),
-                      h('Button', {
-                          props: {
-                              type: 'error',
-                              size: 'small'
+                          'class' : {
+                            'operation-left-two' : true,
+                            'verify' : true
                           },
                           on: {
                               click: () => {
                                   this.getDetail(params)
                               }
                           }
-                      }, '详情')
-                  ]);
-              }
-          },
-          {
-              title: '/\s/',
-              key: 'check',
-              render: (h, params) => {
-                  return h('div', [
+                      }),
+                      h('div', {
+                        on : {
+                          click: () => {
+                              this.getDetail(params)
+                          }
+                        },
+                        'class' : {
+                          'operation-left-two-word' : true
+                        }
+                      },'详情'),
                       h('Button', {
                           props: {
                               type: 'primary',
@@ -238,7 +262,40 @@ export default {
                       }, '拒绝')
                   ]);
               }
-          }
+          },
+          // {
+          //     title: '/\s/',
+          //     key: 'check',
+          //     render: (h, params) => {
+          //         return h('div', [
+          //             h('Button', {
+          //                 props: {
+          //                     type: 'primary',
+          //                     size: 'small'
+          //                 },
+          //                 style: {
+          //                     marginRight: '5px'
+          //                 },
+          //                 on: {
+          //                     click: () => {
+          //                         this.approve(params,h)
+          //                     }
+          //                 }
+          //             }, '通过'),
+          //             h('Button', {
+          //                 props: {
+          //                     type: 'error',
+          //                     size: 'small'
+          //                 },
+          //                 on: {
+          //                     click: () => {
+          //                         this.reject(params)
+          //                     }
+          //                 }
+          //             }, '拒绝')
+          //         ]);
+          //     }
+          // }
       ],
       tableData : [
         {
@@ -347,6 +404,12 @@ export default {
     }
   },
   methods : {
+    closeModal() {
+      this.rejectModalShow = false
+    },
+    getVerify(params) {
+      console.log(params)
+    },
     getDetail(params) {
       console.log(params)
     },
@@ -355,7 +418,8 @@ export default {
       console.log(h)
     },
     reject(index) {
-      console.log(index)
+      console.log(index);
+      this.rejectModalShow = true
     },
     selectAllRadioChange() {
       console.log(`this.selectAllRadio=${this.selectAllRadio}`)
@@ -380,9 +444,18 @@ export default {
     batchThrough() {
 
     }
+  },
+  components : {
+    RejectModal
   }
 }
 </script>
+<style>
+.ivu-modal-wrap{
+  overflow: hidden !important;
+}
+</style>
+
 <style>
 .time-con .ivu-date-picker-rel .ivu-input-wrapper .ivu-input{
   width:14vw !important;
@@ -430,6 +503,23 @@ export default {
             border-right: 8px solid transparent;
             border-top: 8px solid #4A4A4A;
 }
+.table .operation-left-two {
+  background-size: cover;
+  background-position: center;
+}
+.table .operation-left-two-word {
+  margin-left:-18px;
+  margin-right : 5px;
+}
+.table .verify {
+  background-image: url('./../../assets/images/checklist/verify.png');
+  @media only screen and (-moz-min-device-pixel-ratio: 2),
+  only screen and (-o-min-device-pixel-ratio: 2/1),
+  only screen and (-webkit-min-device-pixel-ratio: 2),
+  only screen and (min-device-pixel-ratio: 2) {
+    background-image: url('./../../assets/images/checklist/verify@2x.png');
+  }
+}
 .table .ivu-table-header .ivu-table-cell {
   font-size : 14px;
   font-weight : bold;
@@ -440,9 +530,23 @@ export default {
   height : 16px;
   border-radius : 50%;
   border : 1px solid #979797;
-  /* display : flex;
+  display : flex;
   justify-content : center;
-  align-items : center; */
+  align-items : center;
+}
+.table .radio-list .checked-radio {
+  border-radius : 50%;
+  background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+}
+.table .operation-con {
+  width : 250px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+.table .operation-con button{
+  /* margin : 0 10px; */
 }
 /* .table .radio-con {
   position : relative;
@@ -512,7 +616,10 @@ export default {
     }
     // 查询
     .button {
-      width:14vw;
+      width:160px;
+      @media screen and (max-width: 800px) {
+        width : 14vw;
+      }
       height:36px;
       background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
       border-radius:4px;
