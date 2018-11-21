@@ -8,10 +8,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    //
+    //home page left menu show or not
+    menuShow : false
   },
   mutations: {
-    //
+    //switchMenuShow
+    setMenuShowTrue(state) {
+      state.menuShow = true
+    },
+    setMenuShowFalse(state) {
+      state.menuShow = false
+    },
   },
   actions: {
     //

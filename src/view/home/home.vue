@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class = "body">
-                <div class = "left-side-con" id = "left-side-main">
+                <div class = "left-side-con" id = "left-side-main" v-show = "$store.state.menuShow">
                     <div class= "left-side-box">
                         <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'back-to-main'">
                             <div class = "back-to-main inside-item"></div>
@@ -43,14 +43,12 @@
                         </div>
                     </div>
                 </div>
-                <div class = "left-menu-con" v-if = "leftSideSelected == 'menu'">
+                <div class = "left-menu-con" v-if = "leftSideSelected == 'menu'" v-show = "$store.state.menuShow">
                     <div class = "menu-head">管理平台</div>
                     <button class = "back">返回</button>
                     <div class = "survey-menu-con menu-con" v-for = "(item,index) in menuList" :key = "index">
                         <div class= "title-con">
-                            <!-- <button class = "title" @click = "titleClicked"> -->
                             <button class = "title" @click.stop.prevent = "titleClicked(index)">
-                                <!-- <div :class = "[titleTrueClicked ? 'triangle-down' :'triangle-up']"></div> -->
                                 <div :class = "[item.clicked%2 > 0 ? 'triangle-down' :'triangle-up']"></div>
                                 <a class = "title-name">
                                     {{
@@ -59,8 +57,6 @@
                                 </a>
                             </button>
                         </div>
-                        <!-- <a class = "menu-child" v-for = "(i,key) in surveyArr" :key = "key" v-show = "titleTrueClicked"> -->
-                        <!-- <a class = "menu-child" v-for = "(i,key) in surveyArr" :key = "key" v-if = "item.clicked"> -->
                         <a class = "menu-child" v-for = "(i,key) in item.childArr" :key = "key" v-if = "item.clicked%2 > 0">
                             {{
                                 i.name
@@ -112,6 +108,7 @@ import {
 export default {
     data() {
         return {
+            // menuShow : false,
             createShow           : true,
             leftSideSelected     : 'menu',
             groupNumber          : 20,
@@ -573,6 +570,12 @@ export default {
         // this.$route.query.NoDataIndexShow = true
         if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
             // this.NoDataIndexShow        = true;
+            if(localStorage.getItem('fid_organization') == 0){
+              this.$store.commit('setMenuShowFalse')
+            }
+            else {
+              this.$store.commit('setMenuShowTrue')
+            }
             this.$router.push({
               name : 'NoDataIndex'
             })
@@ -581,6 +584,7 @@ export default {
             this.createMerchantInfoShow = false;
             this.createLegalShow        = false;
         }else {
+            this.$store.commit('setMenuShowTrue')
           // {
             this.NoDataIndexShow = false;
             this.$router.push({
@@ -635,7 +639,9 @@ export default {
 
         }
         // localStorage.clear();
-        this.fidOrg = localStorage.getItem('fid_organization')
+        this.fidOrg = localStorage.getItem('fid_organization');
+        console.log("this.$route.params")
+        console.log(this.$route.params)
     },
     mounted() {
       console.log("this.$LoadingBar:")

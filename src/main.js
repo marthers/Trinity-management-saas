@@ -7,6 +7,7 @@ import iView from 'iview';
 import axios from '@/libs/api.request';
 import 'babel-polyfill';
 import 'es6-promise/auto';
+import store from './store/index'
 const directives = {
   intOnly : {
     bind: function(el,binding,vnode) {
@@ -47,6 +48,7 @@ Vue.prototype.$axios     = axios;
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template  : '<App/>'
 })
