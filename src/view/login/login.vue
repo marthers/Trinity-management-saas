@@ -348,8 +348,10 @@ export default {
                         localStorage.setItem('name',resData.user_info.name)
                     }
                     localStorage.setItem('fid_organization',resData.fid_organization);
-                    localStorage.setItem('organization_level',resData.organization_level);
-                    localStorage.setItem('role_level',resData.role_level);
+                    localStorage.setItem('organization_level',resData.user_info.organization_level);
+                    if(resData.user_info.role_level){
+                      localStorage.setItem('role_level',resData.user_info.role_level);
+                    }
                     localStorage.setItem('permission',resData.permission);
                     if(!this.notRemember) {
                         localStorage.setItem('rememberPassword',true)
@@ -500,8 +502,10 @@ export default {
                             localStorage.setItem('name',resData.user_info.name)
                         }
                         localStorage.setItem('fid_organization',resData.fid_organization);
-                        localStorage.setItem('organization_level',resData.organization_level);
-                        localStorage.setItem('role_level',resData.role_level);
+                        localStorage.setItem('organization_level',resData.user_info.organization_level);
+                        if(resData.user_info.role_level){
+                          localStorage.setItem('role_level',resData.user_info.role_level);
+                        }
                         localStorage.setItem('organization_level',resData.organization_level);
                         localStorage.setItem('permission',resData.permission);
                         if(!this.notRemember) {
@@ -919,8 +923,10 @@ export default {
                                 localStorage.setItem('userPhone',resData.user_info.phone)
                             }
                             localStorage.setItem('fid_organization',resData.fid_organization);
-                            localStorage.setItem('organization_level',resData.organization_level);
-                            localStorage.setItem('role_level',resData.role_level);
+                            localStorage.setItem('organization_level',resData.user_info.organization_level);
+                            if(resData.user_info.role_level){
+                              localStorage.setItem('role_level',resData.user_info.role_level);
+                            }
                             localStorage.setItem('organization_level',resData.organization_level);
                             localStorage.setItem('permission',resData.permission);
                             if(!this.notRemember) {
@@ -1068,8 +1074,10 @@ export default {
                             localStorage.setItem('userPhone',resData.user_info.phone)
                         }
                         localStorage.setItem('fid_organization',resData.fid_organization);
-                        localStorage.setItem('organization_level',resData.organization_level);
-                        localStorage.setItem('role_level',resData.role_level);
+                        localStorage.setItem('organization_level',resData.user_info.organization_level);
+                        if(resData.user_info.role_level){
+                          localStorage.setItem('role_level',resData.user_info.role_level);
+                        }
                         localStorage.setItem('permission',resData.permission);
                         if(!this.notRemember) {
                             localStorage.setItem('rememberPassword',true)

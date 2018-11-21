@@ -210,8 +210,10 @@ export default {
                                                             closable: true
                                                         });
                                                     }else if(code == 0) {
-                                                      // debugger
-                                                        // this.$emit('createPersonSuccess',res.data.user_info);
+                                                        localStorage.setItem('role_level',res.data.user_info.role_level);
+                                                        localStorage.setItem('organization_level',res.data.user_info.organization_level);
+                                                        localStorage.setItem('fid_organization',res.data.user_info.fid_organization);
+                                                        localStorage.setItem('user_verified',res.data.user_info.verified);
                                                         this.$router.push({
                                                           name : 'CreateMerchant'
                                                         })
@@ -332,9 +334,6 @@ export default {
                                         closable: true
                                     });
                                 }else if(code == 0) {
-                                    // for(let item in res.data.user_info) {
-                                    //     localStorage.setItem(item,res.data.user_info[item])
-                                    // }
                                     if(res.data.user_info.verified) {
                                         localStorage.setItem('user_verified',resData.user_info.verified)
                                     }
@@ -344,7 +343,9 @@ export default {
                                     if(res.data.user_info.phone) {
                                         localStorage.setItem('name',resData.user_info.name)
                                     }
-                                    // this.$emit('createPersonSuccess',res.data.user_info);
+                                    localStorage.setItem('role_level',res.data.user_info.role_level);
+                                    localStorage.setItem('organization_level',res.data.user_info.organization_level);
+                                    localStorage.setItem('fid_organization',res.data.user_info.fid_organization);
                                     this.$router.push({
                                       name : 'createMerchant'
                                     })
@@ -517,7 +518,10 @@ export default {
                                   });
                               }
                               else if(code == 0) {
-                                  // this.$emit('createPersonSuccess',res.data.user_info);
+                                  localStorage.setItem('role_level',res.data.user_info.role_level);
+                                  localStorage.setItem('organization_level',res.data.user_info.organization_level);
+                                  localStorage.setItem('fid_organization',res.data.user_info.fid_organization);
+                                  localStorage.setItem('user_verified',res.data.user_info.verified);
                                   this.chooseUpper()
                               }
                           }
@@ -621,27 +625,6 @@ export default {
                         this.$router.push({
                           name : 'userReview'
                         })
-                        // }
-                        // let detailResArr = ['org','user']
-                        // result.forEach((item,index) => {
-                        //     if(item.status && item.status == 200 && item.data.success && item.data.code == 0) {
-                        //       // detailResArr.push(item.data.data)
-                        //       debugger
-                        //       // console.log(item.data.data.verified)
-                        //       debugger
-                        //       // localStorage.setItem(detailResArr[index] + '_detail_obj' , JSON.stringify(item))
-                        //     }
-                        //     else {
-                        //       this.$Message.error({
-                        //           content : '网络错误',
-                        //           duration: 5,
-                        //           closable: true
-                        //       });
-                        //     }
-                        // });
-                        // console.log("detailResArr:")
-                        // console.log(detailResArr);
-                        // localStorage.setItem('org_detail_obj' , JSON.stringify(detailResArr[0]))
                       }
                     }).catch((err) => {
                       console.log(err)
@@ -661,12 +644,6 @@ export default {
                         closable: true
                     })
                   }
-                    // debugger
-                    // console.log(res);
-                    // this.$router.push({
-                    //   name : 'userReview'
-                    // })
-                    // debugger
                 })
                 .catch(err => {
                     console.log(err)
