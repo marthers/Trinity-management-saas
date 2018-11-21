@@ -17,6 +17,7 @@ export default {
     dev    : 'http://192.168.1.110:8090/trinity-backstage-account/',
     localOrgHost: 'http://192.168.1.110:8091',
     jiweiDevHost : ' http://192.168.1.103:8091',
+    devHost : 'http://192.168.1.110:8091',
     // pro    : 'https://produce.com'
     pro : ''
   },

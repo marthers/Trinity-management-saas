@@ -7,17 +7,17 @@ export const getDragList = () => {
     method: 'get'
   })
 }
-export const getOrgDetail = (url,headers) => {
+export const getOrgDetail = (url,data) => {
   return axios.request({
     url : url,
-    headers : headers,
+    data : data,
     method : 'post'
   })
 }
-export const getUserDetail = (url) => {
+export const getUserDetail = (url,data) => {
   return axios.request({
     url : url,
-    // headers : headers,
+    data : data,
     method : 'post'
   })
 }

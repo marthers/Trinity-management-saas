@@ -119,13 +119,13 @@
                   <div class = "icon">
                     <div class = "num">
                         {{
-                          userCount | filterCount
+                          user_list_num | filterCount
                         }}
                     </div>
                   </div>
                   <p class = "word">
                     <span>有</span>
-                    <span class = "number">{{userCount}}</span>
+                    <span class = "number">{{user_list_num}}</span>
                     <span>人申请加入组织</span>
                   </p>
               </div>
@@ -133,13 +133,13 @@
                   <div class = "icon">
                     <div class = "num">
                         {{
-                          merchantCount | filterCount
+                          organization_list_num | filterCount
                         }}
                     </div>
                   </div>
                   <p class = "word">
                     <span>有</span>
-                    <span class = "number">{{merchantCount}}</span>
+                    <span class = "number">{{organization_list_num}}</span>
                     <span>个商户申请加入组织</span>
                   </p>
               </div>
@@ -171,8 +171,8 @@ export default {
       // logo : 'https://u.djicdn.com/uploads/ad_image_file/file/1234/970_250.jpg',
       // corpObj.ident_up : 0,
       corpName : '',
-      merchantCount : '',
-      userCount :'',
+      organization_list_num : '',
+      user_list_num :'',
       corpObj : {},
       userObj : {}
     }
@@ -224,8 +224,22 @@ export default {
             // debugger
               Promise.all(
                 [
-                  getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-                  getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                  getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
+                            {
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' :{
+                                'organization_id' : localStorage.getItem('fid_organization')
+                              }
+                            }),
+                  getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                            {
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' :{
+                                'user_id' : localStorage.getItem('id_user')
+                              }
+                            })
                 ]
               )
               .then((result) => {
@@ -246,33 +260,10 @@ export default {
                           uv = localStorage.getItem("user_verified");
                           if(ov == 1 && uv == 1) {
                             this.underReviewShow = false;
-                              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/detail')
-                              .then(res => {
-                                console.log(res);
-                                if(res.status && res.status == 200 && res.data.code == 0) {
-                                  let data = res.data.data;
-                                  console.log("ApplyJoinOrganization:");
-                                  console.log(data);
-                                  this.userCount = data.user_list.length
-                                  // this.merchantCount = data.organization_list.length
-                                  this.merchantCount = 333
-                                }
-                                else {
-                                  this.$Message.error({
-                                      content : res && res.msg ? res.msg: '网络错误',
-                                      duration: 5,
-                                      closable: true
-                                  });
-                                }
-                              })
-                              .catch(err => {
-                                console.log(err);
-                                this.$Message.error({
-                                    content : err && err.msg ? err.msg: '网络错误',
-                                    duration: 5,
-                                    closable: true
-                                });
-                              })
+                            this.organization_list_num = result[0].data.data.organization_list_num
+                            this.user_list_num = result[0].data.data.user_list_num
+                            console.log(`this.user_list_num=${result[0].data.data.user_list_num}`)
+                            console.log(`this.organization_list_num=${result[0].data.data.organization_list_num}`)
                           }
                           else{
                             this.underReviewShow = true;
@@ -344,8 +335,22 @@ export default {
   created() {
         Promise.all(
           [
-            getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-            getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+            getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
+                              {
+                                'priority': 5,
+                                'id_organization'   : 0,
+                                'data' : {
+                                  'organization_id' : localStorage.getItem('fid_organization')
+                                }
+                              }),
+            getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                              {
+                                'priority': 5,
+                                'id_organization'   : 0,
+                                'data' : {
+                                  'user_id' : localStorage.getItem('id_user')
+                                }
+                              })
           ]
         )
         .then((result) => {
@@ -392,34 +397,10 @@ export default {
                     if(ov == 1 && uv == 1) {
                       // debugger
                       this.underReviewShow = false;
-
-                              ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/detail')
-                              .then(res => {
-                                console.log(res);
-                                if(res.status && res.status == 200 && res.data.code == 0) {
-                                  let data = res.data.data;
-                                  console.log("ApplyJoinOrganization:");
-                                  console.log(data);
-                                  this.userCount = data.user_list.length
-                                  // this.merchantCount = data.organization_list.length
-                                  this.merchantCount = 333
-                                }
-                                else {
-                                  this.$Message.error({
-                                      content : res && res.msg ? res.msg: '网络错误',
-                                      duration: 5,
-                                      closable: true
-                                  });
-                                }
-                              })
-                              .catch(err => {
-                                console.log(err);
-                                this.$Message.error({
-                                    content : err && err.msg ? err.msg: '网络错误',
-                                    duration: 5,
-                                    closable: true
-                                });
-                              })
+                            this.organization_list_num = result[0].data.data.organization_list_num
+                            this.user_list_num = result[0].data.data.user_list_num
+                            console.log(`this.user_list_num=${result[0].data.data.user_list_num}`)
+                            console.log(`this.organization_list_num=${result[0].data.data.organization_list_num}`)
                     }
                     else{
                       this.underReviewShow = true;

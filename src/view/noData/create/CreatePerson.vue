@@ -576,8 +576,22 @@ export default {
 
                     Promise.all(
                       [
-                        getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-                        getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                        getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
+                            {
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' :{
+                                'organization_id' : localStorage.getItem('fid_organization')
+                              }
+                            }),
+                        getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                            {
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' : {
+                                'user_id' : localStorage.getItem('id_user')
+                              }
+                            })
                       ]
                     )
                     // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
@@ -669,7 +683,10 @@ export default {
               this.$LoadingBar.start();
 
                     //getUserDetail
-                    getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                    getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                            {
+                              'user_id' : localStorage.getItem('id_user')
+                            })
                     .then (res => {
                         console.log('getUserDetail_res:')
                         console.log(res);
@@ -759,12 +776,9 @@ export default {
                       this.$LoadingBar.error()
                     });
     },
-    // props : {
-    //     createShow : {
-    //         type   : Boolean,
-    //         default: true
-    //     }
-    // },
+    mounted() {
+      // this.$store.commit('setMenuShowTrue')
+    },
     components : {
         ImgUpload,JoinInOrg
     }

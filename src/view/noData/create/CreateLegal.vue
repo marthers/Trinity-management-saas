@@ -198,7 +198,10 @@ export default {
                 }
                 // this.userReqCount ++;
                 // if(this.userReqCount < 2) {
-                    getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                    getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                            {
+                              'user_id' : localStorage.getItem('id_user')
+                            })
                     .then(res => {
                       console.log('getUserDetail_res:')
                       console.log(res);

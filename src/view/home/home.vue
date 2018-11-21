@@ -502,8 +502,23 @@ export default {
                     console.log(res.data);
                     Promise.all(
                       [
-                        getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-                        getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+                        getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
+                            {
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' :  {
+                                'organization_id' : localStorage.getItem('fid_organization')
+                              }
+                            }
+                        ),
+                        getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                            {
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' : {
+                                'user_id' : localStorage.getItem('id_user')
+                              }
+                            })
                       ]
                     )
                     .then((result) => {
@@ -566,8 +581,10 @@ export default {
         }
     },
     created () {
-        // console.log(this.$route.matched);
-        // this.$route.query.NoDataIndexShow = true
+    },
+    mounted() {
+      console.log("this.$LoadingBar:")
+      console.log(this.$LoadingBar)
         if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
             // this.NoDataIndexShow        = true;
             if(localStorage.getItem('fid_organization') == 0){
@@ -585,67 +602,16 @@ export default {
             this.createLegalShow        = false;
         }else {
             this.$store.commit('setMenuShowTrue')
-          // {
             this.NoDataIndexShow = false;
             this.$router.push({
               name : 'userReview'
             })
-            // Promise.all(
-            //   [
-            //     getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-            //     getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
-            //   ]
-            // )
-            // .then((result) => {
-            //   console.log(result);
-            //   if(result && result.length == 2) {
-            //     result.forEach((item,index) => {
-            //       if(item.status == 200 && item.data && item.data.code == 0) {
-            //         let params = {}
-            //           if(result[1].data.data.verified) {
-            //             localStorage.setItem('user_verified',result[1].data.data.verified);
-            //             params.user_verified = result[1].data.data.verified
-            //           }
-            //           if(result[0].data.code == 0 && result[0].data.data.verified) {
-            //             localStorage.setItem('org_verified',result[0].data.data.organization_mini.verified);
-            //             params.org_verified = result[0].data.data.verified
-            //           }
-            //           if(result[1].data.data.fid_organization) {
-            //             localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-            //             params.fid_organization = result[1].data.data.fid_organization
-            //           }
-            //           this.$router.push({
-            //             name : 'userReview',
-            //             params : params
-            //           })
-            //       }else {
-            //           this.$Message.error({
-            //               content : '网络错误',
-            //               duration: 5,
-            //               closable: true
-            //           });
-            //       }
-            //     })
-            //   }
-            // })
-            // .catch((err) => {
-            //   console.log(err)
-            //   this.$Message.error({
-            //       content : err && err.msg ? err.msg: '网络错误',
-            //       duration: 5,
-            //       closable: true
-            //   });
-            // })
-
         }
-        // localStorage.clear();
         this.fidOrg = localStorage.getItem('fid_organization');
+        console.log('created:');
+        console.log(this.$store.state)
         console.log("this.$route.params")
         console.log(this.$route.params)
-    },
-    mounted() {
-      console.log("this.$LoadingBar:")
-      console.log(this.$LoadingBar)
     }
 }
 </script>
