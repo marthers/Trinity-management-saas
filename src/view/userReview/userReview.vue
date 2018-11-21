@@ -101,7 +101,7 @@
                       </p>
                   </div>
               </div>
-              <div class = "right">编辑运营商</div>
+              <div class = "right edit">编辑运营商</div>
             </div>
             <div class = "down">
               <p>
@@ -351,8 +351,7 @@ export default {
         .then((result) => {
           console.log(result);
           if(result && result.length == 2) {
-            result.forEach((item,index) => {
-                if(item.status == 200 && item.data && item.data.code == 0) {
+                if(result[0].status == 200 && result[0].data && result[0].data.code == 0 && result[1].status == 200 && result[1].data && result[1].data.code == 0) {
                     if(result[1].data.data.verified) {
                       localStorage.setItem('user_verified',result[1].data.data.verified)
                     }
@@ -373,7 +372,8 @@ export default {
                     }
                     //平台
                     else {
-                      result[0].data.data.organization_mini.logo = JSON.stringify("./ShunXiangLogo.png")
+                      var logoUrl = require('./../../assets/images/ShunXiangLogo.png')
+                      result[0].data.data.organization_mini.logo = logoUrl
                     }
                     // result[0].data.data.organization_mini.logo = prefixUrl + result[0].data.data.organization_mini.logo;
                     result[1].data.data.ident_down = prefixUrl + result[1].data.data.ident_down
@@ -390,6 +390,7 @@ export default {
                     let ov = result[0].data.data.organization_mini.verified,
                     uv = result[1].data.data.verified;
                     if(ov == 1 && uv == 1) {
+                      // debugger
                       this.underReviewShow = false;
 
                               ApplyJoinOrganization(jiweiDevHost + '/trinity-backstage/organization/detail')
@@ -439,7 +440,6 @@ export default {
                         closable: true
                     });
                 }
-            })
           }
           else {
             this.$Message.error({
@@ -472,6 +472,7 @@ export default {
   box-sizing: border-box;
   margin : 0;
   padding : 0;
+  user-select: none;
   .under-review-con,.merchant-info-con {
     width : 100%;
     margin : 0 auto;
@@ -674,7 +675,7 @@ export default {
         .right {
           color : #48A8DA;
           font-size: 16px;
-          cursor: pointer;
+          // cursor: pointer;
         }
       }
       .down {
