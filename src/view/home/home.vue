@@ -455,10 +455,6 @@ export default {
             this.createLegalShow        = false;
         },
         submitCreate (legalData) {
-            // this.NoDataIndexShow        = true;
-            // this.$router.push({
-            //   name : 'NoDataIndex'
-            // })
             this.createPersonalInfoShow = false;
             this.createMerchantInfoShow = false;
             this.createLegalShow        = false;
@@ -513,63 +509,15 @@ export default {
                         getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
                       ]
                     )
-                    // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
                     .then((result) => {
                       console.log(result);
                       if(result && result.length == 2) {
                         localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
                         localStorage.setItem('user_verified',result[1].data.data.verified)
                         localStorage.setItem('org_verified',result[0].data.data.verified)
-                        // // if(result.status && result.status == 200 && result.data.success) {
-                        // //   localStorage.setItem('org_verified',result.data.data.verified);
-                        // this.NoDataIndexShow = false
-                        // if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                        //   //跳转到商户信息
-                        //     // this.$Notice.success({
-                        //     //     title: '跳转到商户信息',
-                        //     //     desc: '跳转到商户信息'
-                        //     // });
-                        // }
-                        // else {
-                        //   if(result[0].data.data.verified == 1) {
-                        //     // 员工加入审核中
-                        //     this.$Notice.info({
-                        //         title: '员工加入审核中',
-                        //         desc: '员工加入审核中'
-                        //     });
-                        //   }
-                        //   else {
-                        //     //商户加盟审核中
-                        //     this.$Notice.info({
-                        //         title: '商户加盟审核中',
-                        //         desc: '商户加盟审核中'
-                        //     });
-                        //   }
-                        // }
                         this.$router.push({
                           name : 'userReview'
                         })
-                        // }
-                        // let detailResArr = ['org','user']
-                        // result.forEach((item,index) => {
-                        //     if(item.status && item.status == 200 && item.data.success && item.data.code == 0) {
-                        //       // detailResArr.push(item.data.data)
-                        //       debugger
-                        //       // console.log(item.data.data.verified)
-                        //       debugger
-                        //       // localStorage.setItem(detailResArr[index] + '_detail_obj' , JSON.stringify(item))
-                        //     }
-                        //     else {
-                        //       this.$Message.error({
-                        //           content : '网络错误',
-                        //           duration: 5,
-                        //           closable: true
-                        //       });
-                        //     }
-                        // });
-                        // console.log("detailResArr:")
-                        // console.log(detailResArr);
-                        // localStorage.setItem('org_detail_obj' , JSON.stringify(detailResArr[0]))
                       }
                     }).catch((err) => {
                       console.log(err)
@@ -579,7 +527,6 @@ export default {
                           closable: true
                       });
                     })
-                    // localStorage.setItem('Trinity-Token',res.data.data.token)
 
                 }else {
                     this.$Message.error({
@@ -623,7 +570,7 @@ export default {
     },
     created () {
         // console.log(this.$route.matched);
-        this.$route.query.NoDataIndexShow = true
+        // this.$route.query.NoDataIndexShow = true
         if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
             // this.NoDataIndexShow        = true;
             this.$router.push({
@@ -636,47 +583,55 @@ export default {
         }else {
           // {
             this.NoDataIndexShow = false;
-            Promise.all(
-              [
-                getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-                getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
-              ]
-            )
-            .then((result) => {
-              console.log(result);
-              if(result && result.length == 2) {
-                result.forEach((item,index) => {
-                  if(item.status == 200 && item.data && item.data.code == 0) {
-                      if(result[1].data.data.verified) {
-                        localStorage.setItem('user_verified',result[1].data.data.verified)
-                      }
-                      if(result[0].data.code == 0 && result[0].data.data.verified) {
-                        localStorage.setItem('user_verified',result[0].data.data.verified)
-                      }
-                      if(result[1].data.data.fid_organization) {
-                        localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
-                      }
-                      this.$router.push({
-                        name : 'userReview'
-                      })
-                  }else {
-                      this.$Message.error({
-                          content : '网络错误',
-                          duration: 5,
-                          closable: true
-                      });
-                  }
-                })
-              }
+            this.$router.push({
+              name : 'userReview'
             })
-            .catch((err) => {
-              console.log(err)
-              this.$Message.error({
-                  content : err && err.msg ? err.msg: '网络错误',
-                  duration: 5,
-                  closable: true
-              });
-            })
+            // Promise.all(
+            //   [
+            //     getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
+            //     getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
+            //   ]
+            // )
+            // .then((result) => {
+            //   console.log(result);
+            //   if(result && result.length == 2) {
+            //     result.forEach((item,index) => {
+            //       if(item.status == 200 && item.data && item.data.code == 0) {
+            //         let params = {}
+            //           if(result[1].data.data.verified) {
+            //             localStorage.setItem('user_verified',result[1].data.data.verified);
+            //             params.user_verified = result[1].data.data.verified
+            //           }
+            //           if(result[0].data.code == 0 && result[0].data.data.verified) {
+            //             localStorage.setItem('org_verified',result[0].data.data.organization_mini.verified);
+            //             params.org_verified = result[0].data.data.verified
+            //           }
+            //           if(result[1].data.data.fid_organization) {
+            //             localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
+            //             params.fid_organization = result[1].data.data.fid_organization
+            //           }
+            //           this.$router.push({
+            //             name : 'userReview',
+            //             params : params
+            //           })
+            //       }else {
+            //           this.$Message.error({
+            //               content : '网络错误',
+            //               duration: 5,
+            //               closable: true
+            //           });
+            //       }
+            //     })
+            //   }
+            // })
+            // .catch((err) => {
+            //   console.log(err)
+            //   this.$Message.error({
+            //       content : err && err.msg ? err.msg: '网络错误',
+            //       duration: 5,
+            //       closable: true
+            //   });
+            // })
 
         }
         // localStorage.clear();
