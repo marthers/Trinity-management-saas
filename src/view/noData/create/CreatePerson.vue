@@ -166,7 +166,8 @@ export default {
                                           'ident_name': this.userName,
                                           'ident_num' : this.IDNumber,
                                           'record_status' : 1,
-                                          'rightful_status' : 1
+                                          'rightful_status' : 1,
+                                          "id_user" : localStorage.getItem('id_user')
                                       }
                                       if(this.frontBase64Data.indexOf('base64') > 0) {
                                         user_info.ident_up = this.frontBase64Data
@@ -261,7 +262,9 @@ export default {
                     }
                 }
                 else {
-                    let user_info = {};
+                    let user_info = {
+                       "id_user" : localStorage.getItem('id_user')
+                    };
                     if(this.userName != localStorage.getItem('ident_name')) {
                         user_info.ident_name = this.userName;
                         if(!validateCName(this.userName)) {
@@ -460,21 +463,13 @@ export default {
             })
         },
         joinOrgNext() {
-          // if(this.selectedMerchant.organizationName && this.selectedMerchant.organizationName.length > 0) {
-          // }
-          // else {
-          //     this.$Message.warning({
-          //         content : '请选择上级！',
-          //         duration: 5,
-          //         closable: true
-          //     })
-          // }
               if(this.frontBase64Data.length > 0 && this.versoData.length > 0 && this.userName.length > 0 && this.IDNumber > 0) {
                                       let user_info = {
                                           'ident_name': this.userName,
                                           'ident_num' : this.IDNumber,
                                           'record_status' : 1,
-                                          'rightful_status' : 1
+                                          'rightful_status' : 1,
+                                          "id_user" : localStorage.getItem('id_user')
                                       }
                                       if(this.frontBase64Data.indexOf('base64') > 0) {
                                         user_info.ident_up = this.frontBase64Data
@@ -589,7 +584,7 @@ export default {
                               'priority': 5,
                               'id_organization'   : 0,
                               'data' : {
-                                'user_id' : localStorage.getItem('id_user')
+                                'id_user' : localStorage.getItem('id_user')
                               }
                             })
                       ]
@@ -685,7 +680,11 @@ export default {
                     //getUserDetail
                     getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
                             {
-                              'user_id' : localStorage.getItem('id_user')
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' : {
+                                'id_user' : localStorage.getItem('id_user')
+                              }
                             })
                     .then (res => {
                         console.log('getUserDetail_res:')
@@ -750,7 +749,7 @@ export default {
                               }
                           }else {
                               this.$Message.error({
-                                  content : err && err.msg ? err.msg: '网络错误',
+                                  content : '网络错误',
                                   duration: 5,
                                   closable: true
                               });
@@ -758,7 +757,7 @@ export default {
                         }
                         else {
                           this.$Message.error({
-                              content : err.msg ? err.msg: '网络错误',
+                              content : '网络错误',
                               duration: 5,
                               closable: true
                           });

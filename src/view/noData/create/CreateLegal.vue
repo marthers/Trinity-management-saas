@@ -117,7 +117,7 @@ export default {
             }
             if(this.legal !== 'self') {
                     reqData.corporate_name = this.userName,
-                   qData.corporate_ident = this.IDNumber,
+                    reqData.corporate_ident = this.IDNumber,
                     reqData.corporate_card_up = this.corporate_card_up,
                     reqData.corporate_card_down = this.versoLegalBase64Data
                 // console.log(o)
@@ -200,7 +200,11 @@ export default {
                 // if(this.userReqCount < 2) {
                     getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
                             {
-                              'user_id' : localStorage.getItem('id_user')
+                              'priority': 5,
+                              'id_organization'   : 0,
+                              'data' : {
+                                'user_id' : localStorage.getItem('id_user')
+                              }
                             })
                     .then(res => {
                       console.log('getUserDetail_res:')

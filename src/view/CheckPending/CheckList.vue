@@ -56,10 +56,19 @@
 </template>
 <script>
 import RejectModal from './../../components/rejectModal';
+import baseConfig from '@/config/index';
+const jiweiDevHost = baseConfig.baseUrl.jiweiDevHost;
+import {
+  getUserList,
+} from '@/api/user.js';
 export default {
   name : 'CheckList',
   data() {
     return {
+      pager : {
+        page_index : 1,
+        page_size : 20
+      },
       selectAll : false,
       // selectAllRadio : false,
       // selectAllTrue : false,
@@ -455,14 +464,37 @@ export default {
   components : {
     RejectModal
   },
-  // watch : {
-  //   tableData :
-  //   {
-  //     handlerTable(newVal,oldVal) {
-
-  //     }
-  //   }
-  // }
+  created() {
+    getUserList(jiweiDevHost + '/trinity-backstage/user/list',{
+        'priority': 5,
+        'id_organization'   : 0,
+        "data" : {
+          "list_type" : 1,
+          "pager" : this.pager,
+          "filters":[
+                {"key":"verified","operator":"=","value":2,"join":"and"},
+                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
+                {"key":"phone","operator":"=","value":'',"join":"and"},
+                {"key":"name","operator":"=","value":'',"join":"and"},
+                {"key":"createTime","operator":">=","value":'',"join":"and"},
+                {"key":"createTime","operator":"<","value":'',"join":"and"}
+            ]
+        }
+    })
+    .then(
+      res =>
+      {
+        console.log(res)
+      }
+    )
+    .catch(
+      err =>
+      {
+        console.log(err)
+      }
+    )
+  }
 }
 </script>
 <style>

@@ -150,9 +150,6 @@
 <script>
 import {undo_user_organization} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
-import {
-  ApplyJoinOrganization,//申请加入组织的用户个数接口
-} from '@/api/user.js';
 const jiweiDevHost = baseConfig.baseUrl.jiweiDevHost;
 import {
   getOrgDetail,
@@ -165,11 +162,7 @@ export default {
       corpShow : false,
       underReviewShow : false,
       joinInshow : false,
-      auditShow : true,
-      // legal : '马云',
-      // legalId: 0,
-      // logo : 'https://u.djicdn.com/uploads/ad_image_file/file/1234/970_250.jpg',
-      // corpObj.ident_up : 0,
+      auditShow : false,
       corpName : '',
       organization_list_num : '',
       user_list_num :'',
@@ -177,16 +170,6 @@ export default {
       userObj : {}
     }
   },
-  // props : {
-  //   underReviewShow : {
-  //     type : Boolean,
-  //     default : true
-  //   },
-  //   joinInshow : {
-  //     type : Boolean,
-  //     default : true
-  //   }
-  // },
   filters : {
     // 过滤身份证号
       filterId : id => {
@@ -221,82 +204,6 @@ export default {
           if(res.data.code == 201) {
           }
           else if(res.data.code == 0) {
-            // debugger
-              Promise.all(
-                [
-                  getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
-                            {
-                              'priority': 5,
-                              'id_organization'   : 0,
-                              'data' :{
-                                'organization_id' : localStorage.getItem('fid_organization')
-                              }
-                            }),
-                  getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
-                            {
-                              'priority': 5,
-                              'id_organization'   : 0,
-                              'data' :{
-                                'user_id' : localStorage.getItem('id_user')
-                              }
-                            })
-                ]
-              )
-              .then((result) => {
-                console.log(result);
-                if(result && result.length == 1) {
-                  result.forEach((item,index) => {
-                      if(item.status == 200 && item.data && item.data.code == 0) {
-                          if(result[1].data.data.verified) {
-                            localStorage.setItem('user_verified',result[1].data.data.verified)
-                          }
-                          if(result[0].data.code == 0 && result[0].data.data.verified) {
-                            localStorage.setItem('org_verified',result[0].data.data.verified)
-                          }
-                          if(result[1].data.data.fid_organization) {
-                            localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
-                          }
-                          let ov = localStorage.getItem('org_verified'),
-                          uv = localStorage.getItem("user_verified");
-                          if(ov == 1 && uv == 1) {
-                            this.underReviewShow = false;
-                            this.organization_list_num = result[0].data.data.organization_list_num
-                            this.user_list_num = result[0].data.data.user_list_num
-                            console.log(`this.user_list_num=${result[0].data.data.user_list_num}`)
-                            console.log(`this.organization_list_num=${result[0].data.data.organization_list_num}`)
-                          }
-                          else{
-                            this.underReviewShow = true;
-                            if(ov == 1) {
-                              this.joinInshow = true
-                              this.corpShow = false
-                            }
-                            else {
-                              this.joinInshow = true
-                              this.corpShow = true
-                            }
-                          }
-                      }
-                      else {
-                          this.$Message.error({
-                              content : '网络错误',
-                              duration: 5,
-                              closable: true
-                          });
-                      }
-                  })
-                  // localStorage.setItem('fid_organization',result[0].data.data.fid_organization);
-                  // localStorage.setItem('user_verified',result[0].data.data.verified)
-                }
-              })
-              .catch((err) => {
-                console.log(err)
-                this.$Message.error({
-                    content : err.msg ? err.msg: '网络错误',
-                    duration: 5,
-                    closable: true
-                });
-              })
               this.$Notice.success({
                   title: '撤销成功',
                   desc: '请重新加盟或者加入'
@@ -310,7 +217,7 @@ export default {
           }
         }
         else {
-          // debugger
+            // debugger
             this.$Message.error({
                 content : '网络异常，请联系管理员及时处理',
                 duration: 5,
@@ -330,115 +237,98 @@ export default {
     },
     audit(who) {
       console.log(who)
-    }
-  },
-  created() {
-        Promise.all(
-          [
-            getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
-                              {
-                                'priority': 5,
-                                'id_organization'   : 0,
-                                'data' : {
-                                  'organization_id' : localStorage.getItem('fid_organization')
-                                }
-                              }),
-            getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
-                              {
-                                'priority': 5,
-                                'id_organization'   : 0,
-                                'data' : {
-                                  'user_id' : localStorage.getItem('id_user')
-                                }
-                              })
-          ]
-        )
-        .then((result) => {
-          console.log(result);
-          if(result && result.length == 2) {
-                if(result[0].status == 200 && result[0].data && result[0].data.code == 0 && result[1].status == 200 && result[1].data && result[1].data.code == 0) {
-                    if(result[1].data.data.verified) {
-                      localStorage.setItem('user_verified',result[1].data.data.verified)
+    },
+    createdReq : async  () => {
+        let prefixUrl = ''
+        if(process.env.NODE_ENV == 'development') {
+            prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+        }else {
+            prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+        }
+        let getUserDetailRes = await getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+            {
+                'priority': 5,
+                'id_organization'   : 0,
+                'data' : {
+                'user_id' : localStorage.getItem('id_user')
+                }
+            }
+        );
+        if(getUserDetailRes.status && getUserDetailRes.status == 200 && getUserDetailRes.data.code == 0 && getUserDetailRes.data.data) {
+                let data = getUserDetailRes.data.data;
+                data.ident_down = prefixUrl + data.ident_down
+                data.ident_up = prefixUrl + data.ident_up
+                this.userObj = data;
+                localStorage.setItem('user_verified',data.verified);
+                localStorage.setItem('fid_organization',data.fid_organization);
+                let getOrgDetailRes = await  getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
+                    {
+                        'priority': 5,
+                        'id_organization'   : 0,
+                        'data' : {
+                        'organization_id' : localStorage.getItem('fid_organization')
+                        }
                     }
-                    if(result[0].data.code == 0 && result[0].data.data.organization_mini.verified) {
-                      localStorage.setItem('user_verified',result[0].data.data.verified)
-                    }
-                    if(result[1].data.data.fid_organization) {
-                      localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
-                    }
-                    let prefixUrl = ''
-                    if(process.env.NODE_ENV == 'development') {
-                        prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
-                    }else {
-                        prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
-                    }
-                    if(result[0].data.data.organization_mini.id_organization != 1) {
-                      result[0].data.data.organization_mini.logo = prefixUrl + result[0].data.data.organization_mini.logo;
-                    }
-                    //平台
-                    else {
-                      var logoUrl = require('./../../assets/images/ShunXiangLogo.png')
-                      result[0].data.data.organization_mini.logo = logoUrl
-                    }
-                    // result[0].data.data.organization_mini.logo = prefixUrl + result[0].data.data.organization_mini.logo;
-                    result[1].data.data.ident_down = prefixUrl + result[1].data.data.ident_down
-                    result[1].data.data.ident_up = prefixUrl + result[1].data.data.ident_up
-                    result[0].data.data.organization_mini.corporate_card_up = prefixUrl + result[0].data.data.organization_mini.corporate_card_up
-                    console.log("this.corpObj:")
-                    console.log(this.corpObj)
-                    console.log(this.userObj)
-                    this.corpObj = result[0].data.data.organization_mini;
-                    this.userObj = result[1].data.data;
-
-                    // let ov = localStorage.getItem('org_verified'),
-                    // uv = localStorage.getItem("user_verified");
-                    let ov = result[0].data.data.organization_mini.verified,
-                    uv = result[1].data.data.verified;
+                );
+                if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_mini) {
+                    let data = getOrgDetailRes.data.data.organization_mini;
+                    // console.log(data);
+                    // console.log(getUserDetailRes.data)
+                    data.corporate_card_up = prefixUrl + data.corporate_card_up
+                    this.corpObj = data;
+                    localStorage.setItem('org_verified',data.verified);
+                    let ov = localStorage.getItem('org_verified'),
+                    uv = localStorage.getItem("user_verified");
                     if(ov == 1 && uv == 1) {
-                      // debugger
-                      this.underReviewShow = false;
+                        this.underReviewShow = false;
+                        this.auditShow = true
                             this.organization_list_num = result[0].data.data.organization_list_num
                             this.user_list_num = result[0].data.data.user_list_num
                             console.log(`this.user_list_num=${result[0].data.data.user_list_num}`)
                             console.log(`this.organization_list_num=${result[0].data.data.organization_list_num}`)
                     }
                     else{
-                      this.underReviewShow = true;
-                      if(ov == 1) {
-                        this.joinInshow = true
-                        this.corpShow = false
-                      }
-                      else {
-                        this.joinInshow = true
-                        this.corpShow = true
-                      }
+                        this.underReviewShow = true;
+                        this.auditShow = false
+                        if(ov == 1) {
+                            this.joinInshow = true
+                            this.corpShow = false
+                        }
+                        else {
+                            this.joinInshow = true
+                            this.corpShow = true
+                        }
                     }
                 }
                 else {
-                    this.$Message.error({
-                        content : '网络错误',
-                        duration: 5,
-                        closable: true
-                    });
+                        this.$Message.error({
+                            content : '网络错误',
+                            duration: 5,
+                            closable: true
+                        });
                 }
-          }
-          else {
+        }
+        else {
+                this.$Message.error({
+                    content : '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+        }
+    }
+  },
+  created() {
+        try {
+            this.createdReq()
+        }
+        catch(err) {
+            console.log(err);
             this.$Message.error({
-                content : '网络错误',
+                content : err && err.msg ? err.msg: '网络错误',
                 duration: 5,
                 closable: true
             });
-          }
-        })
-        .catch((err) => {
-          console.log(err)
-          this.$Message.error({
-              content : err.msg ? err.msg: '网络错误',
-              duration: 5,
-              closable: true
-          });
-        });
-
+        }
   },
   mounted() {
     console.log('this.$route.params:')

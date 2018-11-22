@@ -36,9 +36,18 @@ export const UserInfoEdit = (url,data) => {
 }
 
 //申请加入组织的用户个数接口
-export const ApplyJoinOrganization  = url => {
+// export const ApplyJoinOrganization  = url => {
+//   return axios.request({
+//       url   : url,
+//       method: 'post'
+//   })
+// }
+
+//获取用户列表
+export const getUserList  = (url,data) => {
   return axios.request({
       url   : url,
+      data: data,
       method: 'post'
   })
 }

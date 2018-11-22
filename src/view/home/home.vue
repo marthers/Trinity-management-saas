@@ -585,28 +585,28 @@ export default {
     mounted() {
       console.log("this.$LoadingBar:")
       console.log(this.$LoadingBar)
-        if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
-            // this.NoDataIndexShow        = true;
-            if(localStorage.getItem('fid_organization') == 0){
-              this.$store.commit('setMenuShowFalse')
-            }
-            else {
-              this.$store.commit('setMenuShowTrue')
-            }
-            this.$router.push({
-              name : 'NoDataIndex'
-            })
-            this.JoinInOrgShow          = false;
-            this.createPersonalInfoShow = false;
-            this.createMerchantInfoShow = false;
-            this.createLegalShow        = false;
-        }else {
-            this.$store.commit('setMenuShowTrue')
-            this.NoDataIndexShow = false;
-            this.$router.push({
-              name : 'userReview'
-            })
-        }
+        // if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
+        //     // this.NoDataIndexShow        = true;
+        //     if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow){
+        //       this.$store.commit('setMenuShowFalse')
+        //     }
+        //     else {
+        //       this.$store.commit('setMenuShowTrue')
+        //     }
+        //     this.$router.push({
+        //       name : 'NoDataIndex'
+        //     })
+        //     this.JoinInOrgShow          = false;
+        //     this.createPersonalInfoShow = false;
+        //     this.createMerchantInfoShow = false;
+        //     this.createLegalShow        = false;
+        // }else {
+        //     this.$store.commit('setMenuShowTrue')
+        //     this.NoDataIndexShow = false;
+        //     this.$router.push({
+        //       name : 'userReview'
+        //     })
+        // }
         this.fidOrg = localStorage.getItem('fid_organization');
         console.log('created:');
         console.log(this.$store.state)
