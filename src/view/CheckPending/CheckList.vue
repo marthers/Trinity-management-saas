@@ -465,21 +465,21 @@ export default {
     RejectModal
   },
   created() {
+        this.pager.filters = [
+            {"key":"verified","operator":"=","value":2,"join":"and"},
+            {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+            {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
+            {"key":"phone","operator":"=","value":'',"join":"and"},
+            {"key":"name","operator":"=","value":'',"join":"and"},
+            {"key":"createTime","operator":">=","value":'',"join":"and"},
+            {"key":"createTime","operator":"<","value":'',"join":"and"}
+        ]
     getUserList(jiweiDevHost + '/trinity-backstage/user/list',{
         'priority': 5,
         'id_organization'   : 0,
         "data" : {
           "list_type" : 1,
           "pager" : this.pager,
-          "filters":[
-                {"key":"verified","operator":"=","value":2,"join":"and"},
-                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
-                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
-                {"key":"phone","operator":"=","value":'',"join":"and"},
-                {"key":"name","operator":"=","value":'',"join":"and"},
-                {"key":"createTime","operator":">=","value":'',"join":"and"},
-                {"key":"createTime","operator":"<","value":'',"join":"and"}
-            ]
         }
     })
     .then(

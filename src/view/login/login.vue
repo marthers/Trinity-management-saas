@@ -6,21 +6,21 @@
   <div class="login">
 
      <vue-particles
-                        color          = "#3BA5B2"
-                      :particleOpacity = ".7"
-                      :particlesNumber = "60"
-                        shapeType      = "circle"
-                      :particleSize    = "4"
-                        linesColor     = "#48A8DA"
-                      :linesWidth      = "1"
-                      :lineLinked      = "true"
-                      :lineOpacity     = "1"
-                      :linesDistance   = "250"
-                      :moveSpeed       = "3"
-                      :hoverEffect     = "true"
-                        hoverMode      = "grab"
-                      :clickEffect     = "true"
-                        clickMode      = "push"
+        color          = "#3BA5B2"
+        :particleOpacity = ".7"
+        :particlesNumber = "60"
+        shapeType      = "circle"
+        :particleSize    = "4"
+        linesColor     = "#48A8DA"
+        :linesWidth      = "1"
+        :lineLinked      = "true"
+        :lineOpacity     = "1"
+        :linesDistance   = "250"
+        :moveSpeed       = "3"
+        :hoverEffect     = "true"
+        hoverMode      = "grab"
+        :clickEffect     = "true"
+        clickMode      = "push"
      >
      </vue-particles>
     <div class = "login-left">
@@ -348,6 +348,7 @@ export default {
                         localStorage.setItem('name',resData.user_info.name)
                     }
                     localStorage.setItem('fid_organization',resData.fid_organization);
+                    localStorage.setItem('permission',resData.permission);
                     localStorage.setItem('id_user',resData.user_info.id_user);
                     if(resData.fid_organization == 0) {
                       this.$store.commit('setMenuShowFalse');
@@ -508,6 +509,7 @@ export default {
                             localStorage.setItem('name',resData.user_info.name)
                         }
                         localStorage.setItem('fid_organization',resData.fid_organization);
+                        localStorage.setItem('permission',resData.permission);
                         localStorage.setItem('id_user',resData.user_info.id_user);
                         if(resData.fid_organization == 0) {
                           this.$store.commit('setMenuShowFalse');
@@ -934,6 +936,7 @@ export default {
                                 localStorage.setItem('userPhone',resData.user_info.phone)
                             }
                             localStorage.setItem('fid_organization',resData.fid_organization);
+                            localStorage.setItem('permission',resData.permission);
                             localStorage.setItem('id_user',resData.user_info.id_user);
                             if(resData.fid_organization == 0) {
                               this.$store.commit('setMenuShowFalse');
@@ -1090,6 +1093,7 @@ export default {
                             localStorage.setItem('userPhone',resData.user_info.phone)
                         }
                         localStorage.setItem('fid_organization',resData.fid_organization);
+                        localStorage.setItem('permission',resData.permission);
                         localStorage.setItem('id_user',resData.user_info.id_user);
                         if(resData.fid_organization == 0) {
                           this.$store.commit('setMenuShowFalse');

@@ -26,7 +26,7 @@
         <div class = "body">
                 <div class = "left-side-con" id = "left-side-main" v-show = "$store.state.menuShow">
                     <div class= "left-side-box">
-                        <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'back-to-main'">
+                        <!-- <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'back-to-main'">
                             <div class = "back-to-main inside-item"></div>
                         </div>
                         <div :class = "[leftSideSelected == 'statistics'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'statistics'">
@@ -40,42 +40,44 @@
                         </div>
                         <div :class = "[leftSideSelected == 'settings'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'settings'">
                             <div class = "settings inside-item"></div>
+                        </div> -->
+                        <div class = "item-on"
+                            v-for = "(item,index) in menuList"
+                            :key = "index"
+                            @click.stop.prevent = "iconSelect(item)">
+                            {{item.name}}
                         </div>
                     </div>
                 </div>
                 <div class = "left-menu-con" v-if = "leftSideSelected == 'menu'" v-show = "$store.state.menuShow">
-                    <div class = "menu-head">管理平台</div>
-                    <button class = "back">返回</button>
-                    <div class = "survey-menu-con menu-con" v-for = "(item,index) in menuList" :key = "index">
-                        <div class= "title-con">
-                            <button class = "title" @click.stop.prevent = "titleClicked(index)">
-                                <div :class = "[item.clicked%2 > 0 ? 'triangle-down' :'triangle-up']"></div>
-                                <a class = "title-name">
-                                    {{
-                                        item.menuTitle
-                                    }}
-                                </a>
-                            </button>
+                    <div class = "menu-head">
+                        <span>organization_level:{{organization_level}}</span>
+                        <span>role_level:{{role_level}}</span>
+                    </div>
+                    <!-- <button class = "back">返回</button> -->
+                    <div v-for = "(item,index) in menuList" :key = "index">
+                        <div class = "survey-menu-con menu-con" v-for = "(m,n) in item.sub_items" :key = "n" v-if = "iconSelected == item.id_index1">
+                            <div class= "title-con">
+                                <button class = "title" @click.stop.prevent = "titleClicked(index,n)">
+                                    <div :class = "[m.clicked%2 > 0 ? 'triangle-down' :'triangle-up']"></div>
+                                    <a class = "title-name">
+                                        {{
+                                            m.name
+                                        }}
+                                    </a>
+                                </button>
+                            </div>
+                            <!-- <a class = "menu-child" v-for = "(i,key) in item.sub_items" :key = "key" v-if = "item.clicked%2 > 0"> -->
+                            <a class = "menu-child" v-for = "(x,y) in m.sub_items" :key = "y"  v-if = "m.clicked%2 > 0">
+                                {{
+                                    x.name
+                                }}
+                            </a>
                         </div>
-                        <a class = "menu-child" v-for = "(i,key) in item.childArr" :key = "key" v-if = "item.clicked%2 > 0">
-                            {{
-                                i.name
-                            }}
-                        </a>
                     </div>
                 </div>
                 <div class = "content">
-                    <!-- <h2>User {{ $route.params.id }}</h2> -->
                     <router-view></router-view>
-                    <!-- <router-view class="view" :name="contentRouterView"></router-view> -->
-                    <!-- <no-data-index @two-clicked = "twoClicked" v-if = "NoDataIndexShow"></no-data-index> -->
-                    <!-- <no-data-index @two-clicked = "twoClicked" v-if = "$route.meta.showName == 'NoDataIndex'"></no-data-index> -->
-
-                    <!-- <create-person  v-if = "createPersonalInfoShow" @person-back = "personBack" @person-forward = "personForword" @createPersonSuccess = "createPersonSuccess" :createShow = "createShow"></create-person>
-
-                    <create-merchant  v-if = "createMerchantInfoShow" @back-to-person = "merchantBack" @to-legal = "toLegal" @merchant-select-upper = "merchantSelectUpper" @selectedSuperior = "selectedSuperiorMethod"></create-merchant>
-
-                    <create-legal  v-if = "createLegalShow" @back-to-merchant = "legalBack" @submit-create = "submitCreate"></create-legal> -->
                 </div>
         </div>
         <Modal
@@ -95,11 +97,7 @@ import {signOut} from '@/api/user.js';
 import {orgEdit} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
 const baseUrl      = baseConfig.baseUrl.dev;
-const localOrgHost = baseConfig.baseUrl.localOrgHost
-// import NoDataIndex from '@/view/noData/index';
-// import CreatePerson from '@/view/noData/create/CreatePerson';
-// import CreateMerchant from '@/view/noData/create/CreateMerchant';
-// import CreateLegal from '@/view/noData/create/CreateLegal';
+const localOrgHost = baseConfig.baseUrl.localOrgHost;
 import JoinInOrg from '@/components/JoinInOrg';
 import {
   getOrgDetail,
@@ -109,6 +107,7 @@ export default {
     data() {
         return {
             // menuShow : false,
+            iconSelected : 1,
             createShow           : true,
             leftSideSelected     : 'menu',
             groupNumber          : 20,
@@ -333,7 +332,9 @@ export default {
             JoinInOrgShow         : false,
             maskClosable          : false,
             closable              : false,
-            merchantData          : {}
+            merchantData          : {},
+            organization_level : -1,
+            role_level : -1
         }
     },
     components : {
@@ -344,6 +345,10 @@ export default {
         JoinInOrg
     },
     methods : {
+        iconSelect(item) {
+            console.log(item)
+            this.iconSelected = item.id_index1;
+        },
         handleScroll () {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
             console.log(scrollTop)
@@ -381,14 +386,16 @@ export default {
                 })
             })
         },
-        titleClicked(index) {
-            console.log(`this.menuList[index].clicked=${this.menuList[index].clicked}`)
-            let item = this.menuList[index];
+        titleClicked(iconIndex,secondIndex) {
+            // console.log(`index=${index}`)
+            // console.log(`this.menuList[index].clicked=${this.menuList[index].clicked}`)
+            let item = this.menuList[iconIndex].sub_items[secondIndex];
             console.log(`item=${item}`)
             ++item.clicked
-            this.menuList.splice(index,1,item)
-            console.log(`index=${index}`);
+            this.menuList[iconIndex].sub_items.splice(secondIndex,1,item)
+            console.log(`iconIndex=${iconIndex}`);
             console.log(`item=${item}`)
+            console.log(`secondIndex=${secondIndex}`)
         },
         orderTitleClicked() {
             ++this.orderCount;
@@ -585,28 +592,91 @@ export default {
     mounted() {
       console.log("this.$LoadingBar:")
       console.log(this.$LoadingBar)
-        // if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
-        //     // this.NoDataIndexShow        = true;
-        //     if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow){
-        //       this.$store.commit('setMenuShowFalse')
-        //     }
-        //     else {
-        //       this.$store.commit('setMenuShowTrue')
-        //     }
-        //     this.$router.push({
-        //       name : 'NoDataIndex'
-        //     })
-        //     this.JoinInOrgShow          = false;
-        //     this.createPersonalInfoShow = false;
-        //     this.createMerchantInfoShow = false;
-        //     this.createLegalShow        = false;
-        // }else {
-        //     this.$store.commit('setMenuShowTrue')
-        //     this.NoDataIndexShow = false;
-        //     this.$router.push({
-        //       name : 'userReview'
-        //     })
-        // }
+        if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
+            // this.NoDataIndexShow        = true;
+            if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow){
+              this.$store.commit('setMenuShowFalse')
+            }
+            else {
+              this.$store.commit('setMenuShowTrue')
+            }
+            this.$router.push({
+              name : 'NoDataIndex'
+            })
+            this.JoinInOrgShow          = false;
+            this.createPersonalInfoShow = false;
+            this.createMerchantInfoShow = false;
+            this.createLegalShow        = false;
+        }else {
+            this.$store.commit('setMenuShowTrue')
+            this.NoDataIndexShow = false;
+            // this.$router.push({
+            //   name : 'userReview'
+            // })
+            let organization_level = parseInt(localStorage.getItem('organization_level'));
+            let role_level = parseInt(localStorage.getItem('role_level'));
+            this.organization_level = parseInt(localStorage.getItem('organization_level'));
+            this.role_level = parseInt(localStorage.getItem('role_level'));
+            // item.organization_array[organization_level] == 1 && item.role_array[role_level] == 1
+            // this.menuList= JSON.parse(localStorage.getItem('permission')).filter(item => {
+            //     return item.organization_array[this.organization_level] == 1 && item.role_array[this.role_level] == 1
+            // });
+            let filterPermission = arr => {
+                if(!arr) {
+                    return false
+                }
+                else {
+                    if(arr.length > 0) {
+                        // debugger
+                        let iconArr = []
+                        arr.forEach((item,index) => {
+                            if(item.organization_array[organization_level] == 1 && item.role_array[role_level] == 1) {
+                                item.clicked = 0;
+                                iconArr.push(item)
+                            }
+                        });
+                        iconArr.forEach((m,n) => {
+                            if(m.sub_items) {
+                                let secondSub = []
+                                m.sub_items.forEach((x,y) => {
+                                    if(x.organization_array[organization_level] == 1 && x.role_array[role_level] == 1) {
+                                        if(x.sub_items) {
+                                            let thirdArr = []
+                                            x.sub_items.forEach((q,w) => {
+                                                if(q.organization_array[organization_level] == 1 && q.role_array[role_level] == 1) {
+                                                    q.clicked = 0;
+                                                    thirdArr.push(q)
+                                                }
+                                            })
+                                            x.sub_items = thirdArr;
+                                        }
+                                        x.clicked = 0;
+                                        secondSub.push(x);
+                                    }
+                                });
+                                // debugger
+                                // m.clicked = 0;
+                                m.sub_items = secondSub;
+                                console.log(m);
+                            }
+                        })
+                        return iconArr;
+                    }
+                    else {
+                        // debugger
+                        return []
+                    }
+                }
+            }
+            this.menuList = filterPermission(JSON.parse(localStorage.getItem('permission')));
+            // console.log(this.menuList)
+            // item.organization_array[organization_level] == 1 && item.role_array[role_level] == 1
+            console.log("this.menuList:")
+            console.log(this.menuList)
+            // if(permission != null) {
+            //     permission = JSON.parse(permission)
+            // };
+        }
         this.fidOrg = localStorage.getItem('fid_organization');
         console.log('created:');
         console.log(this.$store.state)
@@ -848,15 +918,15 @@ export default {
                 }
             }
             .menu{
-                background-image: url('./../../assets/images/home/Notes.png');
+                background-image: url('./../../assets/images/home/device.png');
                 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                    background-image: url('./../../assets/images/home/Notes@2x.png');
+                    background-image: url('./../../assets/images/home/device@2x.png');
                 }
             }
             .briefcase {
-                background-image: url('./../../assets/images/home/Job.png');
+                background-image: url('./../../assets/images/home/merchant.png');
                 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                    background-image: url('./../../assets/images/home/Job@2x.png');
+                    background-image: url('./../../assets/images/home/merchant@2x.png');
                 }
             }
             .settings {
