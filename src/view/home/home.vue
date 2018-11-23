@@ -338,10 +338,6 @@ export default {
         }
     },
     components : {
-        // NoDataIndex,
-        // CreatePerson,
-        // CreateMerchant,
-        // CreateLegal,
         JoinInOrg
     },
     methods : {
@@ -600,9 +596,9 @@ export default {
             else {
               this.$store.commit('setMenuShowTrue')
             }
-            this.$router.push({
-              name : 'NoDataIndex'
-            })
+            // this.$router.push({
+            //   name : 'NoDataIndex'
+            // })
             this.JoinInOrgShow          = false;
             this.createPersonalInfoShow = false;
             this.createMerchantInfoShow = false;
@@ -668,14 +664,13 @@ export default {
                     }
                 }
             }
-            this.menuList = filterPermission(JSON.parse(localStorage.getItem('permission')));
-            // console.log(this.menuList)
-            // item.organization_array[organization_level] == 1 && item.role_array[role_level] == 1
+            if(localStorage.getItem('permission') != null && localStorage.getItem('permission').length > 0) {
+                this.menuList = filterPermission(JSON.parse(localStorage.getItem('permission')));
+            }else{
+                this.menuList = []
+            }
             console.log("this.menuList:")
             console.log(this.menuList)
-            // if(permission != null) {
-            //     permission = JSON.parse(permission)
-            // };
         }
         this.fidOrg = localStorage.getItem('fid_organization');
         console.log('created:');

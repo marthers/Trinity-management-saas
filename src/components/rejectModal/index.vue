@@ -5,7 +5,7 @@
                 关闭
             </p>
             <div class = "modal-body">
-                <div class = "select-con">
+                <div class = "select-con" v-if = "noPass">
                     <h4 class = "reject-reason-title">请选择不通过理由</h4>
                     <div class = "reason-con">
                         <div v-for = "(item,index) in reasonsArr" :key = "index" :class = "{  'selected' : item.selected,'select-box':true}" @click.stop.prevent = "item.selected = !item.selected">
@@ -13,13 +13,31 @@
                         </div>
                     </div>
                 </div>
-                <div class = "edit-con">
+                <div class = "edit-con" v-if = "noPass">
                     <div class = "left">其他理由：</div>
-                    <Input v-model.trim="reasonsWritten" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入其他理由（选填）"  class = "right"/>
+                    <Input v-model.trim="reasonsWritten" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入其他理由（选填）"  class = "right" clearable />
+                </div>
+                <h4 class = "reject-reason-title" v-if = "!noPass">
+                    设置角色
+                </h4>
+                <div class = "role-con" v-for = "(item,index) in roleArr" :key = "index" @click.stop.prevent = "selectedRole = item.roleName"  v-if = "!noPass">
+                    <div :class = "{'option-con' : true,'role-selected' : selectedRole == item.roleName}">
+                        <div class = "option" v-if = "selectedRole == item.roleName"></div>
+                    </div>
+                    <div class = "role-name">
+                        {{
+                            item.roleName
+                        }}
+                    </div>
                 </div>
             </div>
-            <div slot="footer">
-                <Button type="error" size="large" long >Delete</Button>
+            <div slot="footer" class = "footer">
+                <button class = "cancel" @click.stop.prevent = "closeModal">
+                    取消
+                </button>
+                <button class = "confirm" @click.stop.prevent = "closeModal">
+                    确认
+                </button>
             </div>
         </Modal>
     </div>
@@ -29,6 +47,33 @@ export default {
   name : 'RejectModal',
   data() {
     return {
+        selectedRole : '',
+        roleArr : [
+            {
+                roleName : '管理员'
+            },
+            {
+                roleName : '管理员2'
+            },
+            // {
+            //     roleName : '管理员3'
+            // },
+            // {
+            //     roleName : '管理员4'
+            // },
+            // {
+            //     roleName : '管理员5'
+            // },
+            // {
+            //     roleName : '管理员7'
+            // },
+            {
+                roleName : '运营商'
+            },
+            {
+                roleName : '代理商'
+            }
+        ],
       show : true,
       reasonsWritten : '',
       reasonsArr : [
@@ -79,6 +124,10 @@ export default {
     rejectModalShow : {
       type : Boolean,
       default : false
+    },
+    noPass : {
+        type : Boolean,
+        default : false
     }
   },
   methods : {
@@ -109,8 +158,11 @@ export default {
   border : 1px solid #1CA1C6;
 }
 .reject-modal .ivu-modal-body {
-  width : 100%;
-  border-top : 1px solid #DEDEDE;
+    width : 100%;
+    border-top : 1px solid #DEDEDE;
+    min-height: 20vh;
+    max-height: 29vh;
+    overflow-y: auto;
 }
 .reject-modal .ivu-modal-body .select-con {
   width : 100%;
@@ -137,6 +189,42 @@ export default {
   width : 95%;
   margin : 10px 2.5%;
 }
+.reject-modal .ivu-modal-body .modal-body  .role-con {
+  width : 95%;
+  margin : 14px 2.5%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  height : 18px;
+  align-items: center;
+  cursor: pointer;
+}
+.reject-modal .ivu-modal-body  .role-con .option-con {
+    width : 14px;
+    height: 14px;
+    border-radius: 50%;
+    border:1px solid #979797;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    align-items: center;
+}
+.reject-modal .ivu-modal-body  .role-con .role-selected {
+    border-color: #48A8DA;
+}
+.reject-modal .ivu-modal-body  .role-con .option-con .option{
+    width : 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #48A8DA;
+    /* margin : 2.5px; */
+}
+.reject-modal .ivu-modal-body  .role-con .role-name {
+    margin-left: 8px;
+    font-size : 16px;
+    color : #4A4A4A;
+    cursor: pointer;
+}
 .reject-modal .ivu-modal-body .select-con .reason-con .select-box {
   height:32px;
   display: inline-block;
@@ -144,12 +232,13 @@ export default {
   border-radius:6px;
   border:1px solid #9B9B9B;
   line-height: 14px;
-  font-size: 14px;
+  font-size: 12px;
   color : #4A4A4A;
   padding : 9px;
   margin : 5px;
   text-align: center;
   user-select: none;
+  cursor: pointer;
   /* width : 100px; */
 }
 .reject-modal .ivu-modal-body .select-con .reason-con .selected {
@@ -161,6 +250,42 @@ export default {
   width : 95%;
   /* border : 2px solid green; */
   margin : 0 auto;
+}
+.reject-modal .ivu-modal-footer{
+    width : 100%;
+}
+.reject-modal .ivu-modal-footer .footer{
+    width : 100%;
+    text-align: center;
+    font-size : 18px;
+    font-weight: bold;
+}
+.reject-modal .ivu-modal-footer .footer button {
+    outline: none;
+    user-select: none;
+    cursor: pointer;
+    width : 13vw;
+    height: 36px;
+    text-align: center;
+    line-height: 36px;
+    margin-right: 1vw;
+    border-radius : 4px;
+}
+.reject-modal .ivu-modal-footer .footer .cancel:hover {
+    /* border-color: #1CA1C6; */
+    color : #fff;
+    background-color: #48A8DA;
+    border : 1px solid #48A8DA;
+}
+.reject-modal .ivu-modal-footer .footer .cancel {
+    color : #4A4A4A;
+    border : 1px solid #DEDEDE;
+    background-color: #fff;
+}
+.reject-modal .ivu-modal-footer .footer .confirm {
+    color : #fff;
+    background-color: #48A8DA;
+    border : 1px solid #48A8DA;
 }
 .reject-modal .header{
   width:28px;

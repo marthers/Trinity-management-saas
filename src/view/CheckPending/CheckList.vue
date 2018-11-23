@@ -52,6 +52,14 @@
             <Page :total="100" class = "right"/>
         </footer>
         <reject-modal :rejectModalShow = "rejectModalShow" @closeModal = "closeModal"></reject-modal>
+        <Modal v-model="batchThroughSetRoleModal">
+            <p>Content of dialog</p>
+            <p>Content of dialog</p>
+            <p>Content of dialog</p>
+            <div slot="footer">
+                <Button type="error" size="large" long >Delete</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 <script>
@@ -69,6 +77,7 @@ export default {
         page_index : 1,
         page_size : 20
       },
+      batchThroughSetRoleModal : false,
       selectAll : false,
       // selectAllRadio : false,
       // selectAllTrue : false,
@@ -455,7 +464,8 @@ export default {
       console.log(selectedArr);
       this.tableData.forEach((item,index) => {
         console.log(item.option.selected)
-      })
+      });
+      this.batchThroughSetRoleModal = true;
     },
     handleSelect(params){
       console.log(params)
