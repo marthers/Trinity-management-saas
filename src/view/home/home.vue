@@ -26,22 +26,6 @@
         <div class = "body">
                 <div class = "left-side-con" id = "left-side-main" v-show = "$store.state.menuShow">
                     <div class= "left-side-box">
-                        <!-- <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'back-to-main'"> -->
-                        <!-- <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click.stop.prevent = "iconSelect(item)">
-                            <div class = "back-to-main inside-item"></div>
-                        </div>
-                        <div :class = "[leftSideSelected == 'statistics'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'statistics'">
-                            <div class = "statistics inside-item"></div>
-                        </div>
-                        <div :class = "[leftSideSelected == 'menu'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'menu'">
-                            <div class = "menu inside-item"></div>
-                        </div>
-                        <div :class = "[leftSideSelected == 'briefcase'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'briefcase'">
-                            <div class = "briefcase inside-item"></div>
-                        </div>
-                        <div :class = "[leftSideSelected == 'settings'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'settings'">
-                            <div class = "settings inside-item"></div>
-                        </div> -->
                         <div :class = "{'item-con' : true,'left-side-selected' : iconSelected == item.id_index1}"
                             v-for = "(item,index) in menuList"
                             :key = "index"
@@ -58,6 +42,7 @@
                     <!-- <button class = "back">返回</button> -->
                     <div v-for = "(item,index) in menuList" :key = "index">
                         <div class = "survey-menu-con menu-con" v-for = "(m,n) in item.sub_items" :key = "n" v-if = "iconSelected == item.id_index1">
+                        <!-- <div class = "survey-menu-con menu-con" v-for = "(m,n) in item.sub_items" :key = "n" v-if = "m.clicked%2 > 0"> -->
                             <!-- <div :class= "[selectedIdIndex2 == m.id_index2 && selectedIdIndex1 == m.id_index1 ? 'second-selected' : '','title-con']"> -->
                             <div :class= "['title-con']">
                                 <button class = "title" @click.stop.prevent = "titleClicked(index,n)">
@@ -70,11 +55,11 @@
                                 </button>
                             </div>
                             <!-- <a class = "menu-child" v-for = "(i,key) in item.sub_items" :key = "key" v-if = "item.clicked%2 > 0"> -->
-                            <a 
-                                v-for = "(x,y) in m.sub_items" 
-                                :key = "y"  
-                                v-if = "m.clicked%2 > 0" 
-                                @click.stop.prevent = "thirdSelected(item,m,x)" 
+                            <a
+                                v-for = "(x,y) in m.sub_items"
+                                :key = "y"
+                                v-if = "m.clicked%2 > 0"
+                                @click.stop.prevent = "thirdSelected(item,m,x)"
                                 :class = "[selectedIdIndex3 == x.id_index3 && selectedIdIndex2 == m.id_index2 && selectedIdIndex1 == item.id_index1 ? 'third-selected' : '' , 'menu-child']">
                                 {{
                                     x.name
@@ -352,8 +337,18 @@ export default {
     },
     methods : {
         iconSelect(item) {
+            console.log('iconSelect')
             console.log(item)
             this.iconSelected = item.id_index1;
+            item.sub_items.forEach((m,n) => {
+                m.clicked = 1
+            });
+            this.selectedIdIndex1 = item.id_index1
+            this.selectedIdIndex2 = item.sub_items[0].id_index2;
+            this.selectedIdIndex3 = item.sub_items[0].sub_items[0].id_index3;
+            // this.$router.push({
+            //     path : item.sub_items[0].sub_items[0].url
+            // })
         },
         handleScroll () {
             var scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop
@@ -650,7 +645,7 @@ export default {
                         arr.forEach((item,index) => {
                             if(item.organization_array[organization_level] == 1 && item.role_array[role_level] == 1) {
                                 item.class = 'icon' + index
-                                item.clicked = 0;
+                                item.clicked = 1;
                                 iconArr.push(item)
                             }
                         });
@@ -663,13 +658,13 @@ export default {
                                             let thirdArr = []
                                             x.sub_items.forEach((q,w) => {
                                                 if(q.organization_array[organization_level] == 1 && q.role_array[role_level] == 1) {
-                                                    q.clicked = 0;
+                                                    q.clicked = 1;
                                                     thirdArr.push(q)
                                                 }
                                             })
                                             x.sub_items = thirdArr;
                                         }
-                                        x.clicked = 0;
+                                        x.clicked = 1;
                                         secondSub.push(x);
                                     }
                                 });
@@ -689,6 +684,12 @@ export default {
             }
             if(localStorage.getItem('permission') != null && localStorage.getItem('permission').length > 0) {
                 this.menuList = filterPermission(JSON.parse(localStorage.getItem('permission')));
+                this.selectedIdIndex1 = this.menuList[0].id_index1
+                this.selectedIdIndex2 = this.menuList[0].sub_items[0].id_index2;
+                this.selectedIdIndex3 = this.menuList[0].sub_items[0].sub_items[0].id_index3;
+                // this.$router.push({
+                //     path : this.menuList[0].sub_items[0].sub_items[0].url
+                // })
             }else{
                 this.menuList = []
             }
