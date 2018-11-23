@@ -438,7 +438,7 @@ export default {
                         console.log("res.data:");
                         console.log(res.data)
                         let data             = res.data.data;
-                            this.orgList     = data.organization_list
+                            this.orgList     = data.list
                             this.total_pages = data.page.total_pages;
                         // setTimeout(() => {
                             this.selectOrgShow = true;
@@ -584,7 +584,7 @@ export default {
                               'priority': 5,
                               'id_organization'   : 0,
                               'data' : {
-                                'id_user' : localStorage.getItem('id_user')
+                                'user_id' : localStorage.getItem('id_user')
                               }
                             })
                       ]
@@ -683,7 +683,7 @@ export default {
                               'priority': 5,
                               'id_organization'   : 0,
                               'data' : {
-                                'id_user' : localStorage.getItem('id_user')
+                                'user_id' : localStorage.getItem('id_user')
                               }
                             })
                     .then (res => {

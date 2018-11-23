@@ -127,7 +127,7 @@ import {
                             let data = res.data.data;
                             console.log("this.orgList:")
                             console.log(this.orgList)
-                            self.orgList = self.orgList.concat(data.organization_list);
+                            self.orgList = self.orgList.concat(data.list);
                             self.$refs.scrollWrapper.finishInfinite(false);
                         }
                         else{
@@ -185,7 +185,7 @@ import {
                     let data = res.data.data;
                     console.log("this.orgList:")
                     console.log(this.orgList)
-                    self.orgList = data.organization_list
+                    self.orgList = data.list
                     this.$refs.scrollWrapper.finishInfinite(false);
                     setTimeout(() => {
                         this.$refs.scrollWrapper.finishPullToRefresh();

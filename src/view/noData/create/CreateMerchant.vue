@@ -155,7 +155,7 @@ export default {
                     console.log("res.data:");
                     console.log(res.data)
                     let data         = res.data.data;
-                        this.orgList = this.orgList.concat(data.organization_list);
+                        this.orgList = this.orgList.concat(data.list);
                 }
                 else{
                     this.$Message.error({
@@ -205,7 +205,7 @@ export default {
                         console.log("res.data:");
                         console.log(res.data)
                         let data             = res.data.data;
-                            this.orgList     = data.organization_list
+                            this.orgList     = data.list
                             this.total_pages = data.page.total_pages;
                         // setTimeout(() => {
                             this.selectOrgShow = true;

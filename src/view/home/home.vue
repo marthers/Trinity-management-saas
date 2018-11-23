@@ -58,7 +58,8 @@
                     <!-- <button class = "back">返回</button> -->
                     <div v-for = "(item,index) in menuList" :key = "index">
                         <div class = "survey-menu-con menu-con" v-for = "(m,n) in item.sub_items" :key = "n" v-if = "iconSelected == item.id_index1">
-                            <div class= "title-con">
+                            <!-- <div :class= "[selectedIdIndex2 == m.id_index2 && selectedIdIndex1 == m.id_index1 ? 'second-selected' : '','title-con']"> -->
+                            <div :class= "['title-con']">
                                 <button class = "title" @click.stop.prevent = "titleClicked(index,n)">
                                     <div :class = "[m.clicked%2 > 0 ? 'triangle-down' :'triangle-up']"></div>
                                     <a class = "title-name">
@@ -69,7 +70,12 @@
                                 </button>
                             </div>
                             <!-- <a class = "menu-child" v-for = "(i,key) in item.sub_items" :key = "key" v-if = "item.clicked%2 > 0"> -->
-                            <a class = "menu-child" v-for = "(x,y) in m.sub_items" :key = "y"  v-if = "m.clicked%2 > 0">
+                            <a 
+                                v-for = "(x,y) in m.sub_items" 
+                                :key = "y"  
+                                v-if = "m.clicked%2 > 0" 
+                                @click.stop.prevent = "thirdSelected(item,m,x)" 
+                                :class = "[selectedIdIndex3 == x.id_index3 && selectedIdIndex2 == m.id_index2 && selectedIdIndex1 == item.id_index1 ? 'third-selected' : '' , 'menu-child']">
                                 {{
                                     x.name
                                 }}
@@ -107,6 +113,9 @@ import {
 export default {
     data() {
         return {
+            selectedIdIndex3 : -1,
+            selectedIdIndex2 : -1,
+            selectedIdIndex1 : -1,
             // menuShow : false,
             iconSelected : 1,
             createShow           : true,
@@ -382,6 +391,18 @@ export default {
                     closable: true
                 })
             })
+        },
+        // 三级菜单被电击
+        thirdSelected(item,m,x){
+            console.log("item")
+            console.log(item)
+            console.log("m")
+            console.log(m)
+            this.selectedIdIndex3 = x.id_index3;
+            this.selectedIdIndex2 = m.id_index2
+            this.selectedIdIndex1 = item.id_index1
+            console.log("x")
+            console.log(x)
         },
         titleClicked(iconIndex,secondIndex) {
             // console.log(`index=${index}`)
@@ -999,6 +1020,9 @@ export default {
                 color           : #000;
                 background-color: #DEDEDE;
             }
+            .second-selected{
+                background-color : pink;
+            }
             .title-con {
                 width      : 160px;
                 height     : 40px;
@@ -1136,6 +1160,9 @@ export default {
                 white-space  : nowrap;
                 text-overflow: ellipsis;
             }
+            .third-selected {
+                background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+            }
             .menu-child:link {
                 color           : #fff;
                 background-color: #48A8DA;
@@ -1144,10 +1171,10 @@ export default {
                 color           : #fff;
                 background-color: #48A8DA;
             }
-            .menu-child:hover {
-                color           : #fff;
-                background-color: #48A8DA;
-            }
+            // .menu-child:hover {
+            //     color           : #fff;
+            //     background-color: #48A8DA;
+            // }
             .menu-child:active {
                 color           : #fff;
                 background-color: #48A8DA;
