@@ -26,7 +26,8 @@
         <div class = "body">
                 <div class = "left-side-con" id = "left-side-main" v-show = "$store.state.menuShow">
                     <div class= "left-side-box">
-                        <!-- <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'back-to-main'">
+                        <!-- <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'back-to-main'"> -->
+                        <!-- <div :class = "[leftSideSelected == 'back-to-main'? 'left-side-selected' :'','item-con']" @click.stop.prevent = "iconSelect(item)">
                             <div class = "back-to-main inside-item"></div>
                         </div>
                         <div :class = "[leftSideSelected == 'statistics'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'statistics'">
@@ -41,11 +42,11 @@
                         <div :class = "[leftSideSelected == 'settings'? 'left-side-selected' :'','item-con']" @click = "leftSideSelected = 'settings'">
                             <div class = "settings inside-item"></div>
                         </div> -->
-                        <div class = "item-on"
+                        <div :class = "{'item-con' : true,'left-side-selected' : iconSelected == item.id_index1}"
                             v-for = "(item,index) in menuList"
                             :key = "index"
                             @click.stop.prevent = "iconSelect(item)">
-                            {{item.name}}
+                            <div :class = "[item.class,'inside-item']"></div>
                         </div>
                     </div>
                 </div>
@@ -460,7 +461,7 @@ export default {
             this.createLegalShow        = false;
             let reqData                     = {
                 'property' : 0,
-                'record_status' : 1,
+                // 'record_status' : 1,
                 'rightful_status' : 1,
                 'is_select_me'           : legalData.is_select_me,
                 'logo'                   : this.merchantData.logoBase64Data,
@@ -596,9 +597,9 @@ export default {
             else {
               this.$store.commit('setMenuShowTrue')
             }
-            // this.$router.push({
-            //   name : 'NoDataIndex'
-            // })
+            this.$router.push({
+              name : 'NoDataIndex'
+            })
             this.JoinInOrgShow          = false;
             this.createPersonalInfoShow = false;
             this.createMerchantInfoShow = false;
@@ -627,6 +628,7 @@ export default {
                         let iconArr = []
                         arr.forEach((item,index) => {
                             if(item.organization_array[organization_level] == 1 && item.role_array[role_level] == 1) {
+                                item.class = 'icon' + index
                                 item.clicked = 0;
                                 iconArr.push(item)
                             }
@@ -900,31 +902,43 @@ export default {
             .left-side-selected {
                 background: linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
             }
-            .back-to-main {
+            .icon0 {
                 background-image: url('./../../assets/images/home/Home.png');
                 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                     background-image: url('./../../assets/images/home/Home@2x.png');
                 }
             }
-            .statistics {
-                background-image: url('./../../assets/images/home/Shares.png');
-                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                    background-image: url('./../../assets/images/home/Shares@2x.png');
-                }
-            }
-            .menu{
-                background-image: url('./../../assets/images/home/device.png');
-                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                    background-image: url('./../../assets/images/home/device@2x.png');
-                }
-            }
-            .briefcase {
+            .icon1 {
                 background-image: url('./../../assets/images/home/merchant.png');
                 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                     background-image: url('./../../assets/images/home/merchant@2x.png');
                 }
             }
-            .settings {
+            .icon2{
+                background-image: url('./../../assets/images/home/order.png');
+                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                    background-image: url('./../../assets/images/home/order@2x.png');
+                }
+            }
+            .icon3 {
+                background-image: url('./../../assets/images/home/merchandise.png');
+                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                    background-image: url('./../../assets/images/home/merchandise@2x.png');
+                }
+            }
+            .icon4 {
+                background-image: url('./../../assets/images/home/device.png');
+                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                    background-image: url('./../../assets/images/home/device@2x.png');
+                }
+            }
+            .icon5 {
+                background-image: url('./../../assets/images/home/Home.png');
+                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                    background-image: url('./../../assets/images/home/Home@2x.png');
+                }
+            }
+            .icon6 {
                 background-image: url('./../../assets/images/home/Settings.png');
                 @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
                     background-image: url('./../../assets/images/home/Settings@2x.png');

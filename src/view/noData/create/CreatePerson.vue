@@ -165,7 +165,7 @@ export default {
                                       let user_info = {
                                           'ident_name': this.userName,
                                           'ident_num' : this.IDNumber,
-                                          'record_status' : 1,
+                                        //   'record_status' : 1,
                                           'rightful_status' : 1,
                                           "id_user" : localStorage.getItem('id_user')
                                       }
@@ -189,7 +189,7 @@ export default {
                                                 'data'    : {
                                                     // 'edit_mode'  : this.isEdit ? 0: 1,
                                                     'edit_mode'  : 0,
-                                                    'need_verify': 1,
+                                                    // 'need_verify': 1,
                                                     'user_info'  : user_info
                                                 }
                                             }
@@ -315,7 +315,7 @@ export default {
                             'data'    : {
                                 // 'edit_mode'  : this.isEdit ? 0: 1,
                                 'edit_mode'  : 0,
-                                'need_verify': 1,
+                                // 'need_verify': 1,
                                 'user_info'  : user_info
                             }
                         }
@@ -467,7 +467,7 @@ export default {
                                       let user_info = {
                                           'ident_name': this.userName,
                                           'ident_num' : this.IDNumber,
-                                          'record_status' : 1,
+                                        //   'record_status' : 1,
                                           'rightful_status' : 1,
                                           "id_user" : localStorage.getItem('id_user')
                                       }
@@ -490,7 +490,7 @@ export default {
                           'data'    : {
                               // 'edit_mode'  : this.isEdit ? 0: 1,
                               'edit_mode'  : 0,
-                              'need_verify': 1,
+                            //   'need_verify': 1,
                               'user_info'  : user_info
                           }
                       }

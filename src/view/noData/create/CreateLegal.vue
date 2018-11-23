@@ -104,7 +104,7 @@ export default {
         submitCreate() {
             let reqData                     = {
                 'property' : 0,
-                'record_status' : 1,
+                // 'record_status' : 1,
                 'rightful_status' : 1,
                 'is_select_me'           : this.legal == 'self' ? 1 : 0,
                 'logo'                   : this.$route.params.logoBase64Data,
