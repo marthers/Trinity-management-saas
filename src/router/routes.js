@@ -2,17 +2,10 @@ export default [
     {
         path: '/',
         name: 'home',
-        // component: () => import('@/view/home/home')
         components : {
             default: () => import('@/view/home/home'),
-            // NoDataIndex : () => import('@/view/noData')
-            // MyOrg : () => import('@/view/myOrg/MyOrg'),
-            // CommonHeader : () => import('@/view/home/namedRoutes/header')
         },
         meta : {
-            // NoDataIndex : true,
-            // contentShow : true,
-            // contentName : 'NoDataIndex'
             showName: ''
         },
         children : [
@@ -20,8 +13,6 @@ export default [
                 name     : 'NoDataIndex',
                 path     : 'NoDataIndex',
                 component: () => import('@/view/noData'),
-                // children : [
-                // ]
             },
             {
               name : 'CreatePerson',
@@ -65,9 +56,12 @@ export default [
             hideInMenu: true
         },
         component: () => import('@/view/login/login')
-        // components : {
-        //     default : () => import('@/view/login/login'),
-        //     home : () => import('@/view/home/home')
-        // }
+    },
+    {
+        path: '*',
+        name: 'home',
+        components : {
+            default: () => import('@/view/home/home')
+        },
     },
 ]

@@ -9,7 +9,7 @@
                       <div class = "logo"  v-bind:style = "{backgroundImage :'url(' + corpObj.logo + ')'}"></div>
                       <div class= "right-corp">
                           <p class = "corp">
-                              <span>{{corpObj.organization_name}}</span>
+                              <span>{{corpObj.organizationName}}</span>
                               <span class = "state">审核中</span>
                           </p>
                           <p>
@@ -115,7 +115,7 @@
             </div>
           </div>
           <div v-if = "auditShow" class = "audit-con">
-              <div class = "person" @click.stop.prevent = "audit('user')">
+              <div class = "person" @click.stop.prevent = "toCheckList('user')">
                   <div class = "icon">
                     <div class = "num">
                         {{
@@ -129,7 +129,7 @@
                     <span>人申请加入组织</span>
                   </p>
               </div>
-              <div class = "merchant person" @click.stop.prevent = "audit('merchant')">
+              <div class = "merchant person" @click.stop.prevent = "toCheckList('merchant')">
                   <div class = "icon">
                     <div class = "num">
                         {{
@@ -161,12 +161,50 @@ export default {
     return {
       corpShow : false,
       underReviewShow : false,
+      myOrgShow : false,
       joinInshow : false,
-      auditShow : false,
+      auditShow : true,
       corpName : '',
-      organization_list_num : '',
-      user_list_num :'',
-      corpObj : {},
+      organization_list_num : 4,
+      user_list_num :5,
+      corpObj : {
+            // check_status: 1,
+            // corporate_card_down: "/organizationCorporate/organizationId_o_null_ORGANIZATION_CORPORATE_CARD_DOWN.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=zWoOJpPcE4EEwzdySoiJc6Z8dWQ%3D",
+            // corporate_card_up: "http://trinity-local.oss-cn-huhehaote.aliyuncs.com/organizationCorporate/organizationId_o_null_ORGANIZATION_CORPORATE_CARD_UP.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=vZ0x3DbbmG2d8EcKSGCRgvYE1Eg%3D",
+            // corporate_ident: "150424190304305419",
+            // corporate_name: "蒙塔艾利斯",
+            // createDate: "2018-11-22 14:47:56",
+            // id_organization: 38,
+            // is_select_me: "",
+            // logo: "http://trinity-local.oss-cn-huhehaote.aliyuncs.com/organizationLogo/organizationId_null_ORGANIZATION_LOGO.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=gYOOdiJMufhmSMXUawgTzdGPBfc%3D",
+            // organizationName: "大商户",
+            // organization_desc: "大商户",
+            // organization_license_down: "",
+            // organization_license_up: "/organization/organizationId_null_ORGANIZATION_LICENSE_UP.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=v4TkhJI%2BxSNKCrDDidyAlupHC3c%3D",
+            // organization_num: "150424199304305419",
+            // parent_id_organization: 1,
+            // property: 3,
+            // rightful_status: 1,
+            // verified: 1
+            check_status: 1,
+            corporate_card_down: "",
+            corporate_card_up: "",
+            corporate_ident: "",
+            corporate_name: "",
+            createDate: "",
+            id_organization: '',
+            is_select_me: "",
+            logo: "",
+            organizationName: "",
+            organization_desc: "",
+            organization_license_down: "",
+            organization_license_up: "",
+            organization_num: "",
+            parent_id_organization: 1,
+            property: 3,
+            rightful_status: 1,
+            verified: 1
+      },
       userObj : {}
     }
   },
@@ -188,6 +226,8 @@ export default {
         else {
           if(count > 10) {
             return 9 + '+'
+          }else {
+              return count
           }
         }
       }
@@ -235,7 +275,7 @@ export default {
     console.log(`process.env.NODE_ENV=${process.env.NODE_ENV}`);
       console.log(`jiweiDevHost=${jiweiDevHost + '/trinity-backstage/organization/undo_user_organization'}`)
     },
-    audit(who) {
+    toCheckList(who) {
       console.log(who)
     },
     createdReq : async  () => {
@@ -274,21 +314,32 @@ export default {
                     let data = getOrgDetailRes.data.data.organization_mini;
                     // console.log(data);
                     // console.log(getUserDetailRes.data)
-                    data.corporate_card_up = prefixUrl + data.corporate_card_up
+                    data.corporate_card_up = prefixUrl + data.corporate_card_up;
                     this.corpObj = data;
+                    this.corpObj.logo = prefixUrl + this.corpObj.logo;
+                    this.corpObj = Object.assign({},this.corpObj);
+                    console.log(this.corpObj)
+                    // debugger
                     localStorage.setItem('org_verified',data.verified);
-                    let ov = localStorage.getItem('org_verified'),
-                    uv = localStorage.getItem("user_verified");
+                    let ov = getOrgDetailRes.data.data.organization_mini.verified,
+                    uv = getUserDetailRes.data.data.verified;
                     if(ov == 1 && uv == 1) {
                         this.underReviewShow = false;
+                        this.myOrgShow = true;
+                        this.organization_list_num = getOrgDetailRes.data.data.organization_list_num
+                        this.user_list_num = getOrgDetailRes.data.data.user_list_num
+                        // this.organization_list_num = 2
+                        // this.user_list_num = 20
+                        this.auditShow = false;
                         this.auditShow = true
-                            this.organization_list_num = result[0].data.data.organization_list_num
-                            this.user_list_num = result[0].data.data.user_list_num
-                            console.log(`this.user_list_num=${result[0].data.data.user_list_num}`)
-                            console.log(`this.organization_list_num=${result[0].data.data.organization_list_num}`)
+                        console.log("getOrgDetailRes.data:")
+                        console.log(getOrgDetailRes.data)
+                        console.log(`this.user_list_num=${this.user_list_num}`)
+                        console.log(`this.organization_list_num=${this.organization_list_num}`)
                     }
                     else{
                         this.underReviewShow = true;
+                        this.myOrgShow = false;
                         this.auditShow = false
                         if(ov == 1) {
                             this.joinInshow = true
@@ -319,7 +370,8 @@ export default {
   },
   created() {
         try {
-            this.createdReq()
+            this.createdReq();
+            console.log(`this.underReviewShow=${this.underReviewShow}`)
         }
         catch(err) {
             console.log(err);
@@ -498,7 +550,9 @@ export default {
   }
   .merchant-info-con {
     width : 90%;
-    margin : 10% 5%;
+    padding : 10% 5%;
+    max-height: 94vh;
+    margin: 0 auto;
     .merchant-con {
       width : 100%;
       height : 272px;

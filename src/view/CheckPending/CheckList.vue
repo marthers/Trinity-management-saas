@@ -458,7 +458,7 @@ export default {
            return true
          }
          else {
-           return
+           return 'haha'
          }
       });
       console.log(selectedArr);
