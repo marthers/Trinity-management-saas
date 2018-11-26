@@ -337,6 +337,7 @@ export default {
                     // console.log(getUserDetailRes.data)
                     data.corporate_card_up = prefixUrl + data.corporate_card_up;
                     this.corpObj = data;
+
                     // for(let item in data) {
                     //     if(item != 'id_organization' && item != 'parent_id_organization'&& item != 'status'&& item != 'property' && item != 'verified' && item != 'is_select_me' && item != 'logo'){
                     //         this.corpObj[item] = JSON.stringify(data[item])
@@ -345,8 +346,13 @@ export default {
                     // // this.corpObj = Object.assign({},data);
                     // let self = this
                     // // self.$set(this.corpObj,'logo',prefixUrl + self.corpObj)
-                    this.corpObj.logo = prefixUrl + this.corpObj.logo;
-                    // console.log(this.corpObj)
+                    if(this.corpObj.logo.length > 0) {
+                        this.corpObj.logo = prefixUrl + this.corpObj.logo;
+                    }
+                    else{
+                        this.corpObj.logo = require('./../../assets/images/ShunXiangLogo.png')
+                    }
+                    console.log(this.corpObj)
                     // debugger
                     // localStorage.setItem('org_verified',data.verified);
                     let ov = getOrgDetailRes.data.data.organization_mini.verified,
