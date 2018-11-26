@@ -168,42 +168,6 @@ export default {
       organization_list_num : 4,
       user_list_num :5,
       corpObj : {
-            // check_status: 1,
-            // corporate_card_down: "/organizationCorporate/organizationId_o_null_ORGANIZATION_CORPORATE_CARD_DOWN.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=zWoOJpPcE4EEwzdySoiJc6Z8dWQ%3D",
-            // corporate_card_up: "http://trinity-local.oss-cn-huhehaote.aliyuncs.com/organizationCorporate/organizationId_o_null_ORGANIZATION_CORPORATE_CARD_UP.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=vZ0x3DbbmG2d8EcKSGCRgvYE1Eg%3D",
-            // corporate_ident: "150424190304305419",
-            // corporate_name: "蒙塔艾利斯",
-            // createDate: "2018-11-22 14:47:56",
-            // id_organization: 38,
-            // is_select_me: "",
-            // logo: "http://trinity-local.oss-cn-huhehaote.aliyuncs.com/organizationLogo/organizationId_null_ORGANIZATION_LOGO.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=gYOOdiJMufhmSMXUawgTzdGPBfc%3D",
-            // organizationName: "大商户",
-            // organization_desc: "大商户",
-            // organization_license_down: "",
-            // organization_license_up: "/organization/organizationId_null_ORGANIZATION_LICENSE_UP.png?Expires=1858229276&OSSAccessKeyId=LTAIiFX2qlsqhGaX&Signature=v4TkhJI%2BxSNKCrDDidyAlupHC3c%3D",
-            // organization_num: "150424199304305419",
-            // parent_id_organization: 1,
-            // property: 3,
-            // rightful_status: 1,
-            // verified: 1
-            check_status: 1,
-            corporate_card_down: "",
-            corporate_card_up: "",
-            corporate_ident: "",
-            corporate_name: "",
-            createDate: "",
-            id_organization: '',
-            is_select_me: "",
-            logo: "",
-            organizationName: "",
-            organization_desc: "",
-            organization_license_down: "",
-            organization_license_up: "",
-            organization_num: "",
-            parent_id_organization: 1,
-            property: 3,
-            rightful_status: 1,
-            verified: 1
       },
       userObj : {}
     }
@@ -315,8 +279,10 @@ export default {
                     // console.log(data);
                     // console.log(getUserDetailRes.data)
                     data.corporate_card_up = prefixUrl + data.corporate_card_up;
-                    this.corpObj = data;
-                    this.corpObj.logo = prefixUrl + this.corpObj.logo;
+                    // this.corpObj = data;
+                    let self = this
+                    // self.$set(this.corpObj,'logo',prefixUrl + self.corpObj)
+                    this.logo = prefixUrl + this.corpObj.logo;
                     this.corpObj = Object.assign({},this.corpObj);
                     console.log(this.corpObj)
                     // debugger
