@@ -271,9 +271,11 @@ import {
             if(this.selectedIndex != -1) {
               let obj = this.orgList[this.selectedIndex];
               if(localStorage.getItem('ifPerson') != null && localStorage.getItem('ifPerson') != undefined) {
+                //   debugger
                   obj.ifPerson = localStorage.getItem('ifPerson')
               }
               else {
+                //   debugger
                   obj.ifPerson = false;
               }
                 // this.$emit('superior-selected',this.orgList[this.selectedIndex]);

@@ -35,7 +35,20 @@ export default {
     },
     methods : {
         twoClicked(type) {
-            console.log(`type=${type}`)
+            console.log(`type=${type}`);
+            if(type === 'create') {
+                this.NoDataIndexShow        = false;
+                this.createPersonalInfoShow = true;
+                this.createShow             = true;
+                // debugger
+                localStorage.setItem('ifPerson',0);
+            }else {
+                // this.createShow = false
+                // this.NoDataIndexShow        = false;
+                // this.createPersonalInfoShow = true;
+                // debugger
+                localStorage.setItem('ifPerson',1)
+            }
             // this.$emit('two-clicked',type)
             this.$router.push({
               name : 'CreatePerson',

@@ -427,11 +427,13 @@ export default {
                 this.NoDataIndexShow        = false;
                 this.createPersonalInfoShow = true;
                 this.createShow             = true;
+                debugger
                 localStorage.setItem('ifPerson',0);
             }else {
                 this.createShow = false
                 this.NoDataIndexShow        = false;
                 this.createPersonalInfoShow = true;
+                debugger
                 localStorage.setItem('ifPerson',1)
             }
         },
@@ -621,9 +623,9 @@ export default {
               name : 'NoDataIndex'
             })
             this.JoinInOrgShow          = false;
-            this.createPersonalInfoShow = false;
-            this.createMerchantInfoShow = false;
-            this.createLegalShow        = false;
+            // this.createPersonalInfoShow = false;
+            // this.createMerchantInfoShow = false;
+            // this.createLegalShow        = false;
         }else {
             this.$store.commit('setMenuShowTrue')
             this.NoDataIndexShow = false;

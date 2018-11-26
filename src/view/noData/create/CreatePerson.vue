@@ -550,6 +550,7 @@ export default {
             console.log("selectedSuperior:");
             console.log(selectedSuperior);
             if(selectedSuperior.ifPerson && selectedSuperior.ifPerson == 1) {
+                // debugger
                 joinOrg(
                   baseUrl + '/trinity-backstage/user/join_organization',
                   {
@@ -559,92 +560,18 @@ export default {
                       // 'user_info' : {
                       //   'fid_organization' : selectedSuperior.id_organization
                       // }
-                      'to_organization' : {
-                        'fid_organization' : selectedSuperior.id_organization
-                      }
+                    //   'to_organization' : {
+                    //     'fid_organization' : selectedSuperior.id_organization
+                    //   }
+                      'to_organization' : selectedSuperior.id_organization
                     }
                   })
                 .then(res => {
                   if(res.status == 200 && res.data.code == 0) {
-
-
-
-                    Promise.all(
-                      [
-                        getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
-                            {
-                              'priority': 5,
-                              'id_organization'   : 0,
-                              'data' :{
-                                'organization_id' : localStorage.getItem('fid_organization')
-                              }
-                            }),
-                        getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
-                            {
-                              'priority': 5,
-                              'id_organization'   : 0,
-                              'data' : {
-                                'user_id' : localStorage.getItem('id_user')
-                              }
-                            })
-                      ]
-                    )
-                    // getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail')
-                    .then((result) => {
-                      console.log(result);
-                      if(result && result.length == 2) {
-                        // localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                        // localStorage.setItem('user_verified',result[1].data.data.verified)
-                        // localStorage.setItem('org_verified',result[0].data.data.verified)
-                        if(result[1].data.data.verified) {
-                          localStorage.setItem('user_verified',result[1].data.data.verified)
-                        }
-                        if(result[0].data.code == 0 && result[0].data.data.verified) {
-                          localStorage.setItem('user_verified',result[0].data.data.verified)
-                        }
-                        if(result[1].data.data.fid_organization) {
-                          localStorage.setItem('fid_organization',result[1].data.data.fid_organization)
-                        }
-                        // // if(result.status && result.status == 200 && result.data.success) {
-                        // //   localStorage.setItem('org_verified',result.data.data.verified);
-                        // this.NoDataIndexShow = false
-                        if(result[0].data.data.verified == 1 && result[1].data.data.verified == 1) {
-                          //跳转到商户信息
-                            this.$Notice.success({
-                                title: '跳转到商户信息',
-                                desc: '跳转到商户信息'
-                            });
-                        }
-                        else {
-                          if(result[0].data.data.verified == 1) {
-                            // 员工加入审核中
-                            this.$Notice.info({
-                                title: '员工加入审核中',
-                                desc: '员工加入审核中'
-                            });
-                          }
-                          else {
-                            //商户加盟审核中
-                            this.$Notice.info({
-                                title: '商户加盟审核中',
-                                desc: '商户加盟审核中'
-                            });
-                          }
-                        }
+                        console.log(localStorage.getItem('fid_organization'))
                         this.$router.push({
-                          name : 'userReview'
+                            name : 'userReview'
                         })
-                      }
-                    }).catch((err) => {
-                      console.log(err)
-                      this.$Message.error({
-                          content : err.msg ? err.msg: '网络错误',
-                          duration: 5,
-                          closable: true
-                      });
-                    })
-
-
                   }
                   else{
                     this.$Message.error({

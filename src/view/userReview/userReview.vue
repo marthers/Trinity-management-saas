@@ -169,7 +169,8 @@ export default {
       user_list_num :5,
       corpObj : {
       },
-      userObj : {}
+      userObj : {},
+      count : 2
     }
   },
   filters : {
@@ -198,7 +199,8 @@ export default {
   },
   methods : {
     cancel() {
-      let url = jiweiDevHost + '/trinity-backstage/organization/undo_user_application'
+      let url = jiweiDevHost + '/trinity-backstage/organization/undo_user_application';
+        this.$LoadingBar.start();
       undo_user_organization(url)
       .then(res => {
         console.log('undo_user_organization_res：')
@@ -212,6 +214,104 @@ export default {
                   title: '撤销成功',
                   desc: '请重新加盟或者加入'
               });
+
+            getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                {
+                    'priority': 5,
+                    'id_organization'   : 0,
+                    'data' : {
+                    'user_id' : localStorage.getItem('id_user')
+                    }
+                }
+            )
+            .then(
+                res => {
+                        if(res.status && res.status == 200) {
+                          if(res.data.success && res.data.code == 0) {
+                              if(res.data.data) {
+                                let data = res.data.data;
+                                console.log(data)
+                                //姓名
+                                if(data.ident_name && data.ident_name.length > 0) {
+                                  this.userNamePlaceholder = data.ident_name;
+                                  this.userName = data.ident_name
+                                }
+                                else {
+                                  this.userNamePlaceholder = '请输入真实姓名'
+                                  this.userName            = ''
+                                }
+                                let prefixUrl = ''
+                                if(process.env.NODE_ENV == 'development') {
+                                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                                }else {
+                                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                                }
+                                // 身份证号
+                                if(data.ident_num && data.ident_num.length > 0) {
+                                  this.IDPlaceholder = data.ident_num;
+                                  this.IDNumber = data.ident_num
+                                }
+                                else {
+                                  this.IDPlaceholder = '请输入身份证号码'
+                                  this.IDNumber            = ''
+                                }
+                                // 身份证正面
+                                if(data.ident_up && data.ident_up.length > 0) {
+                                  this.indentImgUp =prefixUrl + data.ident_up;
+                                  this.frontBase64Data = data.ident_up
+                                  this.beforeHasDataUp = true
+                                }
+                                else {
+                                  this.indentImgUp = '';
+                                  this.beforeHasDataUp = false;
+                                  this.frontBase64Data = ''
+                                }
+                                // 身份证反面
+                                if(data.ident_down && data.ident_down.length > 0) {
+                                  this.indentImg = prefixUrl + data.ident_down;
+                                  this.beforeHasData = true
+                                  this.versoData = data.ident_down
+                                }
+                                else {
+                                  this.beforeHasData = false
+                                  this.indentImg            = '';
+                                  this.versoData = ''
+                                }
+                                // for(let item in data) {
+                                // localStorage.setItem('user_detail_obj' , JSON.stringify(data))
+                                // }
+                                if(data.verified) {
+                                  localStorage.setItem('user_verified',data.verified)
+                                }
+                              }
+                          }else {
+                              this.$Message.error({
+                                  content : '网络错误',
+                                  duration: 5,
+                                  closable: true
+                              });
+                          }
+                        }
+                        else {
+                          this.$Message.error({
+                              content : '网络错误',
+                              duration: 5,
+                              closable: true
+                          });
+                          this.$LoadingBar.error()
+                        }
+                        this.$LoadingBar.finish()
+                }
+            )
+            .catch(err => {
+                console.log(err)
+                this.$Message.error({
+                    content : err.msg ? err.msg: '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+                this.$LoadingBar.error()
+            })
               this.$router.push({
                 name : 'home',
                 params : {
@@ -242,7 +342,8 @@ export default {
     toCheckList(who) {
       console.log(who)
     },
-    createdReq : async  () => {
+    createdReq : async  function() {
+        let self = this
         let prefixUrl = ''
         if(process.env.NODE_ENV == 'development') {
             prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
@@ -275,18 +376,26 @@ export default {
                     }
                 );
                 if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_mini) {
+                    this.count ++;
+                    // debugger
+                    console.log(`this.count=${this.count}`)
                     let data = getOrgDetailRes.data.data.organization_mini;
                     // console.log(data);
                     // console.log(getUserDetailRes.data)
                     data.corporate_card_up = prefixUrl + data.corporate_card_up;
-                    // this.corpObj = data;
-                    let self = this
-                    // self.$set(this.corpObj,'logo',prefixUrl + self.corpObj)
-                    this.logo = prefixUrl + this.corpObj.logo;
-                    this.corpObj = Object.assign({},this.corpObj);
-                    console.log(this.corpObj)
+                    this.corpObj = data;
+                    // for(let item in data) {
+                    //     if(item != 'id_organization' && item != 'parent_id_organization'&& item != 'status'&& item != 'property' && item != 'verified' && item != 'is_select_me' && item != 'logo'){
+                    //         this.corpObj[item] = JSON.stringify(data[item])
+                    //     }
+                    // }
+                    // // this.corpObj = Object.assign({},data);
+                    // let self = this
+                    // // self.$set(this.corpObj,'logo',prefixUrl + self.corpObj)
+                    this.corpObj.logo = prefixUrl + this.corpObj.logo;
+                    // console.log(this.corpObj)
                     // debugger
-                    localStorage.setItem('org_verified',data.verified);
+                    // localStorage.setItem('org_verified',data.verified);
                     let ov = getOrgDetailRes.data.data.organization_mini.verified,
                     uv = getUserDetailRes.data.data.verified;
                     if(ov == 1 && uv == 1) {
@@ -335,6 +444,10 @@ export default {
     }
   },
   created() {
+  },
+  mounted() {
+    console.log('this.$route.params:')
+    console.log(this.$route.params);
         try {
             this.createdReq();
             console.log(`this.underReviewShow=${this.underReviewShow}`)
@@ -347,10 +460,6 @@ export default {
                 closable: true
             });
         }
-  },
-  mounted() {
-    console.log('this.$route.params:')
-    console.log(this.$route.params)
   }
 }
 </script>
