@@ -8,11 +8,18 @@ export const getOrgList = (url,data) => {
   }
 export const orgEdit = (url,data) => {
     return axios.request({
-      url: url,
-      data : data,
-      method: 'post'
+        url: url,
+        data : data,
+        method: 'post'
     })
-  }
+}
+export const OrganizationNew = (url,data) => {
+    return axios.request({
+        url: url,
+        data : data,
+        method: 'post'
+    })
+}
 export const undo_user_organization = url=> {
   return axios.request({
     url: url,

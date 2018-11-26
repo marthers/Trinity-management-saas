@@ -228,62 +228,15 @@ export default {
                 res => {
                         if(res.status && res.status == 200) {
                           if(res.data.success && res.data.code == 0) {
-                              if(res.data.data) {
                                 let data = res.data.data;
-                                console.log(data)
-                                //姓名
-                                if(data.ident_name && data.ident_name.length > 0) {
-                                  this.userNamePlaceholder = data.ident_name;
-                                  this.userName = data.ident_name
-                                }
-                                else {
-                                  this.userNamePlaceholder = '请输入真实姓名'
-                                  this.userName            = ''
-                                }
-                                let prefixUrl = ''
-                                if(process.env.NODE_ENV == 'development') {
-                                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
-                                }else {
-                                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
-                                }
-                                // 身份证号
-                                if(data.ident_num && data.ident_num.length > 0) {
-                                  this.IDPlaceholder = data.ident_num;
-                                  this.IDNumber = data.ident_num
-                                }
-                                else {
-                                  this.IDPlaceholder = '请输入身份证号码'
-                                  this.IDNumber            = ''
-                                }
-                                // 身份证正面
-                                if(data.ident_up && data.ident_up.length > 0) {
-                                  this.indentImgUp =prefixUrl + data.ident_up;
-                                  this.frontBase64Data = data.ident_up
-                                  this.beforeHasDataUp = true
-                                }
-                                else {
-                                  this.indentImgUp = '';
-                                  this.beforeHasDataUp = false;
-                                  this.frontBase64Data = ''
-                                }
-                                // 身份证反面
-                                if(data.ident_down && data.ident_down.length > 0) {
-                                  this.indentImg = prefixUrl + data.ident_down;
-                                  this.beforeHasData = true
-                                  this.versoData = data.ident_down
-                                }
-                                else {
-                                  this.beforeHasData = false
-                                  this.indentImg            = '';
-                                  this.versoData = ''
-                                }
-                                // for(let item in data) {
-                                // localStorage.setItem('user_detail_obj' , JSON.stringify(data))
-                                // }
                                 if(data.verified) {
                                   localStorage.setItem('user_verified',data.verified)
                                 }
-                              }
+                                localStorage.setItem('fid_organization',data.fid_organization);
+                                this.$store.commit('setMenuShowFalse')
+                                this.$router.push({
+                                    name : 'NoDataIndex'
+                                })
                           }else {
                               this.$Message.error({
                                   content : '网络错误',

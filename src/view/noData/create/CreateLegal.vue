@@ -72,7 +72,10 @@ import ImgUpload from '@/components/ImgUpload';
 import {
   getUserDetail
   } from '@/api/login.js';
-import {orgEdit} from '@/api/org/org.js';
+import {
+    orgEdit,
+    OrganizationNew
+} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
 // const baseUrl      = baseConfig.baseUrl.dev;
 const localOrgHost = baseConfig.baseUrl.localOrgHost
@@ -108,7 +111,7 @@ export default {
                 'rightful_status' : 1,
                 'is_select_me'           : this.legal == 'self' ? 1 : 0,
                 'logo'                   : this.$route.params.logoBase64Data,
-                'organization_name'      : this.$route.params.corpName,
+                'organizationName'      : this.$route.params.corpName,
                 'organization_num'       : this.$route.params.IDNumber,
                 'organization_license_up': this.$route.params.corpBase64Data,
                 'organization_desc'      : this.$route.params.des ? this.$route.params.des: '',
@@ -122,67 +125,91 @@ export default {
                     reqData.corporate_card_down = this.versoLegalBase64Data
                 // console.log(o)
             }
-
-
-            orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
-                {
+            //
+            if(localStorage.getItem('fid_organization') == 0) {
+                OrganizationNew(localOrgHost + '/trinity-backstage/organization/new',{
                     'priority': 5,
-                    'id_organization'   : 0,
+                    'id_organization'   : localStorage.getItem('fid_organization'),
+                    "manager_create" : 0,
                     'data'    : {
                         'edit_mode'        : 0,
                         'organization_info': reqData
                     }
-                }
-            )
-            .then(res => {
-                console.log(res)
-                if(res.status&& res.status == 200) {
-                  // debugger
-                    console.log(res.data);
-                        this.$router.push({
-                          name : 'userReview'
+                })
+                .then(res => {
+                    if(res.status && res.status == 200 && res.data.code == 0) {
+                          this.$Message.success({
+                              content : '提交成功，请耐心等待审核',
+                              duration: 5,
+                              closable: true
+                          });
+                    }
+                    else if(res.data.code == 107) {
+                          this.$Message.warning({
+                              content : '该商户名已存在',
+                              duration: 5,
+                              closable: true
+                          });
+                    }
+                    else{
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
                         })
-                    // Promise.all(
-                    //   [
-                    //     getOrgDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/organization/detail'),
-                    //     getUserDetail(baseConfig.baseUrl.localOrgHost + '/trinity-backstage/user/detail')
-                    //   ]
-                    // )
-                    // .then((result) => {
-                    //   console.log(result);
-                    //   if(result && result.length == 2) {
-                    //     localStorage.setItem('fid_organization',result[1].data.data.fid_organization);
-                    //     localStorage.setItem('user_verified',result[1].data.data.verified)
-                    //     localStorage.setItem('org_verified',result[0].data.data.verified)
-                    //     this.$router.push({
-                    //       name : 'userReview'
-                    //     })
-                    //   }
-                    // }).catch((err) => {
-                    //   console.log(err)
-                    //   this.$Message.error({
-                    //       content : err.msg ? err.msg: '网络错误',
-                    //       duration: 5,
-                    //       closable: true
-                    //   });
-                    // })
-
-                }else {
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
                     this.$Message.error({
-                        content : res.msg ? res.msg: '网络异常，请联系管理员及时处理',
+                        content : '网络异常，请联系管理员及时处理',
                         duration: 5,
                         closable: true
                     })
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                this.$Message.error({
-                    content : '网络异常，请联系管理员及时处理',
-                    duration: 5,
-                    closable: true
                 })
-            })
+            }
+            else{
+                orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
+                    {
+                        'priority': 5,
+                        'id_organization'   : 0,
+                        'data'    : {
+                            'edit_mode'        : 0,
+                            'organization_info': reqData
+                        }
+                    }
+                )
+                .then(res => {
+                    console.log(res)
+                    if(res.status&& res.status == 200) {
+                    // debugger
+                        console.log(res.data);
+                        this.$Message.success({
+                            content : '提交成功，请耐心等待审核',
+                            duration: 5,
+                            closable: true
+                        });
+                        this.$router.push({
+                            name : 'userReview'
+                        })
+
+                    }else {
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.$Message.error({
+                        content : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                })
+            }
 
         },
         radioChange() {
