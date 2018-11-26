@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class = "body">
-                <div class = "left-side-con" id = "left-side-main" v-show = "$store.state.menuShow">
+                <div class = "left-side-con" id = "left-side-main" v-show = "$store.state.menuShow" ref = "leftSideCon">
                     <div class= "left-side-box">
                         <div :class = "{'item-con' : true,'left-side-selected' : iconSelected == item.id_index1}"
                             v-for = "(item,index) in menuList"
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </div>
-                <div class = "left-menu-con" v-if = "leftSideSelected == 'menu'" v-show = "$store.state.menuShow">
+                <div class = "left-menu-con" v-if = "leftSideSelected == 'menu'" v-show = "$store.state.menuShow" ref = "leftMenuCon">
                     <div class = "menu-head">
                         <span>organization_level:{{organization_level}}</span>
                         <span>role_level:{{role_level}}</span>
@@ -601,6 +601,7 @@ export default {
         }
     },
     created () {
+
     },
     mounted() {
       console.log("this.$LoadingBar:")
@@ -684,6 +685,7 @@ export default {
             }
             if(localStorage.getItem('permission') != null && localStorage.getItem('permission').length > 0) {
                 this.menuList = filterPermission(JSON.parse(localStorage.getItem('permission')));
+                // this.menuList = JSON.parse(localStorage.getItem('permission'));
                 this.selectedIdIndex1 = this.menuList[0].id_index1
                 this.selectedIdIndex2 = this.menuList[0].sub_items[0].id_index2;
                 this.selectedIdIndex3 = this.menuList[0].sub_items[0].sub_items[0].id_index3;
@@ -700,7 +702,12 @@ export default {
         console.log('created:');
         console.log(this.$store.state)
         console.log("this.$route.params")
-        console.log(this.$route.params)
+        console.log(this.$route.params);
+        console.log("this.$refs.leftSideCon:")
+        console.log(this.$refs.leftSideCon.clientHeight);
+        console.log(this.$refs.leftMenuCon.clientHeight);
+        this.$refs.leftSideCon.style.height = this.$refs.leftMenuCon.style.height;
+        console.log(this.$refs.leftMenuCon.style)
     }
 }
 </script>
@@ -742,6 +749,9 @@ export default {
         cursor      : pointer;
     }
     width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    overflow-y: auto;
   .header{
     width           : 100vw;
     height          : 6vh;
@@ -860,7 +870,7 @@ export default {
   }
   .body {
       width         : 100vw;
-      height        : 100%;
+      height        : 94vh;
       min-height    : 100vh;
       display       : flex;
       flex-direction: row;
@@ -868,13 +878,15 @@ export default {
       overflow      : auto;
       top           : 6vh;
         .left-side-con {
-            @media screen and(min-width:800px) {
-              width : 5vw;
-            }
-            @media screen  and(max-width:800px){
-              width : 50px;
-            }
-            height          : 100%;
+            // @media screen and(min-width:800px) {
+            //   width : 50px;
+            // }
+            // @media screen  and(max-width:800px){
+            //   width : 50px;
+            // }
+            width : 60px;
+            min-height          : 100%;
+            height: auto;
             background-color: #08131E;
             text-align      : center;
             display         : flex;
@@ -882,29 +894,32 @@ export default {
             justify-content : center;
             // align-items     : center;
             .left-side-box {
-                // width: 100%;
-                // height:auto;
+                width: 50px;
+                height:auto;
                 position: fixed;
                 top     : 45vh;
-                @media screen and(min-width:800px) {
-                  width : 3vw;
-                  margin : 0 1vw;
-                }
-                @media screen  and(max-width:800px){
-                  width : 40px;
-                  margin : 0 5px;
-                }
+                // @media screen and(min-width:800px) {
+                //   width : 3vw;
+                //   margin : 0 1vw;
+                // }
+                // @media screen  and(max-width:800px){
+                //   width : 40px;
+                //   margin : 0 5px;
+                // }
                 .item-con {
-                    @media screen and(min-width:800px) {
-                      width           : 3vw;
-                      height          : 3vw;
-                      border-radius   : 1.5vw;
-                    }
-                    @media screen  and(max-width:800px){
-                      width           : 40px;
-                      height          : 40px;
-                      border-radius   : 20px;
-                    }
+                    // @media screen and(min-width:800px) {
+                    //   width           : 3vw;
+                    //   height          : 3vw;
+                    //   border-radius   : 1.5vw;
+                    // }
+                    // @media screen  and(max-width:800px){
+                    //   width           : 40px;
+                    //   height          : 40px;
+                    //   border-radius   : 20px;
+                    // }
+                    width           : 40px;
+                    height          : 40px;
+                    border-radius   : 20px;
                     margin          : 2vh 0;
                     background-color: #08131E;
                     display         : flex;
@@ -973,16 +988,20 @@ export default {
         }
 
         .left-menu-con {
-            @media screen and(min-width:800px){
-              width           : 16vw;
-            }
-            @media screen and(max-width:799px){
-              width           : 160px;
-            }
+            // @media screen and(min-width:800px){
+            //   width           : 16vw;
+            // }
+            // @media screen and(max-width:799px){
+            //   width           : 160px;
+            // }
+            width : 160px;
             min-height      : 100vh;
             height          : 100%;
             background-color: #DEDEDE;
             text-align      : center;
+            overflow: hidden;
+            overflow-y: auto;
+            padding-bottom: 50px;
             .menu-head {
                 // width        : 160px !important;
                 @media screen and(min-width:800px){
@@ -1180,6 +1199,21 @@ export default {
                 color           : #fff;
                 background-color: #48A8DA;
             }
+        }
+        .left-menu-con::-webkit-scrollbar-track-piece { //滚动条凹槽的颜色，还可以设置边框属性
+            background-color:#f8f8f8;
+        }
+        .left-menu-con::-webkit-scrollbar {//滚动条的宽度
+            width:9px;
+            height:9px;
+        }
+        .left-menu-con::-webkit-scrollbar-thumb {//滚动条的设置
+            background-color:#dddddd;
+            background-clip:padding-box;
+            min-height:28px;
+        }
+        .left-menu-con::-webkit-scrollbar-thumb:hover {
+            background-color:#bbb;
         }
   }
 }
