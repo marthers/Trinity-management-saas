@@ -27,7 +27,7 @@
             </div>
             <div class = "con corp-name">
                 <p class = "info">公司注册名称：</p>
-                <input type="text" v-model="userName" class = "input" placeholder="公司注册名称"  maxlength = "20"/>
+                <input type="text" v-model="corpName" class = "input" placeholder="公司注册名称"  maxlength = "20"/>
             </div>
             <div class = "con corp-id">
                 <p class = "info">公司证照号码：</p>
@@ -40,7 +40,7 @@
             <footer>
                 <!-- <div class = "back" @click.stop.prevent = "backToPerson">上一步</div>
                 <div class = "next" @click = "toEditLegalPerson">下一步： 编辑法人信息</div> -->
-                <create-legal></create-legal>
+                <create-legal @submitCreate = "submitCreate"></create-legal>
             </footer>
         </div>
 
@@ -74,13 +74,18 @@ import {
 } from '@/libs/filter.js';
 import {getOrgList} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
+const localOrgHost = baseConfig.baseUrl.localOrgHost
 const baseUrl = baseConfig.baseUrl.localOrgHost;
+import {
+    orgEdit,
+    OrganizationNew
+} from '@/api/org/org.js';
 export default {
     name: 'CreatePerson',
     data() {
         return {
             // merchantData : {},
-            userName        : '',
+            corpName        : '',
             maxlength : 254,
             IDNumber        : '',
             logoModalTitle  : '公司Logo',
@@ -114,16 +119,201 @@ export default {
         CreateLegal
     },
     methods : {
+        //接收子组件CreateLegal
+        submitCreate(data){
+            console.log("data:");
+            console.log(data);
+            if( !this.selectedMerchant.id_organization || this.selectedMerchant.id_organization.length == 0) {
+                this.$Notice.error({
+                    title: '您暂未选择任何上级组织',
+                    desc : '请先选择您的上级组织'
+                });
+                return false
+            }
+            if(this.logoBase64Data.length == 0) {
+                this.$Notice.error({
+                    title: 'Logo照片暂未上传',
+                    desc : '请先上传Logo照片'
+                });
+                return false
+            }
+            if(this.corpBase64Data.length == 0) {
+                this.$Notice.error({
+                    title: '公司营业执照照片暂未上传',
+                    desc : '请先上传公司营业执照照片'
+                });
+                return false
+            }
+            if(this.corpName.replace(/\s+/g,"").length == 0) {
+                this.$Notice.error({
+                    title: '请填写公司名称',
+                    desc : '请填写公司名称'
+                });
+                return false
+            }
+            if(this.IDNumber.replace(/\s+/g,"").length == 0) {
+                this.$Notice.error({
+                    title: '请填写公司证照号',
+                    desc : '请填写公司证照号'
+                });
+                return false
+            }
+            if(this.corpBase64Data.length == 0) {
+                this.$Notice.error({
+                    title: '公司营业执照照片暂未上传',
+                    desc : '请先上传公司营业执照照片'
+                });
+                return false
+            }
+            if(this.des.replace(/s+/g,'').length > 0) {
+                console.log(`filterStr(this.des)=${filterStr(this.des)}`);
+            }
+
+            // this.merchantData           = {
+            //     'selectedMerchant': this.selectedMerchant,
+            //     'logoBase64Data'  : this.logoBase64Data,
+            //     'corpBase64Data'  : this.corpBase64Data,
+            //     'IDNumber'        : this.IDNumber,
+            //     'corpName'        : this.corpName,
+            //     'des'             : this.des
+            // };
+
+
+            let reqData                     = {
+                'property' : 0,
+                // 'record_status' : 1,
+                'rightful_status' : 1,
+                'is_select_me'           : data.is_select_me,
+                'logo'                   : this.logoBase64Data,
+                'organizationName'      : this.corpName,
+                'organization_num'       : this.IDNumber,
+                'organization_license_up': this.corpBase64Data,
+                'organization_desc'      : this.des,
+                'parent_id_organization': this.selectedMerchant.id_organization ? this.selectedMerchant.id_organization: 1
+            };
+            if(data.is_select_me != 0) {
+                reqData.corporate_name = data.corporate_name,
+                reqData.corporate_ident = data.corporate_ident,
+                reqData.corporate_card_up = data.corporate_card_up,
+                reqData.corporate_card_down = data.corporate_card_down
+            }
+            console.log("reqData:")
+            console.log(reqData)
+            //
+            if(localStorage.getItem('fid_organization') == 0) {
+                OrganizationNew(localOrgHost + '/trinity-backstage/organization/new',{
+                    'priority': 5,
+                    'id_organization'   : localStorage.getItem('fid_organization'),
+                    "manager_create" : 0,
+                    'data'    : {
+                        'edit_mode'        : 0,
+                        'organization_info': reqData
+                    }
+                })
+                .then(res => {
+                    if(res.status && res.status == 200 && res.data.code == 0) {
+                          this.$Message.success({
+                              content : '提交成功，请耐心等待审核',
+                              duration: 5,
+                              closable: true
+                          });
+                            this.$router.push({
+                                name : 'userReview'
+                            })
+                    }
+                    else if(res.data.code == 107) {
+                          this.$Message.warning({
+                              content : '该商户名已存在',
+                              duration: 5,
+                              closable: true
+                          });
+                    }
+                    else{
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.$Message.error({
+                        content : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                })
+            }
+            else{
+                orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
+                    {
+                        'priority': 5,
+                        'id_organization'   : 0,
+                        'data'    : {
+                            'edit_mode'        : 0,
+                            'organization_info': reqData
+                        }
+                    }
+                )
+                .then(res => {
+                    console.log(res)
+                    if(res.status&& res.status == 200) {
+                    // debugger
+                        console.log(res.data);
+                        this.$Message.success({
+                            content : '提交成功，请耐心等待审核',
+                            duration: 5,
+                            closable: true
+                        });
+                        this.$router.push({
+                            name : 'userReview'
+                        })
+
+                    }else {
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.$Message.error({
+                        content : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                })
+            }
+
+
+            // this.$router.push({
+            //   name : 'CreateLegal',
+            //   params : this.merchantData
+            // })
+            // this.$emit('to-legal',{
+            //     'selectedMerchant': JSON.stringify(this.selectedMerchant),
+            //     'logoBase64Data'  : this.logoBase64Data,
+            //     'corpBase64Data'  : this.corpBase64Data,
+            //     'IDNumber'        : this.IDNumber,
+            //     'corpName'        : this.corpName,
+            //     'des'             : this.des
+            // })
+        },
         editorBlur(){
             console.log(this.content);
         },
         superiorSelected(selectedSuperior){
           // debugger
             console.log(selectedSuperior);
-            this.merchantData = Object.assign({},selectedSuperior);
+            console.log(this.merchantData);
+            console.log(this.selectedMerchant);
+            // this.merchantData = Object.assign({},selectedSuperior);
             // debugger
             this.selectedMerchant = selectedSuperior;
-            this.$emit('selectedSuperior',selectedSuperior)
+            // this.$emit('selectedSuperior',selectedSuperior)
         },
         pullup(page_index) {
             // debugger
@@ -236,51 +426,6 @@ export default {
             this.$router.go(-1);
         },
         toEditLegalPerson() {
-            // if(this.selectedMerchant.length == 0) {
-            //     this.$Notice.error({
-            //         title: '您暂未选择任何上级组织',
-            //         desc : '请先选择您的上级组织'
-            //     });
-            //     return false
-            // }
-            if(this.logoBase64Data.length == 0) {
-                this.$Notice.error({
-                    title: 'Logo照片暂未上传',
-                    desc : '请先上传Logo照片'
-                });
-                return false
-            }
-            if(this.corpBase64Data.length == 0) {
-                this.$Notice.error({
-                    title: '公司营业执照照片暂未上传',
-                    desc : '请先上传公司营业执照照片'
-                });
-                return false
-}
-            if(this.des.replace(/s+/g,'').length > 0) {
-                console.log(`filterStr(this.des)=${filterStr(this.des)}`);
-            }
-
-            this.merchantData           = {
-                'selectedMerchant': this.selectedMerchant,
-                'logoBase64Data'  : this.logoBase64Data,
-                'corpBase64Data'  : this.corpBase64Data,
-                'IDNumber'        : this.IDNumber,
-                'corpName'        : this.userName,
-                'des'             : this.des
-            };
-            this.$router.push({
-              name : 'CreateLegal',
-              params : this.merchantData
-            })
-            // this.$emit('to-legal',{
-            //     'selectedMerchant': JSON.stringify(this.selectedMerchant),
-            //     'logoBase64Data'  : this.logoBase64Data,
-            //     'corpBase64Data'  : this.corpBase64Data,
-            //     'IDNumber'        : this.IDNumber,
-            //     'corpName'        : this.userName,
-            //     'des'             : this.des
-            // })
         },
         logoBase64(base64) {
             console.log('logoBase64_base64:');
@@ -331,6 +476,7 @@ export default {
     height : 100%;
     padding: 2.5% 0 0 2.5%;
     color  : #4A4A4A;
+    user-select: none;
     .box {
         width : 95%;
         height: 95%;
