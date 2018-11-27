@@ -109,13 +109,15 @@ export default {
             let reqData = {
                 "is_select_me" : this.legal == 'self' ? 1 : 0
             }
-            if(this.legal !== 'self') {
+            if(this.legal !== 'self' && this.legal.length != 0) {
+                // debugger
                 reqData.corporate_name = this.userName,
                 reqData.corporate_ident = this.IDNumber,
                 reqData.corporate_card_up = this.corporate_card_up,
                 reqData.corporate_card_down = this.versoLegalBase64Data
             }
-            this.$emit('submitCreate',reqData)
+            this.$emit('submitCreate',reqData);
+                console.log(`this.legal=${this.legal}`)
             // let reqData                     = {
             //     'property' : 0,
             //     // 'record_status' : 1,
@@ -246,7 +248,8 @@ export default {
                               'data' : {
                                 'user_id' : localStorage.getItem('id_user')
                               }
-                            })
+                            }
+                    )
                     .then(res => {
                       console.log('getUserDetail_res:')
                       console.log(res);

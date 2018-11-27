@@ -182,6 +182,8 @@ export default {
                                       else {
                                           delete user_info.ident_down
                                       }
+
+                                        this.$LoadingBar.start();
                                         UserInfoEdit(baseUrl + '/trinity-backstage/user/edit_info',
                                             {
                                                 'priority': 5,
@@ -210,6 +212,7 @@ export default {
                                                             duration: 5,
                                                             closable: true
                                                         });
+                                                        this.$LoadingBar.error()
                                                     }else if(code == 0) {
                                                         localStorage.setItem('role_level',res.data.user_info.role_level);
                                                         localStorage.setItem('organization_level',res.data.user_info.organization_level);
@@ -217,10 +220,14 @@ export default {
                                                         localStorage.setItem('user_verified',res.data.user_info.verified);
                                                         this.$router.push({
                                                           name : 'CreateMerchant'
-                                                        })
+                                                        });
+                                                        this.$LoadingBar.finish()
+                                                    }else {
+                                                        this.$LoadingBar.error()
                                                     }
                                                 }
                                             }else {
+                                                this.$LoadingBar.error()
                                                 this.$Message.error({
                                                     content : '网络异常，请联系管理员及时处理',
                                                     duration: 5,
@@ -228,7 +235,13 @@ export default {
                                                 })
                                             }
                                         }).catch(err => {
-                                            console.log(err)
+                                            console.log(err);
+                                            this.$LoadingBar.error();
+                                            this.$Message.error({
+                                                content : err && err.msg ? err.msg : '网络异常，请联系管理员及时处理',
+                                                duration: 5,
+                                                closable: true
+                                            })
                                         })
                                         console.log(" this.$emit('person-forward')")
 

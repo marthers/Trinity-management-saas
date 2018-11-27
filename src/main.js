@@ -37,6 +37,11 @@ import VueScroller from 'vue-scroller'
 Vue.use(VueScroller)
 Vue.use(iView);
 Vue.prototype.$LoadingBar = iView.LoadingBar
+Vue.prototype.$LoadingBar.config({
+    color: '#48A8DA',
+    failedColor: '#f0ad4e',
+    height: 3
+});
 import VueParticles from 'vue-particles'
 Vue.use(VueParticles)
 import 'iview/dist/styles/iview.css'

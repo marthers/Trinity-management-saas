@@ -34,17 +34,17 @@
             <button class = "button" @click.stop.prevent = "submitSearch">查询</button>
         </div>
         <Table
-          :columns="tableColumn"
-          ref = "tableSelection"
-          class = "table"
-          :data="tableData"></Table>
+        :columns="tableColumn"
+        ref = "tableSelection"
+        class = "table"
+        :data="tableData"></Table>
         <footer>
             <div class = "left">
                 <div @click.stop.prevent="handleSelectAll" class = "select-all-container">
-                  <div class = "radio-list">
-                      <div class = "checked-radio" v-if = "selectAll"></div>
-                  </div>
-                  <div class = "select-all-word">全选</div>
+                <div class = "radio-list">
+                    <div class = "checked-radio" v-if = "selectAll"></div>
+                </div>
+                <div class = "select-all-word">全选</div>
                 </div>
                 <div class = "batch-through" @click.stop.prevent = "batchThrough">批量通过</div>
             </div>
@@ -75,6 +75,7 @@ export default {
   name : 'CheckList',
   data() {
     return {
+        // CheckListShow : true,
       pager : {
         page_index : 1,
         page_size : 13,
@@ -224,6 +225,9 @@ export default {
                               this.getVerify(params)
                           }
                         },
+                        style : {
+                            cursor : 'pointer'
+                        },
                         'class' : {
                           'operation-left-two-word' : true
                         }
@@ -248,6 +252,9 @@ export default {
                           click: () => {
                               this.getDetail(params)
                           }
+                        },
+                        style : {
+                            cursor : 'pointer'
                         },
                         'class' : {
                           'operation-left-two-word' : true
@@ -316,108 +323,23 @@ export default {
           // }
       ],
       tableData : [
-        {
-          order : 1,
-          option : {
-              selected : false
-          },
-          phone : '18301437032',
-          identity : '运营商',
-          id_user : '228998',
-          certificationStatus : '待审核',
-          accountStatus : '正常',
-          createDate : '2017-6-5 12:22:04',
-          operation : {
-            validate : true,
-            beenChecked : true,
-            pass : false
-          }
-        },
-        {
-          order : 2,
-          option : {
-              selected : false
-          },
-          phone : '18301437032',
-          identity : '运营商',
-          id_user : '228998',
-          certificationStatus : '待审核',
-          accountStatus : '正常',
-          createDate : '2017-6-5 12:22:04',
-          operation : {
-            validate : true,
-            beenChecked : false,
-            pass : false
-          }
-        },
-        {
-          order : 3,
-          option : {
-              selected : false
-          },
-          phone : '18301437032',
-          identity : '运营商',
-          id_user : '228998',
-          certificationStatus : '待审核',
-          accountStatus : '正常',
-          createDate : '2017-6-5 12:22:04',
-          operation : {
-            validate : false,
-            beenChecked : true,
-            pass : true
-          }
-        },
-        {
-          order : 4,
-          option : {
-              selected : false
-          },
-          phone : '18301437032',
-          identity : '运营商',
-          id_user : '228998',
-          certificationStatus : '待审核',
-          accountStatus : '正常',
-          createDate : '2017-6-5 12:22:04',
-          operation : {
-            validate : true,
-            beenChecked : false,
-            pass : false
-          }
-        },
-        {
-          order : 5,
-          option : {
-              selected : false
-          },
-          phone : '18301437032',
-          identity : '运营商',
-          id_user : '228998',
-          certificationStatus : '待审核',
-          accountStatus : '正常',
-          createDate : '2017-6-5 12:22:04',
-          operation : {
-            validate : false,
-            beenChecked : true,
-            pass : true
-          }
-        },
-        {
-          order : 6,
-          option : {
-              selected : false
-          },
-          phone : '18301437032',
-          identity : '运营商',
-          id_user : '228998',
-          certificationStatus : '待审核',
-          accountStatus : '正常',
-          createDate : '2017-6-5 12:22:04',
-          operation : {
-            validate : true,
-            beenChecked : true,
-            pass : true
-          }
-        }
+        // {
+        //   order : 1,
+        //   option : {
+        //       selected : false
+        //   },
+        //   phone : '18301437032',
+        //   identity : '运营商',
+        //   id_user : '228998',
+        //   certificationStatus : '待审核',
+        //   accountStatus : '正常',
+        //   createDate : '2017-6-5 12:22:04',
+        //   operation : {
+        //     validate : true,
+        //     beenChecked : true,
+        //     pass : false
+        //   }
+        // }
       ],
       userOrMerchant : '用户'
     }
@@ -429,8 +351,16 @@ export default {
     getVerify(params) {
       console.log(params)
     },
-    getDetail(params) {
-      console.log(params)
+    getDetail(row) {
+      console.log(row);
+    //   this.CheckListShow = false;
+      this.$router.push({
+          name : 'UserDetail',
+          params : {
+              fid_organization : row.row.fid_organization,
+              id_user : row.row.id_user
+          }
+      })
     },
     approve(index,h) {
       console.log(index);
@@ -480,146 +410,161 @@ export default {
   },
   created() {
       console.log(this.$route.params);
-      this.userOrMerchant = this.$route.params.who;
-      if(this.userOrMerchant == 'user') {
-            this.pager.filters = [
-                {"key":"verified","operator":"=","value":-1,"join":"and"},
-                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
-                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
-                {"key":"phone","operator":"=","value":'',"join":"and"},
-                {"key":"name","operator":"=","value":'',"join":"and"},
-                {"key":"createTime","operator":">=","value":'',"join":"and"},
-                {"key":"createTime","operator":"<","value":'',"join":"and"}
-            ]
-            getUserList(jiweiDevHost + '/trinity-backstage/user/list',{
-                'priority': 5,
-                'id_organization'   : 0,
-                "data" : {
-                "list_type" : 1,
-                "pager" : this.pager,
-                }
-            })
-            .then(
-                res =>
-                {
-                    console.log('getUserList_res:')
-                    console.log(res);
-                    if(res.status && res.status == 200 && res.data.code == 0) {
-                        let getUserListResData = res.data.data;
-                        //当前页码
-                        this.pager.page_index = getUserListResData.page.oage_index;
-                        //总页数
-                        this.pager.total_count = getUserListResData.page.total_count;
-                        getUserListResData.list.forEach(
-                            (item,key) => {
-                                item.option = {
-                                    'selected' : false
-                                };
-                                item.createDate = item.createDate.split(' ')[0];
-                                switch (item.verified)
-                                {
-                                    case -1:
-                                        item.certificationStatus = '待审核';
-                                        break;
-                                    case 0:
-                                        item.certificationStatus = '未通过';
-                                        break;
-                                    default:
-                                        item.certificationStatus = '通过';
-
-                                };
-
-                                if(item.rightful_status == 1) {
-                                    item.accountStatus = '启用'
-                                }
-                                else{
-                                    item.accountStatus = '禁用'
-                                }
-                            }
-                        )
-                        this.tableData = getUserListResData.list;
-                    }
-                    else {
-                        this.$Message.error({
-                            content : '网络异常，请联系管理员及时处理',
-                            duration: 5,
-                            closable: true
-                        })
-                    }
-                }
-            )
-            .catch(
-                err =>
-                {
-                    console.log(err);
-                    this.$Message.error({
-                        content : err && err.msg ? err.msg: '网络错误',
-                        duration: 5,
-                        closable: true
-                    });
-                }
-            )
-      }
-      else {    //大商户 - 待审核【小】商户列表
-                if(localStorage.getItem('organization_level') == 1){
+      console.log(this.$route.name);
+      if(this.$route.name == 'CheckList') {
+            this.userOrMerchant = this.$route.params.who;
+            this.$LoadingBar.start();
+            if(this.userOrMerchant == 'user') {
+                this.title = "员工审核"
                     this.pager.filters = [
-                        {"key":"parentIdOrganization","operator":"=","value":localStorage.getItem('fid_organization'),"join":"and"},
                         {"key":"verified","operator":"=","value":-1,"join":"and"},
                         {"key":"recordStatus","operator":"=","value":1,"join":"and"},
                         {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
-                        {"key":"createDate","operator":">=","value":"","join":"and"},
-                        {"key":"createDate","operator":"<","value":"","join":"and"},
-                        {"key":"organizationName","operator":":","value":"","join":"and"}
+                        {"key":"phone","operator":"=","value":'',"join":"and"},
+                        {"key":"name","operator":"=","value":'',"join":"and"},
+                        {"key":"createTime","operator":">=","value":'',"join":"and"},
+                        {"key":"createTime","operator":"<","value":'',"join":"and"}
                     ]
-                }
-                else{
-                    this.$Message.error({
-                        content : '异常',
-                        duration: 5,
-                        closable: true
+                    getUserList(jiweiDevHost + '/trinity-backstage/user/list',{
+                        'priority': 5,
+                        'id_organization'   : 0,
+                        "data" : {
+                        "list_type" : 1,
+                        "pager" : this.pager,
+                        }
                     })
-                }
-                getOrgList(baseUrl + '/trinity-backstage/organization/list',
-                  {
-                      'priority': 5,
-                      'id_organization'   : 0,
-                      'data'    : {
-                          "list_type" : 0,
-                          "pager" : this.pager
-                        //   "pager" : {
-                        //     'page_index': 1,
-                        //     'page_size' : 20
-                        //   },
-                        //   "filters":this.pager.filters
-                      }
-                  }
-                )
-                .then(res => {
-                    console.log(res)
-                    if(res.status && res.status == 200 && res.data.code == 0) {
-                        console.log("res.data:");
-                        console.log(res.data)
-                        let data             = res.data.data;
+                    .then(
+                        res =>
+                        {
+                            console.log('getUserList_res:')
+                            console.log(res);
+                            if(res.status && res.status == 200 && res.data.code == 0) {
+                                this.$LoadingBar.finish()
+                                let getUserListResData = res.data.data;
+                                //当前页码
+                                this.pager.page_index = getUserListResData.page.oage_index;
+                                //总页数
+                                this.pager.total_count = getUserListResData.page.total_count;
+                                getUserListResData.list.forEach(
+                                    (item,key) => {
+                                        item.option = {
+                                            'selected' : false
+                                        };
+                                        item.createDate = item.createDate.split(' ')[0];
+                                        switch (item.verified)
+                                        {
+                                            case -1:
+                                                item.certificationStatus = '待审核';
+                                                break;
+                                            case 0:
+                                                item.certificationStatus = '未通过';
+                                                break;
+                                            default:
+                                                item.certificationStatus = '通过';
 
-                    }
-                    else{
-                        this.$Message.error({
-                            content : '网络异常，请联系管理员及时处理',
-                            duration: 5,
-                            closable: true
+                                        };
+
+                                        if(item.rightful_status == 1) {
+                                            item.accountStatus = '启用'
+                                        }
+                                        else{
+                                            item.accountStatus = '禁用'
+                                        }
+                                    }
+                                )
+                                this.tableData = getUserListResData.list;
+                            }
+                            else {
+                                this.$Message.error({
+                                    content : '网络异常，请联系管理员及时处理',
+                                    duration: 5,
+                                    closable: true
+                                });
+                                this.$LoadingBar.error()
+                            }
+                        }
+                    )
+                    .catch(
+                        err =>
+                        {
+                            console.log(err);
+                            this.$Message.error({
+                                content : err && err.msg ? err.msg: '网络错误',
+                                duration: 5,
+                                closable: true
+                            });
+                            this.$LoadingBar.error()
+                        }
+                    )
+            }
+            else {
+                        this.title = "商户审核"
+                        //大商户 - 待审核【小】商户列表
+                        if(localStorage.getItem('organization_level') == 1){
+                            this.pager.filters = [
+                                {"key":"parentIdOrganization","operator":"=","value":localStorage.getItem('fid_organization'),"join":"and"},
+                                {"key":"verified","operator":"=","value":-1,"join":"and"},
+                                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
+                                {"key":"createDate","operator":">=","value":"","join":"and"},
+                                {"key":"createDate","operator":"<","value":"","join":"and"},
+                                {"key":"organizationName","operator":":","value":"","join":"and"}
+                            ]
+                        }
+                        else{
+                            this.$Message.error({
+                                content : '异常',
+                                duration: 5,
+                                closable: true
+                            })
+                        }
+                        getOrgList(baseUrl + '/trinity-backstage/organization/list',
+                        {
+                            'priority': 5,
+                            'id_organization'   : 0,
+                            'data'    : {
+                                "list_type" : 0,
+                                "pager" : this.pager
+                                //   "pager" : {
+                                //     'page_index': 1,
+                                //     'page_size' : 20
+                                //   },
+                                //   "filters":this.pager.filters
+                            }
+                        }
+                        )
+                        .then(res => {
+                            console.log(res)
+                            if(res.status && res.status == 200 && res.data.code == 0) {
+                                console.log("res.data:");
+                                console.log(res.data)
+                                let data             = res.data.data;
+                                this.$LoadingBar.finish()
+                            }
+                            else{
+                                this.$Message.error({
+                                    content : '网络异常，请联系管理员及时处理',
+                                    duration: 5,
+                                    closable: true
+                                });
+                                this.$LoadingBar.error()
+                            }
                         })
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.$Message.error({
-                        content : '网络异常，请联系管理员及时处理',
-                        duration: 5,
-                        closable: true
-                    })
-                })
+                        .catch(err => {
+                            console.log(err);
+                            this.$Message.error({
+                                content : '网络异常，请联系管理员及时处理',
+                                duration: 5,
+                                closable: true
+                            });
+                            this.$LoadingBar.error()
+                        })
+            }
       }
-  }
+      else {
+          console.log(`this.$route.name=${this.$route.name}`)
+      }
+  },
 }
 </script>
 <style>
@@ -750,139 +695,139 @@ export default {
 
 <style lang="scss" scoped>
 .list-con {
-  width : 100%;
-  height: 100%;
-  user-select: none;
-  padding : 2.5%;
-  .title {
     width : 100%;
-    height : 25px;
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    align-items: center;
-    .verticle-line {
-      width:4px;
-      height:24px;
-      background:linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
-      margin-right: 12px;
+    height: 100%;
+    user-select: none;
+    padding : 2.5%;
+    .title {
+        width : 100%;
+        height : 25px;
+        display: flex;
+        flex-direction: row;
+        justify-content: left;
+        align-items: center;
+        .verticle-line {
+        width:4px;
+        height:24px;
+        background:linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
+        margin-right: 12px;
+        }
+        .title-word {
+        width:72px;
+        height:25px;
+        font-size:18px;
+        font-family:PingFangSC-Medium;
+        font-weight:500;
+        color:rgba(74,74,74,1);
+        line-height:25px;
+        }
     }
-    .title-word {
-      width:72px;
-      height:25px;
-      font-size:18px;
-      font-family:PingFangSC-Medium;
-      font-weight:500;
-      color:rgba(74,74,74,1);
-      line-height:25px;
-    }
-  }
-  .search-con {
-    margin : 12px 0;
-    width : 100%;
-    height : 40px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    // background-color: blue;
-    .input-con {
-      .input{
-        width:14vw !important;
-        height:36px !important;
-        background:rgba(255,255,255,0.2);
-        border-radius:6px;
+    .search-con {
+        margin : 12px 0;
+        width : 100%;
+        height : 40px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        // background-color: blue;
+        .input-con {
+        .input{
+            width:14vw !important;
+            height:36px !important;
+            background:rgba(255,255,255,0.2);
+            border-radius:6px;
+            border:1px solid #1CA1C6;
+            font-size: 13px;
+            color : #999;
+            text-align : left;
+            text-indent : 1em;
+            outline : none;
+            margin-right : 1vw;
+        }
+        }
+        // 查询
+        .button {
+        width:160px;
+        @media screen and (max-width: 800px) {
+            width : 14vw;
+        }
+        height:36px;
+        background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+        border-radius:4px;
         border:1px solid #1CA1C6;
-        font-size: 13px;
-        color : #999;
-        text-align : left;
-        text-indent : 1em;
-        outline : none;
-        margin-right : 1vw;
-      }
+        font-size:18px;
+        font-family:PingFangSC-Medium;
+        font-weight:500;
+        color:rgba(255,255,255,1);
+        line-height:36px;
+        letter-spacing : 3px;
+        cursor : pointer;
+        }
     }
-    // 查询
-    .button {
-      width:160px;
-      @media screen and (max-width: 800px) {
-        width : 14vw;
-      }
-      height:36px;
-      background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
-      border-radius:4px;
-      border:1px solid #1CA1C6;
-      font-size:18px;
-      font-family:PingFangSC-Medium;
-      font-weight:500;
-      color:rgba(255,255,255,1);
-      line-height:36px;
-      letter-spacing : 3px;
-      cursor : pointer;
-    }
-  }
-  footer {
-    margin : 2vh 0;
-    // position: fixed;
-    // bottom : 10px;
-    display : flex;
-    flex-direction : row;
-    justify-content : space-between;
-    align-items: center;
-    width : 100%;
-    height : 32px;
-    .left {
+    footer {
+        margin : 2vh 0;
+        // position: fixed;
+        // bottom : 10px;
         display : flex;
         flex-direction : row;
-        justify-content : left;
+        justify-content : space-between;
         align-items: center;
-        font-size : 16px;
-        .batch-through {
-          color : #2CA7C9;
-          cursor: pointer;
-          user-select: none;
-        }
-        .select-all-container {
-            cursor: pointer;
-            margin-right: 10px;
-            color : #4A4A4A;
-            .radio-list {
-              width : 16px;
-              height : 16px;
-              border-radius : 50%;
-              border : 1px solid #979797;
-              display : flex;
-              justify-content : center;
-              align-items : center;
-              .checked-radio {
-                width : 10px;
-                height : 10px;
-                border-radius : 50%;
-                background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
-              }
-            }
-            display: flex;
-            flex-direction: row;
-            height: 16px;
+        width : 100%;
+        height : 32px;
+        .left {
+            display : flex;
+            flex-direction : row;
+            justify-content : left;
             align-items: center;
-            // .select-all-icon {
-            //   width:16px;
-            //   height : 16px;
-            //   border: 1px solid #979797;
-            //   border-radius : 50%;
-            // }
-            // .selected {
-            //   background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
-            // }
-            // 全选
-            .select-all-word {
-              margin-left: 3px;
-              user-select: none;
+            font-size : 16px;
+            .batch-through {
+            color : #2CA7C9;
+            cursor: pointer;
+            user-select: none;
+            }
+            .select-all-container {
+                cursor: pointer;
+                margin-right: 10px;
+                color : #4A4A4A;
+                .radio-list {
+                width : 16px;
+                height : 16px;
+                border-radius : 50%;
+                border : 1px solid #979797;
+                display : flex;
+                justify-content : center;
+                align-items : center;
+                .checked-radio {
+                    width : 10px;
+                    height : 10px;
+                    border-radius : 50%;
+                    background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+                }
+                }
+                display: flex;
+                flex-direction: row;
+                height: 16px;
+                align-items: center;
+                // .select-all-icon {
+                //   width:16px;
+                //   height : 16px;
+                //   border: 1px solid #979797;
+                //   border-radius : 50%;
+                // }
+                // .selected {
+                //   background:linear-gradient(180deg,rgba(59,165,178,1) 0%,rgba(72,168,218,1) 100%);
+                // }
+                // 全选
+                .select-all-word {
+                margin-left: 3px;
+                user-select: none;
+                }
             }
         }
+        .right {
+        }
     }
-    .right {
-    }
-  }
 }
 </style>
 

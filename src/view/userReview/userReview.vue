@@ -326,6 +326,7 @@ export default {
       })
     },
     createdReq : async  function() {
+        this.$LoadingBar.start();
         let self = this
         let prefixUrl = ''
         if(process.env.NODE_ENV == 'development') {
@@ -359,6 +360,7 @@ export default {
                     }
                 );
                 if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_mini && getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data) {
+                    this.$LoadingBar.finish()
                     this.count ++;
                     console.log(`this.count=${this.count}`)
                     let data = getOrgDetailRes.data.data.organization_mini;
@@ -418,6 +420,7 @@ export default {
                     }
                 }
                 else {
+                    this.$LoadingBar.error();
                         this.$Message.error({
                             content : '网络错误',
                             duration: 5,
@@ -431,14 +434,11 @@ export default {
                     duration: 5,
                     closable: true
                 });
+                this.$LoadingBar.error();
         }
     }
   },
   created() {
-  },
-  mounted() {
-    console.log('this.$route.params:')
-    console.log(this.$route.params);
         try {
             this.createdReq();
             console.log(`this.underReviewShow=${this.underReviewShow}`)
@@ -450,7 +450,12 @@ export default {
                 duration: 5,
                 closable: true
             });
+            this.$LoadingBar.error();
         }
+  },
+  mounted() {
+    console.log('this.$route.params:')
+    console.log(this.$route.params);
   }
 }
 </script>

@@ -41,11 +41,11 @@ export default [
                 default : () => import('@/view/CheckPending/CheckList.vue')
               }
             },
-            // {
-            //     name : 'MyOrg',
-            //     path : 'MyOrg',
-            //     component : () => import('@/view/myOrg/MyOrg')
-            // }
+            {
+                name : 'UserDetail',
+                path : 'UserDetail',
+                component : () => import('@/view/CheckPending/checkUser/UserDetail')
+            },
             {
                 name     : 'userReview',
                 path     : 'userReview',

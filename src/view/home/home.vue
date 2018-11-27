@@ -543,7 +543,8 @@ export default {
                               'data' : {
                                 'user_id' : localStorage.getItem('id_user')
                               }
-                            })
+                            }
+                        )
                       ]
                     )
                     .then((result) => {
@@ -609,8 +610,6 @@ export default {
 
     },
     mounted() {
-      console.log("this.$LoadingBar:")
-      console.log(this.$LoadingBar)
         if(localStorage.getItem('fid_organization') == 0 || this.$route.params.NoDataIndexShow) {
             this.$store.commit('setMenuShowFalse')
             this.$router.push({
