@@ -104,12 +104,6 @@ export default {
             total_pages     : 1000,
             merchantData : {},
             title : '选择加盟商户（平台和大商户)' //
-            // content : '',
-            // customToolbar: [
-            //     ["bold", "italic", "underline"],
-            //     // [{ list: "ordered" }, { list: "bullet" }],
-            //     // ["image", "code-block"]
-            // ]
         }
     },
     components : {
@@ -192,101 +186,105 @@ export default {
                 'parent_id_organization': this.selectedMerchant.id_organization ? this.selectedMerchant.id_organization: 1
             };
             if(data.is_select_me != 0) {
+                debugger
                 reqData.corporate_name = data.corporate_name,
                 reqData.corporate_ident = data.corporate_ident,
                 reqData.corporate_card_up = data.corporate_card_up,
                 reqData.corporate_card_down = data.corporate_card_down
             }
+            else{
+                debugger
+            }
             console.log("reqData:")
             console.log(reqData)
             //
-            if(localStorage.getItem('fid_organization') == 0) {
-                OrganizationNew(localOrgHost + '/trinity-backstage/organization/new',{
-                    'priority': 5,
-                    'id_organization'   : localStorage.getItem('fid_organization'),
-                    "manager_create" : 0,
-                    'data'    : {
-                        'edit_mode'        : 0,
-                        'organization_info': reqData
-                    }
-                })
-                .then(res => {
-                    if(res.status && res.status == 200 && res.data.code == 0) {
-                          this.$Message.success({
-                              content : '提交成功，请耐心等待审核',
-                              duration: 5,
-                              closable: true
-                          });
-                            this.$router.push({
-                                name : 'userReview'
-                            })
-                    }
-                    else if(res.data.code == 107) {
-                          this.$Message.warning({
-                              content : '该商户名已存在',
-                              duration: 5,
-                              closable: true
-                          });
-                    }
-                    else{
-                        this.$Message.error({
-                            content : '网络异常，请联系管理员及时处理',
-                            duration: 5,
-                            closable: true
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.$Message.error({
-                        content : '网络异常，请联系管理员及时处理',
-                        duration: 5,
-                        closable: true
-                    })
-                })
-            }
-            else{
-                orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
-                    {
-                        'priority': 5,
-                        'id_organization'   : 0,
-                        'data'    : {
-                            'edit_mode'        : 0,
-                            'organization_info': reqData
-                        }
-                    }
-                )
-                .then(res => {
-                    console.log(res)
-                    if(res.status&& res.status == 200) {
-                    // debugger
-                        console.log(res.data);
-                        this.$Message.success({
-                            content : '提交成功，请耐心等待审核',
-                            duration: 5,
-                            closable: true
-                        });
-                        this.$router.push({
-                            name : 'userReview'
-                        })
+            // if(localStorage.getItem('fid_organization') == 0) {
+            //     OrganizationNew(localOrgHost + '/trinity-backstage/organization/new',{
+            //         'priority': 5,
+            //         'id_organization'   : localStorage.getItem('fid_organization'),
+            //         "manager_create" : 0,
+            //         'data'    : {
+            //             'edit_mode'        : 0,
+            //             'organization_info': reqData
+            //         }
+            //     })
+            //     .then(res => {
+            //         if(res.status && res.status == 200 && res.data.code == 0) {
+            //               this.$Message.success({
+            //                   content : '提交成功，请耐心等待审核',
+            //                   duration: 5,
+            //                   closable: true
+            //               });
+            //                 this.$router.push({
+            //                     name : 'userReview'
+            //                 })
+            //         }
+            //         else if(res.data.code == 107) {
+            //               this.$Message.warning({
+            //                   content : '该商户名已存在',
+            //                   duration: 5,
+            //                   closable: true
+            //               });
+            //         }
+            //         else{
+            //             this.$Message.error({
+            //                 content : '网络异常，请联系管理员及时处理',
+            //                 duration: 5,
+            //                 closable: true
+            //             })
+            //         }
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //         this.$Message.error({
+            //             content : '网络异常，请联系管理员及时处理',
+            //             duration: 5,
+            //             closable: true
+            //         })
+            //     })
+            // }
+            // else{
+            //     orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
+            //         {
+            //             'priority': 5,
+            //             'id_organization'   : 0,
+            //             'data'    : {
+            //                 'edit_mode'        : 0,
+            //                 'organization_info': reqData
+            //             }
+            //         }
+            //     )
+            //     .then(res => {
+            //         console.log(res)
+            //         if(res.status&& res.status == 200) {
+            //         // debugger
+            //             console.log(res.data);
+            //             this.$Message.success({
+            //                 content : '提交成功，请耐心等待审核',
+            //                 duration: 5,
+            //                 closable: true
+            //             });
+            //             this.$router.push({
+            //                 name : 'userReview'
+            //             })
 
-                    }else {
-                        this.$Message.error({
-                            content : '网络异常，请联系管理员及时处理',
-                            duration: 5,
-                            closable: true
-                        })
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    this.$Message.error({
-                        content : '网络异常，请联系管理员及时处理',
-                        duration: 5,
-                        closable: true
-                    })
-                })
-            }
+            //         }else {
+            //             this.$Message.error({
+            //                 content : '网络异常，请联系管理员及时处理',
+            //                 duration: 5,
+            //                 closable: true
+            //             })
+            //         }
+            //     })
+            //     .catch(err => {
+            //         console.log(err);
+            //         this.$Message.error({
+            //             content : '网络异常，请联系管理员及时处理',
+            //             duration: 5,
+            //             closable: true
+            //         })
+            //     })
+            // }
 
 
             // this.$router.push({
