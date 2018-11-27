@@ -871,7 +871,8 @@ export default {
       display       : flex;
       flex-direction: row;
       position      : fixed;
-      overflow      : auto;
+      overflow      : hidden;
+      overflow-y: auto;
       top           : 6vh;
         .left-side-con {
             // @media screen and(min-width:800px) {
@@ -1214,6 +1215,23 @@ export default {
             background-color:#bbb;
         }
   }
+    .body::-webkit-scrollbar-track-piece { //滚动条凹槽的颜色，还可以设置边框属性
+        background-color : grey;
+    }
+    .body::-webkit-scrollbar {//滚动条的宽度
+        width:6px;
+        height:39px;
+        background:rgba(72,168,218,1);
+        border-radius:3px;
+    }
+    .body::-webkit-scrollbar-thumb {//滚动条的设置
+        background: linear-gradient(180deg, #3ba5b2 0%, #48a8da 100%);
+        background-clip:padding-box;
+        min-height:28px;
+    }
+    .body::-webkit-scrollbar-thumb:hover {
+        background-color:#bbb;
+    }
 }
 </style>
 

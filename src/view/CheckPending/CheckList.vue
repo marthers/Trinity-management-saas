@@ -7,7 +7,7 @@
         <div class = "search-con">
             <div class = "input-con">
                 <input type="text" :placeholder="namePlaceholder" maxlength="10" v-model.trim = "nameVal" class = "input">
-                <input type="text" :placeholder="groupPlaceholder" maxlength="10" v-model.trim = "groupVal" class = "input">
+                <input type="text" :placeholder="groupPlaceholder" maxlength="10" v-model.trim = "groupVal" class = "input" v-if = "userOrMerchant == '用户'">
                 <DatePicker
                     type="datetime"
                     format="yyyy-MM-dd HH:mm:ss"
@@ -49,7 +49,7 @@
                 <div class = "batch-through" @click.stop.prevent = "batchThrough">批量通过</div>
             </div>
             <!-- <div class = "right"></div> -->
-            <Page :total="100" class = "right"/>
+            <Page :total="pager.total_count" class = "right"/>
         </footer>
         <reject-modal :rejectModalShow = "rejectModalShow" @closeModal = "closeModal"></reject-modal>
         <Modal v-model="batchThroughSetRoleModal">
@@ -66,6 +66,8 @@
 import RejectModal from './../../components/rejectModal';
 import baseConfig from '@/config/index';
 const jiweiDevHost = baseConfig.baseUrl.jiweiDevHost;
+const baseUrl = baseConfig.baseUrl.localOrgHost;
+import {getOrgList} from '@/api/org/org.js';
 import {
   getUserList,
 } from '@/api/user.js';
@@ -75,7 +77,8 @@ export default {
     return {
       pager : {
         page_index : 1,
-        page_size : 20
+        page_size : 13,
+        total_count : 13
       },
       batchThroughSetRoleModal : false,
       selectAll : false,
@@ -166,15 +169,15 @@ export default {
           },
           {
               title: '用户账号',
-              key: 'account'
+              key: 'phone'
           },
-          {
-              title: '商户身份',
-              key: 'identity'
-          },
+        //   {
+        //       title: '商户身份',
+        //       key: 'identity'
+        //   },
           {
               title: '商户编号',
-              key: 'serialNumber'
+              key: 'id_user'
           },
           {
               title: '认证状态',
@@ -186,7 +189,7 @@ export default {
           },
           {
               title: '注册时间',
-              key: 'registerTime',
+              key: 'createDate',
               align: 'center',
           },
           {
@@ -318,12 +321,12 @@ export default {
           option : {
               selected : false
           },
-          account : '18301437032',
+          phone : '18301437032',
           identity : '运营商',
-          serialNumber : '228998',
+          id_user : '228998',
           certificationStatus : '待审核',
           accountStatus : '正常',
-          registerTime : '2017-6-5 12:22:04',
+          createDate : '2017-6-5 12:22:04',
           operation : {
             validate : true,
             beenChecked : true,
@@ -335,12 +338,12 @@ export default {
           option : {
               selected : false
           },
-          account : '18301437032',
+          phone : '18301437032',
           identity : '运营商',
-          serialNumber : '228998',
+          id_user : '228998',
           certificationStatus : '待审核',
           accountStatus : '正常',
-          registerTime : '2017-6-5 12:22:04',
+          createDate : '2017-6-5 12:22:04',
           operation : {
             validate : true,
             beenChecked : false,
@@ -352,12 +355,12 @@ export default {
           option : {
               selected : false
           },
-          account : '18301437032',
+          phone : '18301437032',
           identity : '运营商',
-          serialNumber : '228998',
+          id_user : '228998',
           certificationStatus : '待审核',
           accountStatus : '正常',
-          registerTime : '2017-6-5 12:22:04',
+          createDate : '2017-6-5 12:22:04',
           operation : {
             validate : false,
             beenChecked : true,
@@ -369,12 +372,12 @@ export default {
           option : {
               selected : false
           },
-          account : '18301437032',
+          phone : '18301437032',
           identity : '运营商',
-          serialNumber : '228998',
+          id_user : '228998',
           certificationStatus : '待审核',
           accountStatus : '正常',
-          registerTime : '2017-6-5 12:22:04',
+          createDate : '2017-6-5 12:22:04',
           operation : {
             validate : true,
             beenChecked : false,
@@ -386,12 +389,12 @@ export default {
           option : {
               selected : false
           },
-          account : '18301437032',
+          phone : '18301437032',
           identity : '运营商',
-          serialNumber : '228998',
+          id_user : '228998',
           certificationStatus : '待审核',
           accountStatus : '正常',
-          registerTime : '2017-6-5 12:22:04',
+          createDate : '2017-6-5 12:22:04',
           operation : {
             validate : false,
             beenChecked : true,
@@ -403,19 +406,20 @@ export default {
           option : {
               selected : false
           },
-          account : '18301437032',
+          phone : '18301437032',
           identity : '运营商',
-          serialNumber : '228998',
+          id_user : '228998',
           certificationStatus : '待审核',
           accountStatus : '正常',
-          registerTime : '2017-6-5 12:22:04',
+          createDate : '2017-6-5 12:22:04',
           operation : {
             validate : true,
             beenChecked : true,
             pass : true
           }
         }
-      ]
+      ],
+      userOrMerchant : '用户'
     }
   },
   methods : {
@@ -475,35 +479,146 @@ export default {
     RejectModal
   },
   created() {
-        this.pager.filters = [
-            {"key":"verified","operator":"=","value":2,"join":"and"},
-            {"key":"recordStatus","operator":"=","value":1,"join":"and"},
-            {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
-            {"key":"phone","operator":"=","value":'',"join":"and"},
-            {"key":"name","operator":"=","value":'',"join":"and"},
-            {"key":"createTime","operator":">=","value":'',"join":"and"},
-            {"key":"createTime","operator":"<","value":'',"join":"and"}
-        ]
-    getUserList(jiweiDevHost + '/trinity-backstage/user/list',{
-        'priority': 5,
-        'id_organization'   : 0,
-        "data" : {
-          "list_type" : 1,
-          "pager" : this.pager,
-        }
-    })
-    .then(
-      res =>
-      {
-        console.log(res)
+      console.log(this.$route.params);
+      this.userOrMerchant = this.$route.params.who;
+      if(this.userOrMerchant == 'user') {
+            this.pager.filters = [
+                {"key":"verified","operator":"=","value":-1,"join":"and"},
+                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
+                {"key":"phone","operator":"=","value":'',"join":"and"},
+                {"key":"name","operator":"=","value":'',"join":"and"},
+                {"key":"createTime","operator":">=","value":'',"join":"and"},
+                {"key":"createTime","operator":"<","value":'',"join":"and"}
+            ]
+            getUserList(jiweiDevHost + '/trinity-backstage/user/list',{
+                'priority': 5,
+                'id_organization'   : 0,
+                "data" : {
+                "list_type" : 1,
+                "pager" : this.pager,
+                }
+            })
+            .then(
+                res =>
+                {
+                    console.log('getUserList_res:')
+                    console.log(res);
+                    if(res.status && res.status == 200 && res.data.code == 0) {
+                        let getUserListResData = res.data.data;
+                        //当前页码
+                        this.pager.page_index = getUserListResData.page.oage_index;
+                        //总页数
+                        this.pager.total_count = getUserListResData.page.total_count;
+                        getUserListResData.list.forEach(
+                            (item,key) => {
+                                item.option = {
+                                    'selected' : false
+                                };
+                                item.createDate = item.createDate.split(' ')[0];
+                                switch (item.verified)
+                                {
+                                    case -1:
+                                        item.certificationStatus = '待审核';
+                                        break;
+                                    case 0:
+                                        item.certificationStatus = '未通过';
+                                        break;
+                                    default:
+                                        item.certificationStatus = '通过';
+
+                                };
+
+                                if(item.rightful_status == 1) {
+                                    item.accountStatus = '启用'
+                                }
+                                else{
+                                    item.accountStatus = '禁用'
+                                }
+                            }
+                        )
+                        this.tableData = getUserListResData.list;
+                    }
+                    else {
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                    }
+                }
+            )
+            .catch(
+                err =>
+                {
+                    console.log(err);
+                    this.$Message.error({
+                        content : err && err.msg ? err.msg: '网络错误',
+                        duration: 5,
+                        closable: true
+                    });
+                }
+            )
       }
-    )
-    .catch(
-      err =>
-      {
-        console.log(err)
+      else {    //大商户 - 待审核【小】商户列表
+                if(localStorage.getItem('organization_level') == 1){
+                    this.pager.filters = [
+                        {"key":"parentIdOrganization","operator":"=","value":localStorage.getItem('fid_organization'),"join":"and"},
+                        {"key":"verified","operator":"=","value":-1,"join":"and"},
+                        {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                        {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
+                        {"key":"createDate","operator":">=","value":"","join":"and"},
+                        {"key":"createDate","operator":"<","value":"","join":"and"},
+                        {"key":"organizationName","operator":":","value":"","join":"and"}
+                    ]
+                }
+                else{
+                    this.$Message.error({
+                        content : '异常',
+                        duration: 5,
+                        closable: true
+                    })
+                }
+                getOrgList(baseUrl + '/trinity-backstage/organization/list',
+                  {
+                      'priority': 5,
+                      'id_organization'   : 0,
+                      'data'    : {
+                          "list_type" : 0,
+                          "pager" : this.pager
+                        //   "pager" : {
+                        //     'page_index': 1,
+                        //     'page_size' : 20
+                        //   },
+                        //   "filters":this.pager.filters
+                      }
+                  }
+                )
+                .then(res => {
+                    console.log(res)
+                    if(res.status && res.status == 200 && res.data.code == 0) {
+                        console.log("res.data:");
+                        console.log(res.data)
+                        let data             = res.data.data;
+
+                    }
+                    else{
+                        this.$Message.error({
+                            content : '网络异常，请联系管理员及时处理',
+                            duration: 5,
+                            closable: true
+                        })
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.$Message.error({
+                        content : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                })
       }
-    )
   }
 }
 </script>

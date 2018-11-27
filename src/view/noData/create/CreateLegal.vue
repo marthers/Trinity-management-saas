@@ -1,11 +1,11 @@
 
 <template>
-    <div class="create">
+    <div class="create-legal-con">
         <div class = "box">
             <header class = "header">
                 <div class = "left"></div>
                 <div class="right">
-                    编辑法人信息
+                    新建法人信息(选填)
                 </div>
             </header>
             <div class = "con corp-id">
@@ -80,7 +80,7 @@ import baseConfig from '@/config/index';
 // const baseUrl      = baseConfig.baseUrl.dev;
 const localOrgHost = baseConfig.baseUrl.localOrgHost
 export default {
-    name: 'CreatePerson',
+    name: 'CreateLegal',
     data() {
         return {
             userName: '',
@@ -116,7 +116,7 @@ export default {
                 'organization_license_up': this.$route.params.corpBase64Data,
                 'organization_desc'      : this.$route.params.des ? this.$route.params.des: '',
                 // 'parent_id_organization' : this.merchantData.id_organization ? this.merchantData.id_organization : 1
-                'parent_id_organization': this.$route.params.id_organization ? this.$route.params.id_organization: 1
+                'parent_id_organization': this.$route.params.selectedMerchant.id_organization ? this.$route.params.selectedMerchant.id_organization: 1
             }
             if(this.legal !== 'self') {
                     reqData.corporate_name = this.userName,
@@ -143,6 +143,9 @@ export default {
                               duration: 5,
                               closable: true
                           });
+                            this.$router.push({
+                                name : 'userReview'
+                            })
                     }
                     else if(res.data.code == 107) {
                           this.$Message.warning({
@@ -297,7 +300,7 @@ export default {
 }
 </script>
 <style lang= "less" scoped>
-.create{
+.create-legal-con{
     width  : 100%;
     height : 100%;
     padding: 2.5% 0 0 2.5%;
@@ -315,7 +318,7 @@ export default {
                 width       : 4px;
                 height      : 36px;
                 background  : linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
-                margin-right: .625rem /* 10/16 */;
+                margin-right: 10px; /* 10/16 */;
             }
             .right {
                 max-width  : 200px;

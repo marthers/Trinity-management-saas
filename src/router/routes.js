@@ -22,12 +22,17 @@ export default [
             {
               name : 'CreateMerchant',
               path : 'CreateMerchant',
-              component : () => import('@/view/noData/create/CreateMerchant')
-            },
-            {
-              name : 'CreateLegal',
-              path : 'CreateLegal',
-              component : () => import('@/view/noData/create/CreateLegal')
+              components :
+              {
+                    default : () => import('@/view/noData/create/CreateMerchant')
+              } ,
+            //   children : [
+            //     {
+            //         name : 'CreateLegal',
+            //         path : 'CreateLegal',
+            //         component : () => import('@/view/noData/create/CreateLegal')
+            //     }
+            //   ]
             },
             {
               name : 'CheckList',

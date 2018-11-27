@@ -38,8 +38,9 @@
                 <Input v-model="des" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入公司简要描述(选填)" @on-keyup="des=des.replace(/[^\u4E00-\u9FA5|,|.]/g,'')" class = "corp-des" :maxlength = "maxlength"/>
             </div>
             <footer>
-                <div class = "back" @click.stop.prevent = "backToPerson">上一步</div>
-                <div class = "next" @click = "toEditLegalPerson">下一步： 编辑法人信息</div>
+                <!-- <div class = "back" @click.stop.prevent = "backToPerson">上一步</div>
+                <div class = "next" @click = "toEditLegalPerson">下一步： 编辑法人信息</div> -->
+                <create-legal></create-legal>
             </footer>
         </div>
 
@@ -64,7 +65,7 @@
 // import { VueEditor } from "vue2-editor";
 import ImgUpload from '@/components/ImgUpload';
 import JoinInOrg from '@/components/JoinInOrg';
-// import CreateLegal from './CreateLegal';
+import CreateLegal from './CreateLegal';
 import {
     validateCName
 } from '@/libs/validate.js';
@@ -108,8 +109,9 @@ export default {
     },
     components : {
         ImgUpload,
-        JoinInOrg
+        JoinInOrg,
         // VueEditor
+        CreateLegal
     },
     methods : {
         editorBlur(){
@@ -260,7 +262,7 @@ export default {
             }
 
             this.merchantData           = {
-                'selectedMerchant': JSON.stringify(this.selectedMerchant),
+                'selectedMerchant': this.selectedMerchant,
                 'logoBase64Data'  : this.logoBase64Data,
                 'corpBase64Data'  : this.corpBase64Data,
                 'IDNumber'        : this.IDNumber,
@@ -342,7 +344,7 @@ export default {
                 width       : 4px;
                 height      : 36px;
                 background  : linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
-                margin-right: .625rem /* 10/16 */;
+                margin-right: 10px /* 10/16 */;
             }
             .right {
                 max-width  : 200px;
@@ -500,7 +502,7 @@ export default {
             flex-direction : row;
             justify-content: left;
             width          : 100%;
-            height         : 36px;
+            margin-bottom : 15vh;
             div {
                 cursor       : pointer;
                 height       : 100%;
@@ -525,4 +527,5 @@ export default {
         }
     }
 }
-</style>
+
+</style>create

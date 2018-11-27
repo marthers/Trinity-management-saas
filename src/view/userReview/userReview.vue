@@ -101,7 +101,7 @@
                       </p>
                   </div>
               </div>
-              <div class = "right edit">编辑运营商</div>
+              <div class = "right edit" @click.stop.prevent = "toDetail">详情</div>
             </div>
             <div class = "down">
               <p>
@@ -129,7 +129,7 @@
                     <span>人申请加入组织</span>
                   </p>
               </div>
-              <div class = "merchant person" @click.stop.prevent = "toCheckList('merchant')">
+              <div class = "merchant person" @click.stop.prevent = "toCheckList('merchant')" v-if = "bigShow">
                   <div class = "icon">
                     <div class = "num">
                         {{
@@ -164,9 +164,10 @@ export default {
       myOrgShow : false,
       joinInshow : false,
       auditShow : true,
+      bigShow : false,
       corpName : '',
-      organization_list_num : 4,
-      user_list_num :5,
+      organization_list_num : 0,
+      user_list_num :0,
       corpObj : {
       },
       userObj : {},
@@ -198,6 +199,9 @@ export default {
       }
   },
   methods : {
+      toDetail(){
+          console.log('toDetail')
+      },
     cancel() {
       let url = jiweiDevHost + '/trinity-backstage/organization/undo_user_application';
         this.$LoadingBar.start();
@@ -293,7 +297,33 @@ export default {
       console.log(`jiweiDevHost=${jiweiDevHost + '/trinity-backstage/organization/undo_user_organization'}`)
     },
     toCheckList(who) {
-      console.log(who)
+      console.log(who);
+      if(who == 'user') {
+          if(this.user_list_num == 0) {
+                this.$Message.info({
+                    content: '当前暂无用户加入',
+                    duration: 3,
+                    closable: true
+                });
+                return false
+          }
+      }
+      else{
+          if(this.organization_list_num == 0) {
+                this.$Message.info({
+                    content: '当前暂无商户加入',
+                    duration: 3,
+                    closable: true
+                });
+                return false
+          }
+      }
+      this.$router.push({
+          name : 'CheckList',
+          params : {
+              'who' : who
+          }
+      })
     },
     createdReq : async  function() {
         let self = this
@@ -328,24 +358,12 @@ export default {
                         }
                     }
                 );
-                if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_mini) {
+                if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_mini && getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data) {
                     this.count ++;
-                    // debugger
                     console.log(`this.count=${this.count}`)
                     let data = getOrgDetailRes.data.data.organization_mini;
-                    // console.log(data);
-                    // console.log(getUserDetailRes.data)
                     data.corporate_card_up = prefixUrl + data.corporate_card_up;
                     this.corpObj = data;
-
-                    // for(let item in data) {
-                    //     if(item != 'id_organization' && item != 'parent_id_organization'&& item != 'status'&& item != 'property' && item != 'verified' && item != 'is_select_me' && item != 'logo'){
-                    //         this.corpObj[item] = JSON.stringify(data[item])
-                    //     }
-                    // }
-                    // // this.corpObj = Object.assign({},data);
-                    // let self = this
-                    // // self.$set(this.corpObj,'logo',prefixUrl + self.corpObj)
                     if(this.corpObj.logo.length > 0) {
                         this.corpObj.logo = prefixUrl + this.corpObj.logo;
                     }
@@ -353,19 +371,33 @@ export default {
                         this.corpObj.logo = require('./../../assets/images/ShunXiangLogo.png')
                     }
                     console.log(this.corpObj)
-                    // debugger
-                    // localStorage.setItem('org_verified',data.verified);
                     let ov = getOrgDetailRes.data.data.organization_mini.verified,
                     uv = getUserDetailRes.data.data.verified;
                     if(ov == 1 && uv == 1) {
                         this.underReviewShow = false;
-                        this.myOrgShow = true;
                         this.organization_list_num = getOrgDetailRes.data.data.organization_list_num
                         this.user_list_num = getOrgDetailRes.data.data.user_list_num
-                        // this.organization_list_num = 2
-                        // this.user_list_num = 20
-                        this.auditShow = false;
-                        this.auditShow = true
+                        let role_level = localStorage.getItem('role_level');
+                        let organization_level = localStorage.getItem('organization_level');
+                        //平台
+                        if(organization_level == 0) {
+                            this.myOrgShow = false;
+                            this.auditShow = true;
+                            this.bigShow = true
+                        }
+                        else {
+                            this.myOrgShow = true;
+                            this.bigShow = true;
+                            if(role_level == 0) {
+                                this.auditShow = true
+                            }
+                            else {
+                                this.auditShow = false;
+                            }
+                            if(organization_level == 2) {
+                                this.bigShow = false;
+                            }
+                        }
                         console.log("getOrgDetailRes.data:")
                         console.log(getOrgDetailRes.data)
                         console.log(`this.user_list_num=${this.user_list_num}`)
@@ -634,7 +666,7 @@ export default {
         .right {
           color : #48A8DA;
           font-size: 16px;
-          // cursor: pointer;
+          cursor: pointer;
         }
       }
       .down {
