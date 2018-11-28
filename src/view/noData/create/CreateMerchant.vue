@@ -8,7 +8,7 @@
                     编辑商户
                 </div>
             </header>
-            <div class = "first">
+            <div class = "first" v-if = "notFromUpperEdit">
                 <span v-show = "selectedMerchant.organizationName && selectedMerchant.organizationName.length > 0">
                     您已经选择{{selectedMerchant.organizationName}}。
                 </span>
@@ -81,9 +81,10 @@ import {
     OrganizationNew
 } from '@/api/org/org.js';
 export default {
-    name: 'CreatePerson',
+    name: 'CreateMerchant',
     data() {
         return {
+            notFromUpperEdit : true,
             // merchantData : {},
             corpName        : '',
             maxlength : 254,
@@ -445,6 +446,11 @@ export default {
         deleteLogo() {
             this.logoBase64Data = ''
         }
+    },
+    created() {
+        console.log("this.$route.params:")
+        console.log(this.$route.params)
+        this.notFromUpperEdit = !this.$route.params.fromUpperEdit;
     }
 }
 </script>
@@ -471,6 +477,8 @@ export default {
     padding: 2.5% 0 0 2.5%;
     color  : #4A4A4A;
     user-select: none;
+    overflow: hidden;
+    overflow-y: auto;
     .box {
         width : 95%;
         height: 95%;
@@ -642,6 +650,9 @@ export default {
             flex-direction : row;
             justify-content: left;
             width          : 100%;
+            overflow: hidden;
+            overflow-y: auto;
+            height: 95vh;
             margin-bottom : 15vh;
             div {
                 cursor       : pointer;
@@ -668,4 +679,23 @@ export default {
     }
 }
 
+.create::-webkit-scrollbar {/*滚动条整体样式*/
+    width:6px;
+    height:6px;
+    background:rgba(222,222,222,1);
+    border-radius:6px;
+}
+.create::-webkit-scrollbar-thumb {
+    width:39px;
+    /* height:6px; */
+    background:rgba(72,168,218,1);
+    border-radius:3px;
+}
+/*滚动条里面轨道*/
+.create::-webkit-scrollbar-track {
+    width:6px;
+    /* height:100%; */
+    background:rgba(222,222,222,1);
+    border-radius:6px;
+}
 </style>create

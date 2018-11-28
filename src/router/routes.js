@@ -47,6 +47,11 @@ export default [
                 component : () => import('@/view/CheckPending/checkUser/UserDetail')
             },
             {
+                name : 'OrgDetail',
+                path : 'OrgDetail',
+                component : () => import('@/view/CheckPending/checkOrg/OrgDetail')
+            },
+            {
                 name     : 'userReview',
                 path     : 'userReview',
                 component: () => import('@/view/userReview/userReview')

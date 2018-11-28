@@ -319,6 +319,8 @@ export default {
     height : 100%;
     padding: 2.5% 0 0 2.5%;
     color  : #4A4A4A;
+    overflow: hidden;
+    overflow-y: auto;
     .box {
         width : 95%;
         height: 95%;

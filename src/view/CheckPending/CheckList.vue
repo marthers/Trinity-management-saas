@@ -352,15 +352,25 @@ export default {
       console.log(params)
     },
     getDetail(row) {
-      console.log(row);
-    //   this.CheckListShow = false;
-      this.$router.push({
-          name : 'UserDetail',
-          params : {
-              fid_organization : row.row.fid_organization,
-              id_user : row.row.id_user
-          }
-      })
+        console.log(row);
+        //   this.CheckListShow = false;
+        if(this.$route.params.who == 'user') {
+            this.$router.push({
+                name : 'UserDetail',
+                params : {
+                    fid_organization : row.row.fid_organization,
+                    id_user : row.row.id_user
+                }
+            })
+        }
+        else{
+            this.$router.push({
+                name : 'OrgDetail',
+                params : {
+                    organization_id : row.row.id_organization
+                }
+            })
+        }
     },
     approve(index,h) {
       console.log(index);
