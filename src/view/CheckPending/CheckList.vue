@@ -56,7 +56,7 @@
             <!-- <div class = "right"></div> -->
             <Page :total="pager.total_count" class = "right"/>
         </footer>
-        <reject-modal :rejectModalShow = "rejectModalShow" @closeModal = "closeModal"></reject-modal>
+        <reject-modal :rejectModalShow = "rejectModalShow" @closeModal = "closeModal" :noPass = "rejectShow"></reject-modal>
         <Modal v-model="batchThroughSetRoleModal">
             <p>Content of dialog</p>
             <p>Content of dialog</p>
@@ -75,6 +75,7 @@ const baseUrl = baseConfig.baseUrl.localOrgHost;
 import {getOrgList} from '@/api/org/org.js';
 import {
   getUserList,
+  UserBatchOperations
 } from '@/api/user.js';
 export default {
   name : 'CheckList',
@@ -99,6 +100,7 @@ export default {
       startTime : '',
       endTime : '',
       rejectModalShow : false,
+      rejectShow : false,
       startOptions: {
           disabledDate (date) {
               return date && date.valueOf() < Date.now() - 86400000;
@@ -356,8 +358,9 @@ export default {
               name : 'userReview'
           })
       },
-    closeModal() {
-      this.rejectModalShow = false
+    closeModal(data) {
+      this.rejectModalShow = false;
+      console.log(data)
     },
     getVerify(params) {
       console.log(params)
@@ -385,11 +388,14 @@ export default {
     },
     approve(index,h) {
       console.log(index);
-      console.log(h)
+      console.log(h);
+      this.rejectModalShow = true;
+      this.rejectShow = false
     },
     reject(index) {
       console.log(index);
-      this.rejectModalShow = true
+      this.rejectModalShow = true;
+      this.rejectShow = true
     },
     timeOk() {
       console.log(`this.startTime=${this.startTime}`);

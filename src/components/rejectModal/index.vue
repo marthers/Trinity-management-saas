@@ -1,6 +1,6 @@
 <template>
     <div class = "reject-con" v-if = "rejectModalShow">
-        <Modal v-model="show" class-name = "reject-modal" :closable = "false">
+        <Modal v-model="show" class-name = "reject-modal" :closable = "closable"  :mask-closable = "closable" @on-visible-change = "visibleChange">
             <p slot="header" class = "header" @click.stop.prevent = "closeModal">
                 关闭
             </p>
@@ -48,12 +48,15 @@ export default {
   data() {
     return {
         selectedRole : '',
+        closable : false,
         roleArr : [
             {
-                roleName : '管理员'
+                roleName : '管理员',
+                role_level : 0
             },
             {
-                roleName : '管理员2'
+                roleName : '经理',
+                role_level : 1
             },
             // {
             //     roleName : '管理员3'
@@ -68,10 +71,16 @@ export default {
             //     roleName : '管理员7'
             // },
             {
-                roleName : '运营商'
+                roleName : '主管',
+                role_level : 2
             },
             {
-                roleName : '代理商'
+                roleName : '配送员1',
+                role_level : 3
+            },
+            {
+                roleName : '配送员2',
+                role_level : 3
             }
         ],
       show : true,
@@ -132,7 +141,24 @@ export default {
   },
   methods : {
     closeModal() {
-      this.$emit('closeModal');
+        let emitData = ''
+        // 如果当前为拒绝
+        if(this.noPass) {
+            let selectedArr = this.reasonsArr.filter(item => {
+                return item.selected == true
+            });
+            console.log(selectedArr)
+            console.log("reasonsWritten:");
+            console.log(this.reasonsWritten);
+            emitData = JSON.stringify(selectedArr) + ';' + reasonsWritten;
+        }
+        else {
+            console.log(`this.selectedRole=${this.selectedRole}`);
+        }
+        this.$emit('closeModal',emitData);
+    },
+    visibleChange(state) {
+        console.log(`state=${state}`)
     }
   }
 }
@@ -295,6 +321,7 @@ export default {
   font-weight:400;
   color:#48A8DA;
   line-height:20px;
+  cursor: pointer;
 }
 .reject-modal .ivu-modal-header {
   text-align: right;

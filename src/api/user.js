@@ -51,3 +51,11 @@ export const getUserList  = (url,data) => {
       method: 'post'
   })
 }
+//员工列表的批处理功能，包括审核、角色分配
+export const UserBatchOperations  = (url,data) => {
+    return axios.request({
+        url   : url,
+        data: data,
+        method: 'post'
+    })
+  }
