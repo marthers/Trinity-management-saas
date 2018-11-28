@@ -18,12 +18,24 @@
             <div class = "id-con">
                 <div class = "face-con">
                     <p class = "info">上传公司证照正面：</p>
-                    <img-upload @base64   = "corpBase64" @deleteBase64 = "deleteCorp" :modalTitle = "corpModalTitle" :uploadId   = "corpUploadId"></img-upload>
+                    <img-upload
+                        @base64   = "corpBase64"
+                        :beforeHasData = "corpBeforeHasData"
+                        :indentImg = "cropIndentImg"
+                        @deleteBase64 = "deleteCorp"
+                        :modalTitle = "corpModalTitle"
+                        :uploadId   = "corpUploadId"></img-upload>
                 </div>
             </div>
             <div class = "logo">
                 <p class = "logo-title">公司Logo: </p>
-                <img-upload @base64   = "logoBase64" @deleteBase64 = "deleteLogo" :modalTitle = "logoModalTitle" :uploadId   = "logoUploadId"></img-upload>
+                <img-upload
+                    @base64   = "logoBase64"
+                    :beforeHasData = "logoBeforeHasData"
+                    :indentImg = "logoIndentImg"
+                    @deleteBase64 = "deleteLogo"
+                    :modalTitle = "logoModalTitle"
+                    :uploadId   = "logoUploadId"></img-upload>
             </div>
             <div class = "con corp-name">
                 <p class = "info">公司注册名称：</p>
@@ -74,6 +86,9 @@ import {
 } from '@/libs/filter.js';
 import {getOrgList} from '@/api/org/org.js';
 import baseConfig from '@/config/index';
+import {
+  getOrgDetail
+} from '@/api/login.js';
 const localOrgHost = baseConfig.baseUrl.localOrgHost
 const baseUrl = baseConfig.baseUrl.localOrgHost;
 import {
@@ -84,6 +99,10 @@ export default {
     name: 'CreateMerchant',
     data() {
         return {
+            corpBeforeHasData : false,
+            cropIndentImg : '',
+            logoBeforeHasData : false,
+            logoIndentImg : '',
             notFromUpperEdit : true,
             // merchantData : {},
             corpName        : '',
@@ -118,12 +137,14 @@ export default {
         submitCreate(data){
             console.log("data:");
             console.log(data);
-            if( !this.selectedMerchant.id_organization || this.selectedMerchant.id_organization.length == 0) {
-                this.$Notice.error({
-                    title: '您暂未选择任何上级组织',
-                    desc : '请先选择您的上级组织'
-                });
-                return false
+            if(!this.$route.params.fromUpperEdit) {
+                if( !this.selectedMerchant.id_organization || this.selectedMerchant.id_organization.length == 0) {
+                    this.$Notice.error({
+                        title: '您暂未选择任何上级组织',
+                        desc : '请先选择您的上级组织'
+                    });
+                    return false
+                }
             }
             if(this.logoBase64Data.length == 0) {
                 this.$Notice.error({
@@ -451,6 +472,69 @@ export default {
         console.log("this.$route.params:")
         console.log(this.$route.params)
         this.notFromUpperEdit = !this.$route.params.fromUpperEdit;
+        if(this.$route.params.fromUpperEdit) {
+            // organization_id
+            this.$LoadingBar.start();
+            getOrgDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/organization/detail',
+                    {
+                        'priority': 5,
+                        'id_organization'   : this.$route.params.organization_id,
+                        'data' :  {
+                            'organization_id' : this.$route.params.organization_id
+                        }
+                    }
+            )
+            .then(res => {
+                console.log('getUserDetail_res:')
+                console.log(res);
+                if(res.status && res.status == 200 && res.data.success && res.data.code == 0) {
+                    this.$LoadingBar.finish();
+                    let data = res.data.data.organization_mini
+                    console.log("data:")
+                    console.log(data);
+                    let prefixUrl = ''
+                    if(process.env.NODE_ENV == 'development') {
+                        prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                    }else {
+                        prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                    };
+                    if(data.organization_license_up && data.organization_license_up.length > 0) {
+                        this.corpBeforeHasData = true;
+                        this.cropIndentImg = prefixUrl + data.organization_license_up
+                    }
+                    else {
+                        this.corpBeforeHasData = false;
+                        this.cropIndentImg = '';
+                    };
+
+                    if(data.logo && data.logo.length > 0) {
+                        this.logoBeforeHasData = true;
+                        this.logoIndentImg = prefixUrl + data.logo
+                    }
+                    else {
+                        this.logoBeforeHasData = false;
+                        this.logoIndentImg = '';
+                    }logo
+                }
+                else {
+                    this.$LoadingBar.error();
+                    this.$Message.error({
+                        content : res.data.msg ? res.data.msg : '网络异常，请联系管理员及时处理',
+                        duration: 5,
+                        closable: true
+                    })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+                this.$LoadingBar.error();
+                this.$Message.error({
+                    content : err && err.msg ? err.msg : '网络异常，请联系管理员及时处理',
+                    duration: 5,
+                    closable: true
+                })
+            })
+        }
     }
 }
 </script>

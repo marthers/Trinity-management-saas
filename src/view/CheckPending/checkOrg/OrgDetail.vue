@@ -113,7 +113,7 @@ export default {
                 params : {
                     'fromUpperEdit' : true,
                     'typeChosen' : 'join',
-                    'id_user' : this.$route.params.id_user
+                    'organization_id' : this.$route.params.organization_id
                 }
             })
         }
