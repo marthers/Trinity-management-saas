@@ -3,6 +3,11 @@
         <header class= "title">
             <div class = "verticle-line"></div>
             <div class = "title-word">{{title}}</div>
+            <div class= "back-con" @click.stop.prevent = "toUserReview">
+                <div class = "back-icon"></div>
+                <!-- <div class = "back"></div> -->
+                <div class= "back">返回</div>
+            </div>
         </header>
         <div class = "search-con">
             <div class = "input-con">
@@ -345,6 +350,12 @@ export default {
     }
   },
   methods : {
+      toUserReview() {
+          console.log('toUserReview');
+          this.$router.push({
+              name : 'userReview'
+          })
+      },
     closeModal() {
       this.rejectModalShow = false
     },
@@ -748,19 +759,52 @@ export default {
         justify-content: left;
         align-items: center;
         .verticle-line {
-        width:4px;
-        height:24px;
-        background:linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
-        margin-right: 12px;
+            width:4px;
+            height:24px;
+            background:linear-gradient(180deg,rgba(67,170,246,1) 0%,rgba(63,128,247,1) 100%);
+            margin-right: 12px;
         }
         .title-word {
-        width:72px;
-        height:25px;
-        font-size:18px;
-        font-family:PingFangSC-Medium;
-        font-weight:500;
-        color:rgba(74,74,74,1);
-        line-height:25px;
+            width:72px;
+            height:25px;
+            font-size:18px;
+            font-family:PingFangSC-Medium;
+            font-weight:500;
+            color:rgba(74,74,74,1);
+            line-height:25px;
+        }
+        .back-con{
+            width : 60px;
+            height: 22px;
+            background-size    : 100% 100%;
+            background-position: center;
+            background-image: url('./../../assets/images/UserDetail/back_bg.png');
+            @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                background-image: url('./../../assets/images/UserDetail/back_bg@2x.png');
+            };
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            margin-left : 10px;
+            cursor: pointer;
+            .back-icon {
+                width : 15px;
+                height: 15px;
+                background-size    : 100% 100%;
+                background-position: center;
+                background-image: url('./../../assets/images/UserDetail/backToCheckList.png');
+                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                    background-image: url('./../../assets/images/UserDetail/backToCheckList@2x.png');
+                };
+            }
+            .back{
+                margin-left : -10px;
+                width : 50px;
+                height: 15px;
+                color: #4A4A4A;
+                font-size: 12px;
+            }
         }
     }
     .search-con {

@@ -23,7 +23,7 @@
         </div>
         <div class = "user-detail">
             <span class = "detail-title">公司简介:</span>
-            <span>{{organization_desc}}</span>
+            <span class = "corp-des">{{organization_desc}}</span>
         </div>
         <div class = "user-detail">
             <span class = "detail-title">所属上级:</span>
@@ -314,6 +314,11 @@ export default {
             display: inline-block;
             width : 200px;
             text-align: right;
+        }
+        .corp-des {
+            max-height: 30%;
+            max-width: 80%;
+            text-align: left;
         }
         .photo {
             width : 30vw;

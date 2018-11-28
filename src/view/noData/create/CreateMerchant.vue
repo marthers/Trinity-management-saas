@@ -52,7 +52,16 @@
             <footer>
                 <!-- <div class = "back" @click.stop.prevent = "backToPerson">上一步</div>
                 <div class = "next" @click = "toEditLegalPerson">下一步： 编辑法人信息</div> -->
-                <create-legal @submitCreate = "submitCreate"></create-legal>
+                <create-legal
+                    @submitCreate = "submitCreate"
+                    :beforeHasDataUp = "legalUp"
+                    :indentImgUp = "legalUpImg"
+                    :beforeHasDataDown = "legalDown"
+                    :indentImgDown = "legalDownImg"
+                    :userName = "legalName"
+                    :IDNumber = "legalId"
+                    :legal = "ifSelf"
+                    ></create-legal>
             </footer>
         </div>
 
@@ -99,6 +108,13 @@ export default {
     name: 'CreateMerchant',
     data() {
         return {
+            legalUp : false,
+            legalUpImg : '',
+            legalDown : false,
+            legalDownImg : '',
+            legalName : '',
+            legalId : '',
+            ifSelf : '',
             corpBeforeHasData : false,
             cropIndentImg : '',
             logoBeforeHasData : false,
@@ -207,6 +223,10 @@ export default {
                 'organization_desc'      : this.des,
                 'parent_id_organization': this.selectedMerchant.id_organization ? this.selectedMerchant.id_organization: 1
             };
+            if(this.$route.params.fromUpperEdit) {
+                reqData.parent_id_organization = localStorage.getItem('fid_organization');
+                reqData.id_organization = this.$route.params.organization_id;
+            }
             // if(data.is_select_me) {
             reqData.corporate_name = data.corporate_name,
             reqData.corporate_ident = data.corporate_ident,
@@ -228,14 +248,9 @@ export default {
                 })
                 .then(res => {
                     if(res.status && res.status == 200 && res.data.code == 0) {
-                          this.$Message.success({
-                              content : '提交成功，请耐心等待审核',
-                              duration: 5,
-                              closable: true
-                          });
                             this.$router.push({
                                 name : 'userReview'
-                            })
+                            });
                     }
                     else if(res.data.code == 107) {
                           this.$Message.warning({
@@ -265,7 +280,7 @@ export default {
                 orgEdit(localOrgHost + '/trinity-backstage/organization/edit_info',
                     {
                         'priority': 5,
-                        'id_organization'   : 0,
+                        'id_organization'   : localStorage.getItem('fid_organization') != null ? localStorage.getItem('fid_organization') : 0,
                         'data'    : {
                             'edit_mode'        : 0,
                             'organization_info': reqData
@@ -277,14 +292,37 @@ export default {
                     if(res.status&& res.status == 200) {
                     // debugger
                         console.log(res.data);
-                        this.$Message.success({
-                            content : '提交成功，请耐心等待审核',
-                            duration: 5,
-                            closable: true
-                        });
-                        this.$router.push({
-                            name : 'userReview'
-                        })
+                        // this.$Message.success({
+                        //     content : '提交成功，请耐心等待审核',
+                        //     duration: 5,
+                        //     closable: true
+                        // });
+                        // this.$router.push({
+                        //     name : 'userReview'
+                        // })
+                          if(!this.$route.params.fromUpperEdit) {
+                                this.$Message.success({
+                                    content : '提交成功，请耐心等待审核',
+                                    duration: 5,
+                                    closable: true
+                                });
+                                this.$router.push({
+                                    name : 'userReview'
+                                });
+                          }
+                          else {
+                                this.$Message.success({
+                                    content : '编辑成功',
+                                    duration: 5,
+                                    closable: true
+                                });
+                              this.$router.push({
+                                  name : 'OrgDetail',
+                                  params : {
+                                      'organization_id' : this.$route.params.organization_id
+                                  }
+                              })
+                          }
 
                     }else {
                         this.$Message.error({
@@ -500,21 +538,61 @@ export default {
                     };
                     if(data.organization_license_up && data.organization_license_up.length > 0) {
                         this.corpBeforeHasData = true;
-                        this.cropIndentImg = prefixUrl + data.organization_license_up
+                        this.cropIndentImg = prefixUrl + data.organization_license_up;
                     }
                     else {
                         this.corpBeforeHasData = false;
                         this.cropIndentImg = '';
                     };
-
+                    //将已有的照片数据赋值，以免影响到提交
+                    this.logoBase64Data = data.logo;
+                    this.corpBase64Data = data.organization_license_up;
+                    // this.logoBase64Data = data.logo;
+                    // this.corpBase64Data = data.organization_license_up;
                     if(data.logo && data.logo.length > 0) {
                         this.logoBeforeHasData = true;
-                        this.logoIndentImg = prefixUrl + data.logo
+                        this.logoIndentImg = prefixUrl + data.logo;
                     }
                     else {
                         this.logoBeforeHasData = false;
                         this.logoIndentImg = '';
-                    }logo
+                    }
+                    this.corpName = data.organizationName;
+                    this.IDNumber = data.organization_num;
+                    this.des = data.organization_desc;
+                    //向子组件传值，编辑模式下显示已有状态
+                    if(data.corporate_card_up && data.corporate_card_up.length > 0) {
+                        this.legalUp = true;
+                        this.legalUpImg = prefixUrl + data.corporate_card_up
+                    }
+                    else {
+                        this.legalUp = false;
+                        this.legalUpImg = '';
+                    };
+
+                    if(data.corporate_card_down && data.corporate_card_down.length > 0) {
+                        this.legalDown = true;
+                        this.legalDownImg = prefixUrl + data.corporate_card_down
+                    }
+                    else {
+                        this.legalDown = false;
+                        this.legalDownImg = '';
+                    }
+                    this.legalName = data.corporate_name;
+                    this.legalId = data.corporate_ident;
+                    if(data.is_select_me.length > 0) {
+                        this.ifSelf = data.is_select_me == 0 ? 'self' : 'notSelf'
+                    }
+                    else {
+                        this.ifSelf = ''
+                    }
+            // legalUp : false,
+            // legalUpImg : '',
+            // legalDown : false,
+            // legalDownImg : '',
+            // legalName : '',
+            // legalId : '',
+            // ifSelf : '',
                 }
                 else {
                     this.$LoadingBar.error();

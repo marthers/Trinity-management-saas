@@ -48,6 +48,8 @@
                         v-else
                         @base64   = "versoLegalBase64"
                         @deleteBase64 = "deleteVerso"
+                        :beforeHasData = "beforeHasDataDown"
+                        :indentImg = 'indentImgDown'
                         :modalTitle = "versoModalTitle"
                         :uploadId   = "versoUploadId"></img-upload>
                 </div>
@@ -83,9 +85,7 @@ export default {
     name: 'CreateLegal',
     data() {
         return {
-            userName: '',
-            IDNumber: '',
-            legal : '',
+            // IDNumber: '',
             disabled : false,
             legalID : '请输入身份证号码',
             legalName : '请输入真实姓名',
@@ -93,11 +93,41 @@ export default {
             versoLegalBase64Data : '',
             frontModalTitle : '证件正面照',
             frontUploadId : 'legalFrontId',
-            beforeHasDataUp : false,
-            indentImgUp : '',
             versoModalTitle : '证件反面照',
             versoUploadId : 'versoLegalUploadId',
             userReqCount : 0
+        }
+    },
+    props: {
+        beforeHasDataUp : {
+            type : Boolean,
+            default : false
+        },
+        indentImgUp : {
+            type : String,
+            default : ''
+        },
+        beforeHasDataDown : {
+            type : Boolean,
+            default : false
+        },
+        indentImgDown : {
+            type : String,
+            default : ''
+        },
+        //法人姓名
+        userName : {
+            type : String,
+            default : ''
+        },
+        //法人身份证号
+        IDNumber : {
+            type : String,
+            default : ''
+        },
+        legal : {
+            type : String,
+            default : ''
         }
     },
     methods : {
