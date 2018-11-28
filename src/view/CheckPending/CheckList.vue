@@ -439,7 +439,104 @@ export default {
                             console.log('getUserList_res:')
                             console.log(res);
                             if(res.status && res.status == 200 && res.data.code == 0) {
-                                this.$LoadingBar.finish()
+                                this.$LoadingBar.finish();
+                                let orgResData = res.data.data;
+                                //当前页码
+                                this.pager.page_index = orgResData.page.page_index;
+                                //总页数
+                                this.pager.total_count = orgResData.page.total_count;
+                                orgResData.list.forEach(
+                                    (item,key) => {
+                                        item.option = {
+                                            'selected' : false
+                                        };
+                                        item.createDate = item.createDate.split(' ')[0];
+                                        switch (item.verified)
+                                        {
+                                            case -1:
+                                                item.certificationStatus = '待审核';
+                                                break;
+                                            case 0:
+                                                item.certificationStatus = '未通过';
+                                                break;
+                                            default:
+                                                item.certificationStatus = '通过';
+
+                                        };
+
+                                        if(item.rightful_status == 1) {
+                                            item.accountStatus = '启用'
+                                        }
+                                        else{
+                                            item.accountStatus = '禁用'
+                                        }
+                                    }
+                                )
+                                this.tableData = orgResData.list;
+                            }
+                            else {
+                                this.$Message.error({
+                                    content : '网络异常，请联系管理员及时处理',
+                                    duration: 5,
+                                    closable: true
+                                });
+                                this.$LoadingBar.error()
+                            }
+                        }
+                    )
+                    .catch(
+                        err =>
+                        {
+                            console.log(err);
+                            this.$Message.error({
+                                content : err && err.msg ? err.msg: '网络错误',
+                                duration: 5,
+                                closable: true
+                            });
+                            this.$LoadingBar.error()
+                        }
+                    )
+            }
+            else {
+                        this.title = "商户审核";
+                        this.tableColumn[2].key = 'id_organization';
+                        this.tableColumn.splice(3,1);
+                        //大商户 - 待审核【小】商户列表
+                        if(localStorage.getItem('organization_level') == 1){
+                            this.pager.filters = [
+                                {"key":"parentIdOrganization","operator":"=","value":localStorage.getItem('fid_organization'),"join":"and"},
+                                {"key":"verified","operator":"=","value":-1,"join":"and"},
+                                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
+                                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
+                                {"key":"createDate","operator":">=","value":"","join":"and"},
+                                {"key":"createDate","operator":"<","value":"","join":"and"},
+                                {"key":"organizationName","operator":":","value":"","join":"and"}
+                            ]
+                        }
+                        else{
+                            this.$Message.error({
+                                content : '异常',
+                                duration: 5,
+                                closable: true
+                            })
+                        }
+                        getOrgList(baseUrl + '/trinity-backstage/organization/list',
+                        {
+                            'priority': 5,
+                            'id_organization'   : 0,
+                            'data'    : {
+                                "list_type" : 1,
+                                "pager" : this.pager
+                            }
+                        }
+                        )
+                        .then(res => {
+                            console.log(res)
+                            if(res.status && res.status == 200 && res.data.code == 0) {
+                                console.log("res.data:");
+                                console.log(res.data)
+                                let data             = res.data.data;
+                                this.$LoadingBar.finish();
                                 let getUserListResData = res.data.data;
                                 //当前页码
                                 this.pager.page_index = getUserListResData.page.oage_index;
@@ -473,73 +570,6 @@ export default {
                                     }
                                 )
                                 this.tableData = getUserListResData.list;
-                            }
-                            else {
-                                this.$Message.error({
-                                    content : '网络异常，请联系管理员及时处理',
-                                    duration: 5,
-                                    closable: true
-                                });
-                                this.$LoadingBar.error()
-                            }
-                        }
-                    )
-                    .catch(
-                        err =>
-                        {
-                            console.log(err);
-                            this.$Message.error({
-                                content : err && err.msg ? err.msg: '网络错误',
-                                duration: 5,
-                                closable: true
-                            });
-                            this.$LoadingBar.error()
-                        }
-                    )
-            }
-            else {
-                        this.title = "商户审核"
-                        //大商户 - 待审核【小】商户列表
-                        if(localStorage.getItem('organization_level') == 1){
-                            this.pager.filters = [
-                                {"key":"parentIdOrganization","operator":"=","value":localStorage.getItem('fid_organization'),"join":"and"},
-                                {"key":"verified","operator":"=","value":-1,"join":"and"},
-                                {"key":"recordStatus","operator":"=","value":1,"join":"and"},
-                                {"key":"rightfulStatus","operator":"=","value":1,"join":"and"},
-                                {"key":"createDate","operator":">=","value":"","join":"and"},
-                                {"key":"createDate","operator":"<","value":"","join":"and"},
-                                {"key":"organizationName","operator":":","value":"","join":"and"}
-                            ]
-                        }
-                        else{
-                            this.$Message.error({
-                                content : '异常',
-                                duration: 5,
-                                closable: true
-                            })
-                        }
-                        getOrgList(baseUrl + '/trinity-backstage/organization/list',
-                        {
-                            'priority': 5,
-                            'id_organization'   : 0,
-                            'data'    : {
-                                "list_type" : 0,
-                                "pager" : this.pager
-                                //   "pager" : {
-                                //     'page_index': 1,
-                                //     'page_size' : 20
-                                //   },
-                                //   "filters":this.pager.filters
-                            }
-                        }
-                        )
-                        .then(res => {
-                            console.log(res)
-                            if(res.status && res.status == 200 && res.data.code == 0) {
-                                console.log("res.data:");
-                                console.log(res.data)
-                                let data             = res.data.data;
-                                this.$LoadingBar.finish()
                             }
                             else{
                                 this.$Message.error({
@@ -635,7 +665,8 @@ export default {
   only screen and (-webkit-min-device-pixel-ratio: 2),
   only screen and (min-device-pixel-ratio: 2) {
     background-image: url('./../../assets/images/checklist/verify@2x.png');
-  }
+  };
+  cursor: pointer;
 }
 .table .ivu-table-header .ivu-table-cell {
   font-size : 14px;

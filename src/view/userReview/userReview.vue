@@ -200,7 +200,8 @@ export default {
   },
   methods : {
       toDetail(){
-          console.log('toDetail')
+          console.log('toDetail');
+
       },
     cancel() {
       let url = jiweiDevHost + '/trinity-backstage/organization/undo_user_application';
@@ -366,6 +367,7 @@ export default {
                     let data = getOrgDetailRes.data.data.organization_mini;
                     data.corporate_card_up = prefixUrl + data.corporate_card_up;
                     this.corpObj = data;
+                    localStorage.setItem('corporate_name',data.corporate_name)
                     if(this.corpObj.logo.length > 0) {
                         this.corpObj.logo = prefixUrl + this.corpObj.logo;
                     }
@@ -375,31 +377,12 @@ export default {
                     console.log(this.corpObj)
                     let ov = getOrgDetailRes.data.data.organization_mini.verified,
                     uv = getUserDetailRes.data.data.verified;
-                    if(ov == 1 && uv == 1) {
+                    let role_level = localStorage.getItem('role_level');
+                    let organization_level = localStorage.getItem('organization_level');
+                    if(ov == 1 && uv == 1 || (organization_level != 0 && role_level == 0)) {
                         this.underReviewShow = false;
                         this.organization_list_num = getOrgDetailRes.data.data.organization_list_num
                         this.user_list_num = getOrgDetailRes.data.data.user_list_num
-                        let role_level = localStorage.getItem('role_level');
-                        let organization_level = localStorage.getItem('organization_level');
-                        //平台
-                        if(organization_level == 0) {
-                            this.myOrgShow = false;
-                            this.auditShow = true;
-                            this.bigShow = true
-                        }
-                        else {
-                            this.myOrgShow = true;
-                            this.bigShow = true;
-                            if(role_level == 0) {
-                                this.auditShow = true
-                            }
-                            else {
-                                this.auditShow = false;
-                            }
-                            if(organization_level == 2) {
-                                this.bigShow = false;
-                            }
-                        }
                         console.log("getOrgDetailRes.data:")
                         console.log(getOrgDetailRes.data)
                         console.log(`this.user_list_num=${this.user_list_num}`)
@@ -416,6 +399,24 @@ export default {
                         else {
                             this.joinInshow = true
                             this.corpShow = true
+                        }
+                    };
+                    if(organization_level == 0) {
+                        this.myOrgShow = false;
+                        this.auditShow = true;
+                        this.bigShow = true
+                    }
+                    else {
+                        this.myOrgShow = true;
+                        this.bigShow = true;
+                        if(role_level == 0) {
+                            this.auditShow = true
+                        }
+                        else {
+                            this.auditShow = false;
+                        }
+                        if(organization_level == 2) {
+                            this.bigShow = false;
                         }
                     }
                 }

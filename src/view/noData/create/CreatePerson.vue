@@ -5,7 +5,7 @@
             <header class = "header">
                 <div class = "left"></div>
                 <div class="right">
-                    创建个人信息
+                    {{title}}
                 </div>
             </header>
             <!-- <div class = "logo">
@@ -64,7 +64,7 @@
             <footer>
                 <div class = "back" @click.stop.prevent = "backToIndex">返回</div>
                 <div class = "next" @click.stop.prevent = "toMerchant" v-if = "createShow">下一步：商户信息</div>
-                <div class = "next"   @click.stop.prevent = "joinOrgNext" v-else>下一步</div>
+                <div class = "next"   @click.stop.prevent = "joinOrgNext" v-else>{{nextOrSave}}</div>
             </footer>
         </div>
         <Modal
@@ -107,6 +107,8 @@ export default {
     name: 'CreatePerson',
     data() {
         return {
+            nextOrSave : '下一步',
+            title : '创建个人信息',
             selectedMerchant   : {},
             userName           : '',
             IDNumber           : '',
@@ -526,11 +528,21 @@ export default {
                                   });
                               }
                               else if(code == 0) {
-                                  localStorage.setItem('role_level',res.data.user_info.role_level);
-                                  localStorage.setItem('organization_level',res.data.user_info.organization_level);
-                                  localStorage.setItem('fid_organization',res.data.user_info.fid_organization);
-                                  localStorage.setItem('user_verified',res.data.user_info.verified);
-                                  this.chooseUpper()
+                                  if(!this.$route.params.fromUpperEdit) {
+                                        this.chooseUpper();
+                                        localStorage.setItem('role_level',res.data.user_info.role_level);
+                                        localStorage.setItem('organization_level',res.data.user_info.organization_level);
+                                        localStorage.setItem('fid_organization',res.data.user_info.fid_organization);
+                                        localStorage.setItem('user_verified',res.data.user_info.verified);
+                                  }
+                                  else {
+                                      this.$router.push({
+                                          name : 'UserDetail',
+                                          params : {
+                                              'id_user' : this.$route.params.id_user
+                                          }
+                                      })
+                                  }
                               }
                           }
                       }else {
@@ -615,105 +627,111 @@ export default {
         else {
           this.createShow = true
         }
-              this.$LoadingBar.start();
-
-                    //getUserDetail
-                    getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
-                            {
-                              'priority': 5,
-                              'id_organization'   : 0,
-                              'data' : {
-                                'user_id' : localStorage.getItem('id_user')
-                              }
-                            })
-                    .then (res => {
-                        console.log('getUserDetail_res:')
-                        console.log(res);
-                        if(res.status && res.status == 200) {
-                          if(res.data.success && res.data.code == 0) {
-                              if(res.data.data) {
-                                let data = res.data.data;
-                                console.log(data)
-                                //姓名
-                                if(data.ident_name && data.ident_name.length > 0) {
-                                  this.userNamePlaceholder = data.ident_name;
-                                  this.userName = data.ident_name
-                                }
-                                else {
-                                  this.userNamePlaceholder = '请输入真实姓名'
-                                  this.userName            = ''
-                                }
-                                let prefixUrl = ''
-                                if(process.env.NODE_ENV == 'development') {
-                                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
-                                }else {
-                                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
-                                }
-                                // 身份证号
-                                if(data.ident_num && data.ident_num.length > 0) {
-                                  this.IDPlaceholder = data.ident_num;
-                                  this.IDNumber = data.ident_num
-                                }
-                                else {
-                                  this.IDPlaceholder = '请输入身份证号码'
-                                  this.IDNumber            = ''
-                                }
-                                // 身份证正面
-                                if(data.ident_up && data.ident_up.length > 0) {
-                                  this.indentImgUp =prefixUrl + data.ident_up;
-                                  this.frontBase64Data = data.ident_up
-                                  this.beforeHasDataUp = true
-                                }
-                                else {
-                                  this.indentImgUp = '';
-                                  this.beforeHasDataUp = false;
-                                  this.frontBase64Data = ''
-                                }
-                                // 身份证反面
-                                if(data.ident_down && data.ident_down.length > 0) {
-                                  this.indentImg = prefixUrl + data.ident_down;
-                                  this.beforeHasData = true
-                                  this.versoData = data.ident_down
-                                }
-                                else {
-                                  this.beforeHasData = false
-                                  this.indentImg            = '';
-                                  this.versoData = ''
-                                }
-                                // for(let item in data) {
-                                // localStorage.setItem('user_detail_obj' , JSON.stringify(data))
-                                // }
-                                if(data.verified) {
-                                  localStorage.setItem('user_verified',data.verified)
-                                }
-                              }
-                          }else {
-                              this.$Message.error({
-                                  content : '网络错误',
-                                  duration: 5,
-                                  closable: true
-                              });
-                          }
+        if(this.$route.params.fromUpperEdit) {
+            this.title = '编辑员工';
+            this.nextOrSave = '下一步'
+        }
+        else {
+            this.title = "创建个人信息";
+            this.nextOrSave = '保存'
+        }
+            this.$LoadingBar.start();
+            getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
+                    {
+                        'priority': 5,
+                        'id_organization'   : 0,
+                        'data' : {
+                        'user_id' : this.$route.params.fromUpperEdit ?  this.$route.params.id_user : localStorage.getItem('id_user')
+                        }
+                    })
+            .then (res => {
+                console.log('getUserDetail_res:')
+                console.log(res);
+                if(res.status && res.status == 200) {
+                    if(res.data.success && res.data.code == 0) {
+                        if(res.data.data) {
+                        let data = res.data.data;
+                        console.log(data)
+                        //姓名
+                        if(data.ident_name && data.ident_name.length > 0) {
+                            this.userNamePlaceholder = data.ident_name;
+                            this.userName = data.ident_name
                         }
                         else {
-                          this.$Message.error({
-                              content : '网络错误',
-                              duration: 5,
-                              closable: true
-                          });
-                          this.$LoadingBar.error()
+                            this.userNamePlaceholder = '请输入真实姓名'
+                            this.userName            = ''
                         }
-                        this.$LoadingBar.finish()
-                    })
-                    .catch(err => {
-                      console.log(err)
-                      this.$Message.error({
-                          content : err.msg ? err.msg: '网络错误',
-                          duration: 5,
-                          closable: true
-                      });
-                      this.$LoadingBar.error()
+                        let prefixUrl = ''
+                        if(process.env.NODE_ENV == 'development') {
+                            prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                        }else {
+                            prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                        }
+                        // 身份证号
+                        if(data.ident_num && data.ident_num.length > 0) {
+                            this.IDPlaceholder = data.ident_num;
+                            this.IDNumber = data.ident_num
+                        }
+                        else {
+                            this.IDPlaceholder = '请输入身份证号码'
+                            this.IDNumber            = ''
+                        }
+                        // 身份证正面
+                        if(data.ident_up && data.ident_up.length > 0) {
+                            this.indentImgUp =prefixUrl + data.ident_up;
+                            this.frontBase64Data = data.ident_up
+                            this.beforeHasDataUp = true
+                        }
+                        else {
+                            this.indentImgUp = '';
+                            this.beforeHasDataUp = false;
+                            this.frontBase64Data = ''
+                        }
+                        // 身份证反面
+                        if(data.ident_down && data.ident_down.length > 0) {
+                            this.indentImg = prefixUrl + data.ident_down;
+                            this.beforeHasData = true
+                            this.versoData = data.ident_down
+                        }
+                        else {
+                            this.beforeHasData = false
+                            this.indentImg            = '';
+                            this.versoData = ''
+                        }
+                        // for(let item in data) {
+                        // localStorage.setItem('user_detail_obj' , JSON.stringify(data))
+                        // }
+                        if(data.verified) {
+                            localStorage.setItem('user_verified',data.verified)
+                        }
+                        }
+                    }else {
+                        this.$Message.error({
+                            content : '网络错误',
+                            duration: 5,
+                            closable: true
+                        });
+                    }
+                }
+                else {
+                    this.$Message.error({
+                        content : '网络错误',
+                        duration: 5,
+                        closable: true
                     });
+                    this.$LoadingBar.error()
+                }
+                this.$LoadingBar.finish()
+            })
+            .catch(err => {
+                console.log(err)
+                this.$Message.error({
+                    content : err.msg ? err.msg: '网络错误',
+                    duration: 5,
+                    closable: true
+                });
+                this.$LoadingBar.error()
+            });
     },
     mounted() {
       // this.$store.commit('setMenuShowTrue')

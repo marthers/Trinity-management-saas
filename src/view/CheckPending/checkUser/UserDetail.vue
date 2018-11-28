@@ -5,7 +5,7 @@
                 <div class= "line"></div>
                 <div class= "title-word">待审核员工</div>
             </div>
-            <div class= "back-con" @click.stop.prevent = "$router.back()">
+            <div class= "back-con" @click.stop.prevent = "userDetailback">
                 <div class = "back-icon"></div>
                 <div class = "back"></div>
             </div>
@@ -15,7 +15,7 @@
                 <div class = "avatar" :style = "{backgroundImage: 'url(' + avatar + ')'}"></div>
                 <!-- <div class = "avatar"></div> -->
                 <div class = "right-con">
-                    <span class = "name">{{name}}</span>
+                    <span class = "ident_name">{{ident_name}}</span>
                     <span class = "verified">{{verified | filterVerified}}</span>
                 </div>
             </div>
@@ -27,20 +27,24 @@
         </div>
         <div class = "user-detail">
             <span class = "detail-title">身份证号:</span>
-            <span>{{phone}}</span>
+            <span>{{ident_num}}</span>
         </div>
         <div class = "user-detail">
             <div class = "detail-title">证件正面照:</div>
-            <div class = "photo"></div>
+            <div class = "photo" :style = "{backgroundImage: 'url(' + ident_up + ')'}"></div>
         </div>
         <div class = "user-detail">
             <div class = "detail-title">证件反面照:</div>
-            <div class = "photo"></div>
+            <div class = "photo" :style = "{backgroundImage: 'url(' + ident_down + ')'}"></div>
         </div>
         <div class = "user-detail">
             <span class = "detail-title">所属上级:</span>
-            <span>{{orgName}}</span>
+            <span>{{corporate_name}}</span>
         </div>
+        <footer>
+            <button class = "reject" @click.stop.prevent = "reject">不通过</button>
+            <button class = "approve" @click.stop.prevent = "approve">通过</button>
+        </footer>
     </div>
 </template>
 <script>
@@ -53,10 +57,13 @@ export default {
     data() {
         return {
             phone : '',
-            name : '玛尼玛尼',
-            verified : '-1',
+            ident_name : '',
+            verified : '',
             avatar: '',
-            orgName : 'hdsakdsajksd'
+            corporate_name : '',
+            ident_num : '',
+            ident_down : '',
+            ident_up : ''
         }
     },
     filters: {
@@ -70,15 +77,36 @@ export default {
         }
     },
     methods : {
+        userDetailback() {
+            this.$router.push({
+                name : 'CheckList',
+                params : {
+                    // 'user_id' : this.$route.params.id_user
+                    who : 'user'
+                }
+            })
+        },
+        approve() {},
+        reject() {},
         backToCheckList() {
             this.$router.back();
         },
         editUser() {
-            console.log("editUser")
+            console.log("editUser");
+            this.$router.push({
+                name : 'CreatePerson',
+                params : {
+                    'fromUpperEdit' : true,
+                    'typeChosen' : 'join',
+                    'id_user' : this.$route.params.id_user
+                }
+            })
         }
     },
     created() {
         console.table(this.$route.params);
+        this.$LoadingBar.start();
+        this.corporate_name = localStorage.getItem('corporate_name') != null ? localStorage.getItem('corporate_name') : '暂无上级名称'
         getUserDetail(baseConfig.baseUrl.devHost + '/trinity-backstage/user/detail',
                 {
                     'priority': 5,
@@ -92,22 +120,42 @@ export default {
             console.log('getUserDetail_res:')
             console.log(res);
             if(res.status && res.status == 200 && res.data.success && res.data.code == 0) {
+                this.$LoadingBar.finish();
                 let data = res.data.data
+                console.log("data:")
                 console.log(data)
-                // this.frontBase64Data = prefixUrl + data.ident_up;
-                // this.versoLegalBase64Data = prefixUrl + data.ident_down;
-                // this.legalName = data.ident_name;
-                // this.legalID =  data.ident_num;
+                // TODO 后端avatar写错了，写成avator
+                if(data.avator.length > 0) {
+                    this.avatar = data.avator
+                }
+                else {
+                    this.avatar = require('./../../../assets/images/user/userDefaultAvatar.png')
+                }
+                this.ident_name = data.ident_name ? data.ident_name : '暂未设置姓名';
+                this.verified = data.verified ? data.verified : -1;
+                this.phone = data.phone ? data.phone : '暂无';
+                this.ident_num = data.ident_num ? data.ident_num : '暂无';
+                let prefixUrl = ''
+                if(process.env.NODE_ENV == 'development') {
+                    prefixUrl = 'http://trinity-local.oss-cn-huhehaote.aliyuncs.com'
+                }else {
+                    prefixUrl = 'http://trinity-product.oss-cn-huhehaote.aliyuncs.com'
+                }
+                this.ident_up = data.ident_up ? prefixUrl + data.ident_up : '';
+                this.ident_down = data.ident_down ? prefixUrl + data.ident_down : '';
             }
             else {
-            // this.$Message.error({
-            //     content : res.data.msg ? res.data.msg : '网络异常，请联系管理员及时处理',
-            //     duration: 5,
-            //     closable: true
-            // })
+                this.$LoadingBar.error();
+                this.$Message.error({
+                    content : res.data.msg ? res.data.msg : '网络异常，请联系管理员及时处理',
+                    duration: 5,
+                    closable: true
+                })
             }
         })
         .catch(err => {
+            console.log(err)
+            this.$LoadingBar.error();
             this.$Message.error({
                 content : '网络异常，请联系管理员及时处理',
                 duration: 5,
@@ -165,6 +213,7 @@ export default {
             justify-content: center;
             align-items: center;
             margin-left : 10px;
+            cursor: pointer;
             .back-icon {
                 width : 15px;
                 height: 15px;
@@ -214,16 +263,16 @@ export default {
                 border-radius : 50%;
                 background-size    : 100% 100%;
                 background-position: center;
-                background-image: url('./../../../assets/images/user/userDefaultAvatar.png');
-                @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                    background-image: url('./../../../assets/images/user/userDefaultAvatar@2x.png');
-                };
+                // background-image: url('./../../../assets/images/user/userDefaultAvatar.png');
+                // @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+                //     background-image: url('./../../../assets/images/user/userDefaultAvatar@2x.png');
+                // };
             }
             .right-con {
                 margin: 30px 0 0 8px;
                 height : 24px;
                 line-height: 24px;
-                .name {
+                .ident_name {
                     color : 000;
                     font-size: 24px;
                     font-weight: bold;
@@ -255,10 +304,34 @@ export default {
             height: 20vh;
             background-size    : 100% 100%;
             background-position: center;
-            background-image: url('./../../../assets/images/UserDetail/backWord.png');
-            @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
-                background-image: url('./../../../assets/images/UserDetail/backWord@2x.png');
-            };
+            // background-image: url('./../../../assets/images/UserDetail/backWord.png');
+            // @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+            //     background-image: url('./../../../assets/images/UserDetail/backWord@2x.png');
+            // };
+        }
+    }
+    footer {
+        text-align: left;
+        button {
+            background: none;
+            width : 160px;
+            box-sizing: content-box;
+            height: 36px;
+            line-height: 36px;
+            font-size : 16px;
+            outline: none;
+            border-radius:4px;
+            cursor: pointer;
+            margin-left: 30px;
+        }
+        .reject{
+            color: #4A4A4A;
+            border : 1px solid #DEDEDE;
+        }
+        .approve{
+            color: #fff;
+            background:rgba(72,168,218,1);
+            border : 1px solid rgba(72,168,218,1);
         }
     }
 }
