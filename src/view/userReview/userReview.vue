@@ -360,11 +360,12 @@ export default {
                         }
                     }
                 );
-                if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_mini && getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data) {
+                // if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0) {
+                if(getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data.organization_info && getOrgDetailRes.status && getOrgDetailRes.status == 200 && getOrgDetailRes.data.code == 0 && getOrgDetailRes.data.data) {
                     this.$LoadingBar.finish()
                     this.count ++;
-                    console.log(`this.count=${this.count}`)
-                    let data = getOrgDetailRes.data.data.organization_mini;
+                    console.log(`this.count=${this.count}`);
+                    let data = getOrgDetailRes.data.data.organization_info;
                     data.corporate_card_up = prefixUrl + data.corporate_card_up;
                     this.corpObj = data;
                     localStorage.setItem('corporate_name',data.corporate_name)
@@ -375,7 +376,7 @@ export default {
                         this.corpObj.logo = require('./../../assets/images/ShunXiangLogo.png')
                     }
                     console.log(this.corpObj)
-                    let ov = getOrgDetailRes.data.data.organization_mini.verified,
+                    let ov = getOrgDetailRes.data.data.organization_info.verified,
                     uv = getUserDetailRes.data.data.verified;
                     let role_level = localStorage.getItem('role_level');
                     let organization_level = localStorage.getItem('organization_level');
@@ -506,9 +507,9 @@ export default {
           align-items: center;
           border-bottom: 2px dashed #DEDEDE;
           .right {
-            width : 120px;
-            height: 72px;
-            background-size: 100% 100%;
+            // width : 120px;
+            // height: 72px;
+            background-size: 120px auto;
             background-position: center;
             background-image: url('./../../assets/images/myOrg/under_review.png');
             @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
@@ -522,9 +523,9 @@ export default {
             align-items: center;
             // border-bottom: 2px dashed #DEDEDE;
             .logo {
-                width : 98px;
-                height: 98px;
-                background-size: 100% 100%;
+                // width : 98px;
+                // height: 98px;
+                background-size: auto 98px;
                 background-position: center;
             }
             .right-corp {

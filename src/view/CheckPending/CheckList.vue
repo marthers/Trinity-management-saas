@@ -57,14 +57,14 @@
             <Page :total="pager.total_count" class = "right"/>
         </footer>
         <reject-modal :rejectModalShow = "rejectModalShow" @closeModal = "closeModal" :noPass = "rejectShow"></reject-modal>
-        <Modal v-model="batchThroughSetRoleModal">
+        <!-- <Modal v-model="batchThroughSetRoleModal">
             <p>Content of dialog</p>
             <p>Content of dialog</p>
             <p>Content of dialog</p>
             <div slot="footer">
                 <Button type="error" size="large" long >Delete</Button>
             </div>
-        </Modal>
+        </Modal> -->
     </div>
 </template>
 <script>
@@ -87,7 +87,7 @@ export default {
         page_size : 13,
         total_count : 13
       },
-      batchThroughSetRoleModal : false,
+    //   batchThroughSetRoleModal : false,
       selectAll : false,
       // selectAllRadio : false,
       // selectAllTrue : false,
@@ -132,7 +132,8 @@ export default {
                           },
                           on: {
                               click: () => {
-                                params.row.option.selected = !params.row.option.selected
+                                // params.row.option.selected = !params.row.option.selected;
+                                this.tableData[params.index].option.selected = !this.tableData[params.index].option.selected
                               }
                               // click: vm.handleSelect(params)
                           },
@@ -415,18 +416,24 @@ export default {
     //批量通过
     batchThrough() {
       let selectedArr = this.tableData.filter(item => {
-         if(item.option.selected) {
-           return true
-         }
-         else {
-           return 'haha'
-         }
+         return item.option.selected
       });
+      console.log("this.tableData:")
+      console.log(this.tableData)
+      console.log("selectedArr:");
       console.log(selectedArr);
+    //   let a = [1,0,true,false,0,0,1,1,1,1,1];
+    //   let b = a.filter(item => {
+    //       return item
+    //   });
+    //   console.log(a);
+    //   console.log(b);
       this.tableData.forEach((item,index) => {
         console.log(item.option.selected)
       });
-      this.batchThroughSetRoleModal = true;
+    //   this.batchThroughSetRoleModal = true;
+    //   this.rejectModalShow = true;
+    //   this.rejectShow = false
     },
     handleSelect(params){
       console.log(params)
